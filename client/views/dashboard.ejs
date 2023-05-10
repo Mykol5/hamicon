@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- <link rel="stylesheet" href="css/dashboard.css"> -->
+   <title>Dashboard</title>
+
+   <style>
+    .container {
+  margin: 0 auto;
+  max-width: 800px;
+  padding: 20px;
+}
+
+h1 {
+  margin-bottom: 20px;
+}
+
+.image-gallery {
+  position: relative;
+  margin-bottom: 40px;
+}
+
+.slideshow-container {
+  position: relative;
+  overflow: hidden;
+}
+
+.slideshow {
+  display: flex;
+  width: calc(300px * 5);
+  animation: slideshow 15s linear infinite;
+}
+
+.slideshow img {
+  width: 300px;
+  height: 200px;
+  margin-right: 20px;
+}
+
+.dots-container {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: #bbb;
+  margin-right: 10px;
+  cursor: pointer;
+}
+
+.active {
+  background-color: #717171;
+}
+
+@keyframes slideshow {
+  0% {
+    transform: translateX(0);
+  }
+  20% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-150px);
+  }
+  45% {
+    transform: translateX(-150px);
+  }
+  50% {
+    transform: translateX(-300px);
+  }
+  70% {
+    transform: translateX(-300px);
+  }
+  75% {
+    transform: translateX(-450px);
+  }
+  95% {
+    transform: translateX(-450px);
+  }
+  100% {
+    transform: translateX(-600px);
+  }
+}
+
+
+/* .image-gallery {
+  display: flex;
+  overflow-x: scroll;
+  margin-bottom: 40px;
+}
+
+.image-gallery img {
+  width: 150px;
+  height: 150px;
+  margin-right: 20px;
+} */
+
+.cart {
+  margin-top: 30px;
+}
+
+.cart-items {
+  display: flex;
+  overflow-x: scroll;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  max-height: 300px;
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+ul {
+  display: flex;
+  flex-wrap: nowrap;
+  list-style: none;
+  scroll-snap-align: start;
+}
+
+.cart-items li {
+  flex: 0 0 auto;
+  width: 300px;
+  margin-right: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  text-align: center;
+  padding: 10px;
+  font-size: 16px;
+}
+.cart-items::-webkit-scrollbar {
+  display: none;
+}
+
+li img {
+  max-width: 100%;
+  height: auto;
+  margin-bottom: 10px;
+}
+
+button {
+  display: block;
+  margin: 10px auto;
+  padding: 5px 10px;
+  background-color: #ccc;
+  color: #000;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+
+/*fixed cart */
+.fixed-cart {
+  margin-top: 30px;
+  }
+  
+  .fixed-cart ul {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  list-style: none;
+  }
+  
+  .fixed-cart li {
+  flex: 0 0 auto;
+  width: 150px;
+  margin-right: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  text-align: center;
+  padding: 10px;
+  font-size: 16px;
+  margin-bottom: 10px;
+  }
+  
+  .fixed-cart li img {
+  max-width: 100%;
+  height: auto;
+  margin-bottom: 10px;
+  }
+  
+  .fixed-cart button {
+  display: block;
+  margin: 10px auto;
+  padding: 5px 10px;
+  background-color: #ccc;
+  color: #000;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  }
+
+
+/*
+.cart {
+  margin-bottom: 40px;
+}
+
+.cart h2 {
+  margin-bottom: 10px;
+}
+
+.cart ul {
+  list-style: none;
+  padding: 0;
+  margin-bottom: 20px;
+}
+
+.cart li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.cart .quantity {
+  margin: 0 10px;
+}
+
+.cart button {
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+.checkout {
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+}*/
+.reviews {
+  clear: both;
+  margin-top: 50px;
+  width: 100%;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.reviews ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.reviews li {
+  width: calc(50% - 10px);
+  margin-bottom: 20px;
+  background-color: #f7f7f7;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+@media (max-width: 768px) {
+  .reviews li {
+    width: 100%;
+  }
+}
+
+/* Logo */
+.logo {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+/* User Icon */
+.user-icon {
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 15px;
+}
+
+
+body {
+  overflow-x: hidden;
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #333;
+  color: #fff;
+  padding: 10px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+}
+
+.logo img {
+  max-height: 40px;
+  width: 70px;
+}
+
+.user-icon img {
+  max-height: 30px;
+}
+
+.hamburger {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 30px;
+  height: 20px;
+  cursor: pointer;
+}
+
+.bar {
+  height: 3px;
+  background-color: #fff;
+  border-radius: 2px;
+  transition: all 0.2s ease;
+}
+
+.bar:last-child {
+  transform: translateY(-4px);
+}
+
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: -250px;
+  width: 250px;
+  height: 100%;
+  background-color: #f1f1f1;
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.5);
+  transition: all 0.2s ease;
+  z-index: 999;
+}
+
+.sidebar ul {
+  list-style: none;
+  margin: 0;
+  padding-top: 35%;
+  padding-left: 0%;
+  display: table;
+}
+
+.sidebar li {
+  margin-bottom: 5px;
+  background-color: gold;
+  transition: background-color 0.3s ease-in-out;
+  border-radius: 4px;
+  padding: 5px 120px 2px 47px;
+  text-align: inline;
+}
+
+.sidebar a {
+  color: #333;
+  text-decoration: none;
+  font-size: 1.2rem;
+}
+.sidebar li:hover {
+  background-color: green;
+  color: white;
+}
+
+.sidebar.active {
+  left: 0;
+}
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.2s ease;
+  z-index: 998;
+}
+
+.overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+
+
+.hamburger.active .bar:first-child {
+  transform: rotate(45deg) translate(5px, 6px);
+}
+
+.hamburger.active .bar:nth-child(2) {
+  opacity: 0;
+}
+
+.hamburger.active .bar:last-child {
+  transform: rotate(-45deg) translate(5px, -6px);
+}
+
+
+
+/* Bottom Nav */
+.bottom-bar {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  height: 60px;
+  background-color: #f2f2f2;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.bottom-bar a {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: #777;
+  text-decoration: none;
+  font-size: 12px;
+}
+
+.bottom-bar a.active {
+  color: #11e493;
+  background-color: #f2f2f2;
+}
+
+.bottom-bar a i {
+  font-size: 24px;
+}
+   </style>
+</head>
+<body>
+  <header>
+    <div class="logo">
+      <img src="pastrylogo.png" alt="Logo">
+    </div>
+    <div class="user-icon">
+      <img src="user.png" alt="User Icon">
+    </div>
+    <div class="hamburger">
+      <div class="bar"></div>
+      <div class="bar"></div>
+      <div class="bar"></div>
+    </div>
+  </header>
+  <aside class="sidebar">
+    <nav>
+      <ul>
+        <li><a id="home" href="#">Home</a></li>
+        <li id="dashboard"><a href="#">Dashboard</a></li>
+        <li><a href="#">My Cart</a></li>
+        <form method="POST" action="/logout">
+          <button type="submit">Logout</button>
+        </form>
+      </ul>
+    </nav>
+  </aside>
+  <div class="overlay"></div>
+    <div class="container">
+      <h3>Welcome to the dashboard, <%= user.name %>!</h3>
+      <div class="image-gallery">
+        <div class="slideshow-container">
+          <div class="slideshow">
+            <img src="https://via.placeholder.com/150" alt="Pastry 1">
+            <img src="https://via.placeholder.com/150" alt="Pastry 2">
+            <img src="https://via.placeholder.com/150" alt="Pastry 3">
+            <img src="https://via.placeholder.com/150" alt="Pastry 4">
+            <img src="https://via.placeholder.com/150" alt="Pastry 5">
+          </div>
+        </div>
+        <div class="dots-container"></div>
+      </div>
+      <!-- <div class="image-gallery">
+        <img src="https://via.placeholder.com/150" alt="Pastry 1">
+        <img src="https://via.placeholder.com/150" alt="Pastry 2">
+        <img src="https://via.placeholder.com/150" alt="Pastry 3">
+        <img src="https://via.placeholder.com/150" alt="Pastry 4">
+        <img src="https://via.placeholder.com/150" alt="Pastry 5">
+      </div> -->
+      <div class="cart">
+        <h2>Cart</h2>
+        <div class="cart-items">
+          <ul>
+            <li>
+              <img src="food1.jpg" alt="Food 1">
+              <h3>Food 1</h3>
+              <p>Description of Food 1</p>
+              <button>View Details</button>
+              <button>Add to Cart</button>
+            </li>
+            <li>
+              <img src="food2.jpg" alt="Food 2">
+              <h3>Food 2</h3>
+              <p>Description of Food 2</p>
+              <button>View Details</button>
+              <button>Add to Cart</button>
+            </li>
+            <!-- Add more food items here -->
+          </ul>
+          <ul>
+            <li>
+              <img src="food8.jpg" alt="Food 8">
+              <h3>Food 8</h3>
+              <p>Description of Food 8</p>
+              <button>View Details</button>
+              <button>Add to Cart</button>
+            </li>
+            <li>
+              <img src="food9.jpg" alt="Food 9">
+              <h3>Food 9</h3>
+              <p>Description of Food 9</p>
+              <button>View Details</button>
+              <button>Add to Cart</button>
+            </li>
+            <!-- Add more food items here -->
+          </ul>
+        </div>
+      </div>
+      <div class="fixed-cart">
+        <ul>
+          <li>
+            <img src="food10.jpg" alt="Food 10">
+            <h3>Food 10</h3>
+            <p>Description of Food 10</p>
+            <button>View Details</button>
+            <button>Add to Cart</button>
+          </li>
+          <li>
+            <img src="food11.jpg" alt="Food 11">
+            <h3>Food 11</h3>
+            <p>Description of Food 11</p>
+            <button>View Details</button>
+            <button>Add to Cart</button>
+          </li>
+          <li>
+            <img src="food11.jpg" alt="Food 11">
+            <h3>Food 11</h3>
+            <p>Description of Food 11</p>
+            <button>View Details</button>
+            <button>Add to Cart</button>
+          </li>
+          <li>
+            <img src="food11.jpg" alt="Food 11">
+            <h3>Food 11</h3>
+            <p>Description of Food 11</p>
+            <button>View Details</button>
+            <button>Add to Cart</button>
+          </li>
+          <li>
+            <img src="food11.jpg" alt="Food 11">
+            <h3>Food 11</h3>
+            <p>Description of Food 11</p>
+            <button>View Details</button>
+            <button>Add to Cart</button>
+          </li>
+          <li>
+            <img src="food11.jpg" alt="Food 11">
+            <h3>Food 11</h3>
+            <p>Description of Food 11</p>
+            <button>View Details</button>
+            <button>Add to Cart</button>
+          </li>
+          <!-- Add more fixed cart items here -->
+        </ul>
+      </div>
+      
+     <!-- <div class="cart">
+        <h2>Cart</h2>
+        <ul>
+          <li>Pastry 1 <span class="quantity">1</span> <button class="add">+</button> <button class="remove">-</button></li>
+          <li>Pastry 2 <span class="quantity">3</span> <button class="add">+</button> <button class="remove">-</button></li>
+          <li>Pastry 3 <span class="quantity">2</span> <button class="add">+</button> <button class="remove">-</button></li>
+        </ul>
+        <button class="checkout">Checkout</button>
+      </div>-->
+      <div class="reviews">
+        <h2>Reviews</h2>
+        <ul>
+          <li>
+            <h3>Pastry 1</h3>
+            <p>Delicious pastry, will definitely order again!</p>
+            <span class="author">- John Doe</span>
+          </li>
+          <li>
+            <h3>Pastry 2</h3>
+            <p>Amazing taste and texture, highly recommend!</p>
+            <span class="author">- Jane Smith</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="bottom-bar">
+      <a href="#" class="active">
+        <i class="fa fa-home"></i>
+        Home
+      </a>
+      <a href="#">
+        <i class="fa fa-info-circle"></i>
+        About
+      </a>
+      <a href="#">
+        <i class="fa fa-shopping-cart"></i>
+        Orders
+      </a>
+      <a href="#">
+        <i class="fa fa-user"></i>
+        Profile
+      </a>
+    </div>
+
+    <script>
+      const hamburger = document.querySelector('.hamburger');
+const body = document.querySelector('body');
+const sidebar = document.querySelector('.sidebar');
+const overlay = document.querySelector('.overlay');
+
+hamburger.addEventListener('click', function() {
+  body.classList.toggle('active');
+  sidebar.classList.toggle('active');
+  overlay.classList.toggle('active');
+  hamburger.classList.toggle('active');
+});
+
+
+const slideshow = document.querySelector('.slideshow');
+const dotsContainer = document.querySelector('.dots-container');
+const images = slideshow.querySelectorAll('img');
+const numImages = images.length;
+let currentImage = 1;
+
+// create dots
+for (let i = 0; i < numImages; i++) {
+  const dot = document.createElement('span');
+  dot.classList.add('dot');
+  dotsContainer.appendChild(dot);
+}
+
+const dots = dotsContainer.querySelectorAll('.dot');
+dots[0].classList.add('active');
+
+function showImage(n) {
+  slideshow.style.transform = `translateX(-${150 * (n - 1)}px)`;
+  dots.forEach(dot => dot.classList.remove('active'));
+  dots[n - 1].classList.add('active');
+  currentImage = n;
+}
+
+function nextImage() {
+  if (currentImage === numImages) {
+    showImage(1);
+  } else {
+    showImage(currentImage + 1);
+  }
+}
+
+setInterval(nextImage, 3000);
+
+    </script>
+  </body>
+</html>
