@@ -657,6 +657,20 @@ header {
   cursor: pointer;
 }
 
+.notification {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background-color: red;
+  font-size: 12px;
+  color: white;
+  text-align: center;
+  line-height: 18px;
+  margin-left: 5px;
+}
+
+
    </style>
 </head>
 <body>
@@ -774,7 +788,7 @@ header {
               <div id="cart-details8">
                 <div class="cart-item">
                   <button class="close-cart-btn">&times;</button>
-                  <img src="testimage.jfif">
+                  <img src="/client/triallog.png">
                   <div class="cart-item-details">
                     <p class="cart-item-name">Item 8</p>
                     <p class="cart-item-price" data-price="10.00">$10.00</p>
@@ -832,7 +846,7 @@ header {
                 <button class="close-cart-btn">&times;</button>
                 <img src="/client/testimage.jfif">
                 <div class="cart-item-details">
-                  <p class="cart-item-name">Item 9</p>
+                  <p class="cart-item-name">Item 10</p>
                   <p class="cart-item-price" data-price="30.00">$30.00</p>
                   <div class="cart-item-quantity">
                     <button class="cart-item-quantity-btn">-</button>
@@ -857,7 +871,7 @@ header {
                   <button class="close-cart-btn">&times;</button>
                   <img src="/client/testimage.jfif">
                   <div class="cart-item-details">
-                    <p class="cart-item-name">Item 9</p>
+                    <p class="cart-item-name">Item 11</p>
                     <p class="cart-item-price" data-price="30.00">$30.00</p>
                     <div class="cart-item-quantity">
                       <button class="cart-item-quantity-btn">-</button>
@@ -881,7 +895,7 @@ header {
                 <button class="close-cart-btn">&times;</button>
                 <img src="/client/testimage.jfif">
                 <div class="cart-item-details">
-                  <p class="cart-item-name">Item 9</p>
+                  <p class="cart-item-name">Item 12</p>
                   <p class="cart-item-price" data-price="30.00">$30.00</p>
                   <div class="cart-item-quantity">
                     <button class="cart-item-quantity-btn">-</button>
@@ -905,7 +919,7 @@ header {
                 <button class="close-cart-btn">&times;</button>
                 <img src="/client/testimage.jfif">
                 <div class="cart-item-details">
-                  <p class="cart-item-name">Item 9</p>
+                  <p class="cart-item-name">Item 13</p>
                   <p class="cart-item-price" data-price="30.00">$30.00</p>
                   <div class="cart-item-quantity">
                     <button class="cart-item-quantity-btn">-</button>
@@ -929,7 +943,7 @@ header {
                 <button class="close-cart-btn">&times;</button>
                 <img src="/client/testimage.jfif">
                 <div class="cart-item-details">
-                  <p class="cart-item-name">Item 9</p>
+                  <p class="cart-item-name">Item 14</p>
                   <p class="cart-item-price" data-price="30.00">$30.00</p>
                   <div class="cart-item-quantity">
                     <button class="cart-item-quantity-btn">-</button>
@@ -953,7 +967,7 @@ header {
                 <button class="close-cart-btn">&times;</button>
                 <img src="/client/testimage.jfif">
                 <div class="cart-item-details">
-                  <p class="cart-item-name">Item 9</p>
+                  <p class="cart-item-name">Item 15</p>
                   <p class="cart-item-price" data-price="30.00">$30.00</p>
                   <div class="cart-item-quantity">
                     <button class="cart-item-quantity-btn">-</button>
@@ -1005,7 +1019,8 @@ header {
         <i class="fa fa-info-circle"></i>
         About
       </a>
-      <a href="#">
+      <a href="#" id="order-btn">
+        <span class="notification" id="cart-count"></span> <!-- Add the cart count element here -->
         <i class="fa fa-shopping-cart"></i>
         Orders
       </a>
@@ -1014,6 +1029,7 @@ header {
         Profile
       </a>
     </div>
+    
 
     <script>
       const hamburger = document.querySelector('.hamburger');
@@ -1066,37 +1082,103 @@ setInterval(nextImage, 3000);
 
     <script>
 
+// document.addEventListener("DOMContentLoaded", function() {
+//   const viewCartBtns = document.querySelectorAll("#view-cart-btn1, #view-cart-btn2, #view-cart-btn8, #view-cart-btn9, #view-cart-btn10, #view-cart-btn11, #view-cart-btn12, #view-cart-btn13, #view-cart-btn14, #view-cart-btn15");
+//   const closeCartBtns = document.querySelectorAll(".close-cart-btn");
+
+//   viewCartBtns.forEach(function(viewCartBtn) {
+//   const cartDetails = viewCartBtn.nextElementSibling;
+//   const orderBtn = document.querySelector(".bottom-bar a:nth-of-type(3)");
+//   const cartCount = orderBtn.querySelector("#cart-count");
+//   let totalItems = 0; // initialize total items count to zero
+
+//   const quantityValue = cartDetails.querySelector(".cart-item-quantity-value");
+//   let priceValue = cartDetails.querySelector(".cart-item-price"); // update to let instead of const
+
+//   const incrementBtn = cartDetails.querySelector(".cart-item-quantity-btn:nth-of-type(2)");
+//   const decrementBtn = cartDetails.querySelector(".cart-item-quantity-btn:nth-of-type(1)");
+
+//   viewCartBtn.addEventListener("click", function() {
+//     cartDetails.style.display = "block";
+//   });
+
+//   closeCartBtns.forEach(function(closeCartBtn) {
+//     closeCartBtn.addEventListener("click", function() {
+//       cartDetails.style.display = "none";
+//     });
+//   });
+
+//   function updateCartCount() {
+//     totalItems += 1; // increment total items count
+//     cartCount.textContent = totalItems; // update cart count notification
+//   }
+
+//   incrementBtn.addEventListener("click", function() {
+//     let currentQuantity = parseInt(quantityValue.textContent);
+//     currentQuantity++;
+//     quantityValue.textContent = currentQuantity;
+//     let price = parseFloat(priceValue.textContent.replace("$", ""));
+//     priceValue.textContent = "$" + (price + parseFloat(priceValue.dataset.price)).toFixed(2); // update price value using dataset attribute
+//     updateCartCount(); // update cart count notification
+//   });
+
+//   decrementBtn.addEventListener("click", function() {
+//     let currentQuantity = parseInt(quantityValue.textContent);
+//     if (currentQuantity > 1) {
+//       currentQuantity--;
+//       quantityValue.textContent = currentQuantity;
+//       let price = parseFloat(priceValue.textContent.replace("$", ""));
+//       priceValue.textContent = "$" + (price - parseFloat(priceValue.dataset.price)).toFixed(2); // update price value using dataset attribute
+//       totalItems -= 1; // decrement total items count
+//       cartCount.textContent = totalItems; // update cart count notification
+//     }
+//   });
+// });
+// });
+
+
 document.addEventListener("DOMContentLoaded", function() {
   const viewCartBtns = document.querySelectorAll("#view-cart-btn1, #view-cart-btn2, #view-cart-btn8, #view-cart-btn9, #view-cart-btn10, #view-cart-btn11, #view-cart-btn12, #view-cart-btn13, #view-cart-btn14, #view-cart-btn15");
   const closeCartBtns = document.querySelectorAll(".close-cart-btn");
+  const orderBtn = document.querySelector(".bottom-bar a:nth-of-type(3)");
+  const cartCount = orderBtn.querySelector("#cart-count");
+  let totalItems = 0; // initialize total items count to zero
+  cartCount.style.display = "none"; // hide cart count notification initially
 
   viewCartBtns.forEach(function(viewCartBtn) {
     const cartDetails = viewCartBtn.nextElementSibling;
-  
+
     const quantityValue = cartDetails.querySelector(".cart-item-quantity-value");
     let priceValue = cartDetails.querySelector(".cart-item-price"); // update to let instead of const
-  
+
     const incrementBtn = cartDetails.querySelector(".cart-item-quantity-btn:nth-of-type(2)");
     const decrementBtn = cartDetails.querySelector(".cart-item-quantity-btn:nth-of-type(1)");
-  
+
     viewCartBtn.addEventListener("click", function() {
       cartDetails.style.display = "block";
     });
-  
+
     closeCartBtns.forEach(function(closeCartBtn) {
       closeCartBtn.addEventListener("click", function() {
         cartDetails.style.display = "none";
       });
     });
-  
+
+    function updateCartCount() {
+      totalItems += 1; // increment total items count
+      cartCount.textContent = totalItems; // update cart count notification
+      cartCount.style.display = "inline-block"; // show cart count notification
+    }
+
     incrementBtn.addEventListener("click", function() {
       let currentQuantity = parseInt(quantityValue.textContent);
       currentQuantity++;
       quantityValue.textContent = currentQuantity;
       let price = parseFloat(priceValue.textContent.replace("$", ""));
       priceValue.textContent = "$" + (price + parseFloat(priceValue.dataset.price)).toFixed(2); // update price value using dataset attribute
+      updateCartCount(); // update cart count notification
     });
-  
+
     decrementBtn.addEventListener("click", function() {
       let currentQuantity = parseInt(quantityValue.textContent);
       if (currentQuantity > 1) {
@@ -1104,9 +1186,14 @@ document.addEventListener("DOMContentLoaded", function() {
         quantityValue.textContent = currentQuantity;
         let price = parseFloat(priceValue.textContent.replace("$", ""));
         priceValue.textContent = "$" + (price - parseFloat(priceValue.dataset.price)).toFixed(2); // update price value using dataset attribute
+        totalItems -= 1; // decrement total items count
+        cartCount.textContent = totalItems; // update cart count notification
+      }
+      if (totalItems == 0) {
+        cartCount.style.display = "none"; // hide cart count notification if no items in cart
       }
     });
-  }); 
+  });
 });
 
 
