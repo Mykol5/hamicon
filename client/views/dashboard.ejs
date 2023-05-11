@@ -199,6 +199,11 @@ button {
   cursor: pointer;
   }
 
+  .fixed-cart .cart-item-add-btn {
+    background-color: #1c7ebd;
+    color: white;
+  }
+
 
 /*
 .cart {
@@ -444,6 +449,214 @@ header {
 .bottom-bar a i {
   font-size: 24px;
 }
+
+/* Cart View Details */
+
+#cart-details1 {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+  padding-top: 100px;
+}
+
+#cart-details2 {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+  padding-top: 100px;
+}
+
+#cart-details8 {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+  padding-top: 100px;
+}
+
+#cart-details9 {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+  padding-top: 100px;
+}
+
+#cart-details10 {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+  padding-top: 100px;
+}
+
+#cart-details11 {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+  padding-top: 100px;
+}
+
+#cart-details12 {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+  padding-top: 100px;
+}
+
+#cart-details13 {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+  padding-top: 100px;
+}
+
+#cart-details14 {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+  padding-top: 100px;
+}
+
+#cart-details15 {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+  padding-top: 100px;
+}
+
+
+.cart-item {
+  display: flex;
+  margin: 20px;
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
+
+.cart-item img {
+  max-width: 100px;
+  margin-right: 20px;
+}
+
+.cart-item-details {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.cart-item-name {
+  font-weight: bold;
+  font-size: 1.2em;
+  margin-bottom: 10px;
+}
+
+.cart-item-price {
+  font-size: 1.1em;
+  margin-bottom: 10px;
+}
+
+.cart-item-quantity {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.cart-item-quantity-btn {
+  background-color: #ccc;
+  border: none;
+  color: #fff;
+  font-size: 1.1em;
+  font-weight: bold;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.cart-item-quantity-btn:hover {
+  background-color: #999;
+}
+
+.cart-item-quantity-value {
+  margin: 0 10px;
+}
+
+.cart-item-add-btn {
+  background-color: #1c7ebd;
+  border: none;
+  color: #fff;
+  font-size: 1.1em;
+  font-weight: bold;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: auto;
+}
+
+.cart-item-add-btn:hover {
+  background-color: #156088;
+}
+
+.close-cart-btn {
+  position: absolute;
+  top: 130px;
+  right: 25px;
+  font-size: 20px;
+  font-weight: bold;
+  color: #333;
+  background-color: #fff;
+  border: none;
+  cursor: pointer;
+}
+
    </style>
 </head>
 <body>
@@ -502,14 +715,51 @@ header {
               <img src="food1.jpg" alt="Food 1">
               <h3>Food 1</h3>
               <p>Description of Food 1</p>
-              <button>View Details</button>
+              <button id="view-cart-btn1">View Cart</button>
+
+              <div id="cart-details1">
+                <div class="cart-item">
+                  <button class="close-cart-btn">&times;</button>
+                  <img src="testimage.jfif">
+                  <div class="cart-item-details">
+                    <p class="cart-item-name">Item 1</p>
+                    <p class="cart-item-price" data-price="10.00">$10.00</p>
+                    <div class="cart-item-quantity">
+                      <button class="cart-item-quantity-btn">-</button>
+                      <span class="cart-item-quantity-value">1</span>
+                      <button class="cart-item-quantity-btn">+</button>
+                    </div>
+                    <button class="cart-item-add-btn">Add to Cart</button>
+                  </div>
+                </div>
+              </div>
+
+
               <button>Add to Cart</button>
             </li>
             <li>
               <img src="food2.jpg" alt="Food 2">
               <h3>Food 2</h3>
               <p>Description of Food 2</p>
-              <button>View Details</button>
+              <button id="view-cart-btn2">View Cart</button>
+
+              <div id="cart-details2">
+                <div class="cart-item">
+                  <button class="close-cart-btn">&times;</button>
+                  <img src="testimage.jfif">
+                  <div class="cart-item-details">
+                    <p class="cart-item-name">Item 2</p>
+                    <p class="cart-item-price" data-price="20.00">$20.00</p>
+                    <div class="cart-item-quantity">
+                      <button class="cart-item-quantity-btn">-</button>
+                      <span class="cart-item-quantity-value">1</span>
+                      <button class="cart-item-quantity-btn">+</button>
+                    </div>
+                    <button class="cart-item-add-btn">Add to Cart</button>
+                  </div>
+                </div>
+              </div>
+
               <button>Add to Cart</button>
             </li>
             <!-- Add more food items here -->
@@ -519,14 +769,50 @@ header {
               <img src="food8.jpg" alt="Food 8">
               <h3>Food 8</h3>
               <p>Description of Food 8</p>
-              <button>View Details</button>
+              <button id="view-cart-btn8">View Cart</button>
+
+              <div id="cart-details8">
+                <div class="cart-item">
+                  <button class="close-cart-btn">&times;</button>
+                  <img src="testimage.jfif">
+                  <div class="cart-item-details">
+                    <p class="cart-item-name">Item 8</p>
+                    <p class="cart-item-price" data-price="10.00">$10.00</p>
+                    <div class="cart-item-quantity">
+                      <button class="cart-item-quantity-btn">-</button>
+                      <span class="cart-item-quantity-value">1</span>
+                      <button class="cart-item-quantity-btn">+</button>
+                    </div>
+                    <button class="cart-item-add-btn">Add to Cart</button>
+                  </div>
+                </div>
+              </div>
+
               <button>Add to Cart</button>
             </li>
             <li>
               <img src="food9.jpg" alt="Food 9">
               <h3>Food 9</h3>
               <p>Description of Food 9</p>
-              <button>View Details</button>
+              <button id="view-cart-btn9">View Cart</button>
+
+              <div id="cart-details9">
+                <div class="cart-item">
+                  <button class="close-cart-btn">&times;</button>
+                  <img src="/client/testimage.jfif">
+                  <div class="cart-item-details">
+                    <p class="cart-item-name">Item 9</p>
+                    <p class="cart-item-price" data-price="30.00">$30.00</p>
+                    <div class="cart-item-quantity">
+                      <button class="cart-item-quantity-btn">-</button>
+                      <span class="cart-item-quantity-value">1</span>
+                      <button class="cart-item-quantity-btn">+</button>
+                    </div>
+                    <button class="cart-item-add-btn">Add to Cart</button>
+                  </div>
+                </div>
+              </div>
+
               <button>Add to Cart</button>
             </li>
             <!-- Add more food items here -->
@@ -539,42 +825,145 @@ header {
             <img src="food10.jpg" alt="Food 10">
             <h3>Food 10</h3>
             <p>Description of Food 10</p>
-            <button>View Details</button>
+            <button id="view-cart-btn10">View Cart</button>
+
+            <div id="cart-details10">
+              <div class="cart-item">
+                <button class="close-cart-btn">&times;</button>
+                <img src="/client/testimage.jfif">
+                <div class="cart-item-details">
+                  <p class="cart-item-name">Item 9</p>
+                  <p class="cart-item-price" data-price="30.00">$30.00</p>
+                  <div class="cart-item-quantity">
+                    <button class="cart-item-quantity-btn">-</button>
+                    <span class="cart-item-quantity-value">1</span>
+                    <button class="cart-item-quantity-btn">+</button>
+                  </div>
+                  <button class="cart-item-add-btn">Add to Cart</button>
+                </div>
+              </div>
+            </div>
             <button>Add to Cart</button>
           </li>
+
           <li>
             <img src="food11.jpg" alt="Food 11">
             <h3>Food 11</h3>
             <p>Description of Food 11</p>
-            <button>View Details</button>
+              <button id="view-cart-btn11">View Cart</button>
+
+              <div id="cart-details11">
+                <div class="cart-item">
+                  <button class="close-cart-btn">&times;</button>
+                  <img src="/client/testimage.jfif">
+                  <div class="cart-item-details">
+                    <p class="cart-item-name">Item 9</p>
+                    <p class="cart-item-price" data-price="30.00">$30.00</p>
+                    <div class="cart-item-quantity">
+                      <button class="cart-item-quantity-btn">-</button>
+                      <span class="cart-item-quantity-value">1</span>
+                      <button class="cart-item-quantity-btn">+</button>
+                    </div>
+                    <button class="cart-item-add-btn">Add to Cart</button>
+                  </div>
+                </div>
+              </div>
             <button>Add to Cart</button>
           </li>
           <li>
             <img src="food11.jpg" alt="Food 11">
-            <h3>Food 11</h3>
-            <p>Description of Food 11</p>
-            <button>View Details</button>
+            <h3>Food 12</h3>
+            <p>Description of Food 12</p>
+            <button id="view-cart-btn12">View Cart</button>
+
+            <div id="cart-details12">
+              <div class="cart-item">
+                <button class="close-cart-btn">&times;</button>
+                <img src="/client/testimage.jfif">
+                <div class="cart-item-details">
+                  <p class="cart-item-name">Item 9</p>
+                  <p class="cart-item-price" data-price="30.00">$30.00</p>
+                  <div class="cart-item-quantity">
+                    <button class="cart-item-quantity-btn">-</button>
+                    <span class="cart-item-quantity-value">1</span>
+                    <button class="cart-item-quantity-btn">+</button>
+                  </div>
+                  <button class="cart-item-add-btn">Add to Cart</button>
+                </div>
+              </div>
+            </div>
             <button>Add to Cart</button>
           </li>
           <li>
             <img src="food11.jpg" alt="Food 11">
-            <h3>Food 11</h3>
-            <p>Description of Food 11</p>
-            <button>View Details</button>
+            <h3>Food 13</h3>
+            <p>Description of Food 13</p>
+            <button id="view-cart-btn13">View Cart</button>
+
+            <div id="cart-details13">
+              <div class="cart-item">
+                <button class="close-cart-btn">&times;</button>
+                <img src="/client/testimage.jfif">
+                <div class="cart-item-details">
+                  <p class="cart-item-name">Item 9</p>
+                  <p class="cart-item-price" data-price="30.00">$30.00</p>
+                  <div class="cart-item-quantity">
+                    <button class="cart-item-quantity-btn">-</button>
+                    <span class="cart-item-quantity-value">1</span>
+                    <button class="cart-item-quantity-btn">+</button>
+                  </div>
+                  <button class="cart-item-add-btn">Add to Cart</button>
+                </div>
+              </div>
+            </div>
             <button>Add to Cart</button>
           </li>
           <li>
             <img src="food11.jpg" alt="Food 11">
-            <h3>Food 11</h3>
-            <p>Description of Food 11</p>
-            <button>View Details</button>
+            <h3>Food 14</h3>
+            <p>Description of Food 14</p>
+            <button id="view-cart-btn14">View Cart</button>
+
+            <div id="cart-details14">
+              <div class="cart-item">
+                <button class="close-cart-btn">&times;</button>
+                <img src="/client/testimage.jfif">
+                <div class="cart-item-details">
+                  <p class="cart-item-name">Item 9</p>
+                  <p class="cart-item-price" data-price="30.00">$30.00</p>
+                  <div class="cart-item-quantity">
+                    <button class="cart-item-quantity-btn">-</button>
+                    <span class="cart-item-quantity-value">1</span>
+                    <button class="cart-item-quantity-btn">+</button>
+                  </div>
+                  <button class="cart-item-add-btn">Add to Cart</button>
+                </div>
+              </div>
+            </div>
             <button>Add to Cart</button>
           </li>
           <li>
             <img src="food11.jpg" alt="Food 11">
-            <h3>Food 11</h3>
-            <p>Description of Food 11</p>
-            <button>View Details</button>
+            <h3>Food 15</h3>
+            <p>Description of Food 15</p>
+            <button id="view-cart-btn15">View Cart</button>
+
+            <div id="cart-details15">
+              <div class="cart-item">
+                <button class="close-cart-btn">&times;</button>
+                <img src="/client/testimage.jfif">
+                <div class="cart-item-details">
+                  <p class="cart-item-name">Item 9</p>
+                  <p class="cart-item-price" data-price="30.00">$30.00</p>
+                  <div class="cart-item-quantity">
+                    <button class="cart-item-quantity-btn">-</button>
+                    <span class="cart-item-quantity-value">1</span>
+                    <button class="cart-item-quantity-btn">+</button>
+                  </div>
+                  <button class="cart-item-add-btn">Add to Cart</button>
+                </div>
+              </div>
+            </div>
             <button>Add to Cart</button>
           </li>
           <!-- Add more fixed cart items here -->
@@ -672,6 +1061,54 @@ function nextImage() {
 }
 
 setInterval(nextImage, 3000);
+
+    </script>
+
+    <script>
+
+document.addEventListener("DOMContentLoaded", function() {
+  const viewCartBtns = document.querySelectorAll("#view-cart-btn1, #view-cart-btn2, #view-cart-btn8, #view-cart-btn9, #view-cart-btn10, #view-cart-btn11, #view-cart-btn12, #view-cart-btn13, #view-cart-btn14, #view-cart-btn15");
+  const closeCartBtns = document.querySelectorAll(".close-cart-btn");
+
+  viewCartBtns.forEach(function(viewCartBtn) {
+    const cartDetails = viewCartBtn.nextElementSibling;
+  
+    const quantityValue = cartDetails.querySelector(".cart-item-quantity-value");
+    let priceValue = cartDetails.querySelector(".cart-item-price"); // update to let instead of const
+  
+    const incrementBtn = cartDetails.querySelector(".cart-item-quantity-btn:nth-of-type(2)");
+    const decrementBtn = cartDetails.querySelector(".cart-item-quantity-btn:nth-of-type(1)");
+  
+    viewCartBtn.addEventListener("click", function() {
+      cartDetails.style.display = "block";
+    });
+  
+    closeCartBtns.forEach(function(closeCartBtn) {
+      closeCartBtn.addEventListener("click", function() {
+        cartDetails.style.display = "none";
+      });
+    });
+  
+    incrementBtn.addEventListener("click", function() {
+      let currentQuantity = parseInt(quantityValue.textContent);
+      currentQuantity++;
+      quantityValue.textContent = currentQuantity;
+      let price = parseFloat(priceValue.textContent.replace("$", ""));
+      priceValue.textContent = "$" + (price + parseFloat(priceValue.dataset.price)).toFixed(2); // update price value using dataset attribute
+    });
+  
+    decrementBtn.addEventListener("click", function() {
+      let currentQuantity = parseInt(quantityValue.textContent);
+      if (currentQuantity > 1) {
+        currentQuantity--;
+        quantityValue.textContent = currentQuantity;
+        let price = parseFloat(priceValue.textContent.replace("$", ""));
+        priceValue.textContent = "$" + (price - parseFloat(priceValue.dataset.price)).toFixed(2); // update price value using dataset attribute
+      }
+    });
+  }); 
+});
+
 
     </script>
   </body>
