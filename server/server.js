@@ -129,7 +129,7 @@ app.post('/logout', (req, res) => {
 });
 
 app.get('/', (req, res) => {
-  res.send('Hello, world!');
+  res.send('Hello, Welcome To Hami Confectionery! Kindly Proceed to SignUp');
 });
 
 app.listen(port, () => {
