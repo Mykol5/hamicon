@@ -129,8 +129,49 @@ app.post('/logout', (req, res) => {
 });
 
 app.get('/', (req, res) => {
-  res.send('Hello, Welcome To Hami Confectionery! Kindly Proceed to SignUp');
+  res.send(`
+    <html>
+      <head>
+        <title>Welcome to Hami Confectionery</title>
+        <style>
+          .welcome-container {
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+          }
+          .welcome-header {
+            font-size: 4em;
+            margin-bottom: 30px;
+            text-align: center;
+          }
+          .welcome-text {
+            font-size: 1.5em;
+            text-align: center;
+          }
+          .welcome-link {
+            color: #FFA500;
+            text-decoration: none;
+            border-bottom: 2px solid #FFA500;
+          }
+          .welcome-link:hover {
+            color: #FF8C00;
+            border-bottom: 2px solid #FF8C00;
+          }
+        </style>
+      </head>
+      <body>
+        <div class="welcome-container">
+          <h1 class="welcome-header">Hello, Welcome To Hami Confectionery!</h1>
+          <p class="welcome-text">Thank you for visiting our website. Please <a class="welcome-link" href="/signup.html">sign up</a> to access our exclusive deals and offers.</p>
+        </div>
+      </body>
+    </html>
+  `);
 });
+
 
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
