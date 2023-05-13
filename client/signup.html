@@ -9,8 +9,52 @@
     <base href="/" />
     <title>Sign Up - Pastry</title>
     <style>
+        .container {
+          margin: 0 auto;
+          max-width: 400px;
+          padding: 20px;
+          text-align: center;
+        }
+
+        h1 {
+          margin-bottom: 20px;
+        }
+
+        form {
+          display: flex;
+          flex-direction: column;
+        }
+
+        label {
+          margin-bottom: 10px;
+        }
+
+        input {
+          padding: 10px;
+          margin-bottom: 20px;
+        }
+
+        button {
+          background-color: #4CAF50;
+          color: white;
+          border: none;
+          padding: 10px;
+          cursor: pointer;
+          margin-bottom: 20px;
+        }
+
+        a {
+          display: block;
+          margin-top: 20px;
+        }
+
+
+
+
+
+
         /* Apply some basic styles to the body and form elements */
-body {
+/* body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
@@ -24,18 +68,18 @@ form {
     background-color: #fff;
     border-radius: 5px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
+} */
 
 /* Style the form labels */
-label {
+/* label {
     display: block;
     margin-bottom: 5px;
     color: #666;
     font-size: 14px;
-}
+} */
 
 /* Style the form inputs */
-input[type=text], input[type=email], input[type=password] {
+/* input[type=text], input[type=email], input[type=password] {
     width: 100%;
     padding: 10px;
     margin-bottom: 15px;
@@ -44,10 +88,10 @@ input[type=text], input[type=email], input[type=password] {
     background-color: #f2f2f2;
     font-size: 16px;
     color: #333;
-}
+} */
 
 /* Style the submit button */
-button[type=submit] {
+/* button[type=submit] {
     display: block;
     width: 100%;
     padding: 10px;
@@ -63,7 +107,7 @@ button[type=submit] {
 
 button[type=submit]:hover {
     background-color: #ff6347;
-}
+} */
 
     </style>
     <!-- <script>
@@ -111,7 +155,23 @@ if (submitBtn) {
     </script> -->
 </head>
 <body>
+  <div class="container">
+    <h1>Sign Up</h1>
     <form action="/signup" method="POST" id="signup-form">
+      <label for="name">Name:</label>
+      <input type="text" id="name" name="name">
+      <label for="email">Email:</label>
+      <input type="email" id="email" name="email">
+      <label for="password">Password:</label>
+      <input type="password" id="password" name="password">
+      <button type="submit">Sign Up</button>
+    </form>
+    <a href="/index.html">Already have an account? Login</a>
+  </div>
+
+
+
+    <!-- <form action="/signup" method="POST" id="signup-form">
         <label for="name">Name:</label>
         <input type="text" id="name" name="name"><br>
       
@@ -122,6 +182,6 @@ if (submitBtn) {
         <input type="password" id="password" name="password"><br>
       
         <button type="submit">Sign Up</button>
-      </form>      
+      </form>       -->
 </body>
 </html>
