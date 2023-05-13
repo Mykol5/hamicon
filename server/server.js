@@ -16,8 +16,32 @@ app.use(express.static(path.join(__dirname, 'client'), {
   maxAge: 0,
   lastModified: false,
   cacheControl: false,
-  extensions: ['html', 'css', 'js']
+  extensions: ['html', 'css', 'js', 'jpeg', 'png']
 }));
+
+app.get('/images/:filename', (req, res) => {
+  const filePath = path.join(__dirname, '..', 'client', 'images', req.params.filename);
+  // console.log('filePath:', filePath);
+  const contentType = getContentType(filePath);
+  res.set('Content-Type', contentType);
+  res.sendFile(filePath);
+  // const contentType = getContentType(filePath);
+  // res.set('Content-Type', contentType);
+  // res.sendFile(path.join(__dirname + '/../client/images'));
+});
+
+function getContentType(filePath) {
+  const ext = path.extname(filePath).toLowerCase();
+  switch (ext) {
+    case '.jpeg':
+      return 'image/jpeg';
+    case '.png':
+      return 'image/png';
+    default:
+      return 'application/octet-stream';
+  }
+}
+
 app.set('views', path.join(__dirname, '..', 'client', 'views'));
 app.set('view engine', 'ejs');
 
