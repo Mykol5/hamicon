@@ -2,10 +2,12 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta http-equiv="Content-Type" content="application/javascript">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <!-- <link rel="stylesheet" href="css/dashboard.css"> -->
-   <title>Dashboard</title>
-
+  <title>Dashboard</title>
+  <!-- <base href="/" /> -->
    <style>
     .container {
   margin: 0 auto;
@@ -140,17 +142,17 @@ ul {
 }
 
 li img {
-  max-width: 100%;
-  height: auto;
-  margin-bottom: 10px;
+  max-width: 220%;
+  height: 30%;
+  margin-bottom: 0px;
 }
 
 button {
   display: block;
   margin: 10px auto;
   padding: 5px 10px;
-  background-color: #ccc;
-  color: #000;
+  background-color: #7ff3bd;
+  color: #000a06;
   border: none;
   border-radius: 5px;
   cursor: pointer;
@@ -185,14 +187,14 @@ button {
   .fixed-cart li img {
   max-width: 100%;
   height: auto;
-  margin-bottom: 10px;
+  margin-bottom: 0px;
   }
   
   .fixed-cart button {
   display: block;
   margin: 10px auto;
   padding: 5px 10px;
-  background-color: #ccc;
+  background-color: #7ff3bd;
   color: #000;
   border: none;
   border-radius: 5px;
@@ -203,6 +205,45 @@ button {
     background-color: #1c7ebd;
     color: white;
   }
+
+  .fixed-cart .cart-item img {
+  max-width: 100px;
+  height: 100px;
+  margin-top: 50px;
+  margin-right: 20px;
+  margin-bottom: 0px;
+}
+
+.fixed-cart .cart-item-quantity-btn {
+  background-color: #ccc;
+  border: none;
+  color: #fff;
+  font-size: 1.1em;
+  font-weight: bold;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.fixed-cart .cart-item-quantity-btn:hover {
+  background-color: #999;
+}
+
+.fixed-cart .cart-item-quantity-value {
+  margin: 0 10px;
+}
+
+.fixed-cart .close-cart-btn {
+  position: absolute;
+  top: 130px;
+  right: 25px;
+  font-size: 20px;
+  font-weight: bold;
+  color: #333;
+  background-color: #fff;
+  border: none;
+  cursor: pointer;
+}
 
 
 /*
@@ -291,7 +332,8 @@ button {
   position: absolute;
   top: 0;
   right: 0;
-  padding: 15px;
+  padding-right: 27px;
+  padding-top: 8px;
 }
 
 
@@ -303,7 +345,7 @@ header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: #333;
+  background-color: #0b945b;
   color: #fff;
   padding: 10px;
   position: fixed;
@@ -319,7 +361,7 @@ header {
 }
 
 .user-icon img {
-  max-height: 30px;
+  max-height: 25px;
 }
 
 .hamburger {
@@ -584,7 +626,10 @@ header {
 
 .cart-item img {
   max-width: 100px;
+  height: 100px;
+  margin-top: 50px;
   margin-right: 20px;
+  margin-bottom: 0px;
 }
 
 .cart-item-details {
@@ -685,7 +730,7 @@ header {
       <img src="pastrylogo.png" alt="Logo">
     </div>
     <div class="user-icon">
-      <img src="user.png" alt="User Icon">
+      <img src="/images/usericon.png" alt="User Icon">
     </div>
     <div class="hamburger">
       <div class="bar"></div>
@@ -736,7 +781,7 @@ header {
         <div class="cart-items">
           <ul>
             <li>
-              <img src="food1.jpg" alt="Food 1">
+              <img src="/images/friedrice.jpg" alt="Food 1">
               <h3>Food 1</h3>
               <p>Description of Food 1</p>
               <button id="view-cart-btn1">View Cart</button>
@@ -744,7 +789,7 @@ header {
               <div id="cart-details1">
                 <div class="cart-item">
                   <button class="close-cart-btn">&times;</button>
-                  <img src="testimage.jfif">
+                  <img src="/images/friedrice.jpg">
                   <div class="cart-item-details">
                     <p class="cart-item-name">Item 1</p>
                     <p class="cart-item-price" data-price="10.00">$0.00</p>
@@ -762,7 +807,7 @@ header {
               <button>Add to Cart</button>
             </li>
             <li>
-              <img src="food2.jpg" alt="Food 2">
+              <img src="/images/friedrice.jpg" alt="Food 2">
               <h3>Food 2</h3>
               <p>Description of Food 2</p>
               <button id="view-cart-btn2">View Cart</button>
@@ -770,10 +815,10 @@ header {
               <div id="cart-details2">
                 <div class="cart-item">
                   <button class="close-cart-btn">&times;</button>
-                  <img src="testimage.jfif">
+                  <img src="/images/friedrice.jpg">
                   <div class="cart-item-details">
                     <p class="cart-item-name">Item 2</p>
-                    <p class="cart-item-price" data-price="20.00">$20.00</p>
+                    <p class="cart-item-price" data-price="20.00">$0.00</p>
                     <div class="cart-item-quantity">
                       <button class="cart-item-quantity-btn">-</button>
                       <span class="cart-item-quantity-value">0</span>
@@ -790,7 +835,7 @@ header {
           </ul>
           <ul>
             <li>
-              <img src="food8.jpg" alt="Food 8">
+              <img src="/images/friedrice.jpg" alt="Food 8">
               <h3>Food 8</h3>
               <p>Description of Food 8</p>
               <button id="view-cart-btn8">View Cart</button>
@@ -798,10 +843,10 @@ header {
               <div id="cart-details8">
                 <div class="cart-item">
                   <button class="close-cart-btn">&times;</button>
-                  <img src="/client/triallog.png">
+                  <img src="/images/friedrice.jpg">
                   <div class="cart-item-details">
                     <p class="cart-item-name">Item 8</p>
-                    <p class="cart-item-price" data-price="10.00">$10.00</p>
+                    <p class="cart-item-price" data-price="10.00">$0.00</p>
                     <div class="cart-item-quantity">
                       <button class="cart-item-quantity-btn">-</button>
                       <span class="cart-item-quantity-value">0</span>
@@ -815,7 +860,7 @@ header {
               <button>Add to Cart</button>
             </li>
             <li>
-              <img src="food9.jpg" alt="Food 9">
+              <img src="/images/friedrice.jpg" alt="Food 9">
               <h3>Food 9</h3>
               <p>Description of Food 9</p>
               <button id="view-cart-btn9">View Cart</button>
@@ -823,10 +868,10 @@ header {
               <div id="cart-details9">
                 <div class="cart-item">
                   <button class="close-cart-btn">&times;</button>
-                  <img src="/client/testimage.jfif">
+                  <img src="/images/friedrice.jpg">
                   <div class="cart-item-details">
                     <p class="cart-item-name">Item 9</p>
-                    <p class="cart-item-price" data-price="30.00">$30.00</p>
+                    <p class="cart-item-price" data-price="30.00">$0.00</p>
                     <div class="cart-item-quantity">
                       <button class="cart-item-quantity-btn">-</button>
                       <span class="cart-item-quantity-value">0</span>
@@ -846,7 +891,7 @@ header {
       <div class="fixed-cart">
         <ul>
           <li>
-            <img src="food10.jpg" alt="Food 10">
+            <img src="/images/friedrice.jpg" alt="Food 10">
             <h3>Food 10</h3>
             <p>Description of Food 10</p>
             <button id="view-cart-btn10">View Cart</button>
@@ -854,10 +899,10 @@ header {
             <div id="cart-details10">
               <div class="cart-item">
                 <button class="close-cart-btn">&times;</button>
-                <img src="/client/testimage.jfif">
+                <img src="/images/friedrice.jpg">
                 <div class="cart-item-details">
                   <p class="cart-item-name">Item 10</p>
-                  <p class="cart-item-price" data-price="30.00">$30.00</p>
+                  <p class="cart-item-price" data-price="30.00">$0.00</p>
                   <div class="cart-item-quantity">
                     <button class="cart-item-quantity-btn">-</button>
                     <span class="cart-item-quantity-value">0</span>
@@ -871,7 +916,7 @@ header {
           </li>
 
           <li>
-            <img src="food11.jpg" alt="Food 11">
+            <img src="/images/friedrice.jpg" alt="Food 11">
             <h3>Food 11</h3>
             <p>Description of Food 11</p>
               <button id="view-cart-btn11">View Cart</button>
@@ -879,10 +924,10 @@ header {
               <div id="cart-details11">
                 <div class="cart-item">
                   <button class="close-cart-btn">&times;</button>
-                  <img src="/client/testimage.jfif">
+                  <img src="/images/friedrice.jpg">
                   <div class="cart-item-details">
                     <p class="cart-item-name">Item 11</p>
-                    <p class="cart-item-price" data-price="30.00">$30.00</p>
+                    <p class="cart-item-price" data-price="30.00">$0.00</p>
                     <div class="cart-item-quantity">
                       <button class="cart-item-quantity-btn">-</button>
                       <span class="cart-item-quantity-value">0</span>
@@ -895,7 +940,7 @@ header {
             <button>Add to Cart</button>
           </li>
           <li>
-            <img src="food11.jpg" alt="Food 11">
+            <img src="/images/friedrice.jpg" alt="Food 11">
             <h3>Food 12</h3>
             <p>Description of Food 12</p>
             <button id="view-cart-btn12">View Cart</button>
@@ -903,10 +948,10 @@ header {
             <div id="cart-details12">
               <div class="cart-item">
                 <button class="close-cart-btn">&times;</button>
-                <img src="/client/testimage.jfif">
+                <img src="/images/friedrice.jpg">
                 <div class="cart-item-details">
                   <p class="cart-item-name">Item 12</p>
-                  <p class="cart-item-price" data-price="30.00">$30.00</p>
+                  <p class="cart-item-price" data-price="30.00">$0.00</p>
                   <div class="cart-item-quantity">
                     <button class="cart-item-quantity-btn">-</button>
                     <span class="cart-item-quantity-value">0</span>
@@ -919,7 +964,7 @@ header {
             <button>Add to Cart</button>
           </li>
           <li>
-            <img src="food11.jpg" alt="Food 11">
+            <img src="/images/friedrice.jpg" alt="Food 11">
             <h3>Food 13</h3>
             <p>Description of Food 13</p>
             <button id="view-cart-btn13">View Cart</button>
@@ -927,10 +972,10 @@ header {
             <div id="cart-details13">
               <div class="cart-item">
                 <button class="close-cart-btn">&times;</button>
-                <img src="/client/testimage.jfif">
+                <img src="/images/friedrice.jpg">
                 <div class="cart-item-details">
                   <p class="cart-item-name">Item 13</p>
-                  <p class="cart-item-price" data-price="30.00">$30.00</p>
+                  <p class="cart-item-price" data-price="30.00">$0.00</p>
                   <div class="cart-item-quantity">
                     <button class="cart-item-quantity-btn">-</button>
                     <span class="cart-item-quantity-value">0</span>
@@ -943,7 +988,7 @@ header {
             <button>Add to Cart</button>
           </li>
           <li>
-            <img src="food11.jpg" alt="Food 11">
+            <img src="/images/friedrice.jpg" alt="Food 11">
             <h3>Food 14</h3>
             <p>Description of Food 14</p>
             <button id="view-cart-btn14">View Cart</button>
@@ -951,10 +996,10 @@ header {
             <div id="cart-details14">
               <div class="cart-item">
                 <button class="close-cart-btn">&times;</button>
-                <img src="/client/testimage.jfif">
+                <img src="/images/friedrice.jpg">
                 <div class="cart-item-details">
                   <p class="cart-item-name">Item 14</p>
-                  <p class="cart-item-price" data-price="30.00">$30.00</p>
+                  <p class="cart-item-price" data-price="30.00">$0.00</p>
                   <div class="cart-item-quantity">
                     <button class="cart-item-quantity-btn">-</button>
                     <span class="cart-item-quantity-value">0</span>
@@ -967,7 +1012,7 @@ header {
             <button>Add to Cart</button>
           </li>
           <li>
-            <img src="food11.jpg" alt="Food 11">
+            <img src="/images/friedrice.jpg" alt="Food 11">
             <h3>Food 15</h3>
             <p>Description of Food 15</p>
             <button id="view-cart-btn15">View Cart</button>
@@ -975,10 +1020,10 @@ header {
             <div id="cart-details15">
               <div class="cart-item">
                 <button class="close-cart-btn">&times;</button>
-                <img src="/client/testimage.jfif">
+                <img src="/images/friedrice.jpg">
                 <div class="cart-item-details">
                   <p class="cart-item-name">Item 15</p>
-                  <p class="cart-item-price" data-price="30.00">$30.00</p>
+                  <p class="cart-item-price" data-price="30.00">$0.00</p>
                   <div class="cart-item-quantity">
                     <button class="cart-item-quantity-btn">-</button>
                     <span class="cart-item-quantity-value">0</span>
