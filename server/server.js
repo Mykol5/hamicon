@@ -160,10 +160,16 @@ app.get('/', (req, res) => {
             color: #FF8C00;
             border-bottom: 2px solid #FF8C00;
           }
+          .logo {
+            width: 100px;
+            height: auto;
+            margin-bottom: 20px;
+          }
         </style>
       </head>
       <body>
         <div class="welcome-container">
+          <img class="logo" src="https://example.com/logo.png" alt="Hami Confectionery Logo">
           <h1 class="welcome-header">Hello, Welcome To Hami Confectionery!</h1>
           <p class="welcome-text">Thank you for visiting our website. Please <a class="welcome-link" href="/signup.html">sign up</a> to access our exclusive deals and offers.</p>
         </div>
