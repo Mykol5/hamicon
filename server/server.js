@@ -202,6 +202,11 @@ app.get('/', (req, res) => {
   `);
 });
 
+app.get('/order', (req, res) => {
+  const cartItems = req.session.cart || [];
+  res.render('order', { cartItems });
+});
+
 
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
