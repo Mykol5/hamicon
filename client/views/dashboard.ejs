@@ -723,6 +723,48 @@ header {
 
 
    </style>
+
+   <script>
+
+            function addToCart(itemId) {
+              console.log('addToCart function called with itemId:', itemId);
+              // Get the item details from the DOM
+              const itemEl = document.getElementById(itemId);
+              const itemIdValue = itemEl.getAttribute('data-item-id');
+              const name = itemEl.querySelector('.cart-item-name').textContent;
+              const price = parseFloat(itemEl.querySelector('.cart-item-price').getAttribute('data-price'));
+              const quantity = parseInt(itemEl.querySelector('.cart-item-quantity-value').textContent);
+
+              // Create the cart item object
+              const cartItem = { itemId: itemIdValue, name, price, quantity };
+
+              // Send the cart item data to the server
+              fetch('/add-to-cart', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(cartItem),
+              })
+                .then(response => response.json())
+                .then(data => {
+                  console.log('Item added to cart:', data);
+                  // Handle the server response if needed
+                })
+                .catch(error => {
+                  console.error('Error adding item to cart:', error);
+                  // Handle the error if needed
+                });
+            }
+
+
+                    document.addEventListener('DOMContentLoaded', () => {
+                      // your code here
+                    });
+
+
+   </script>
+
 </head>
 <body>
   <header>

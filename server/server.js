@@ -202,10 +202,52 @@ app.get('/', (req, res) => {
   `);
 });
 
+
+app.post('/add-to-cart', (req, res) => {
+  const cartItem = req.body;
+  
+  // Read the existing cart data from the JSON file
+  const cartData = readCartData();
+  
+  // Add the new cart item to the existing cart data
+  cartData.push(cartItem);
+  
+  // Write the updated cart data to the JSON file
+  const cartFilePath = path.join(__dirname, 'cart.json');
+  try {
+    fs.writeFileSync(cartFilePath, JSON.stringify(cartData), 'utf8');
+  } catch (error) {
+    console.error('Error writing cart data:', error);
+  }
+  
+
+  res.json({ status: 'success', message: 'Item added to cart', data: { itemId: cartItem.itemId } });
+});
+
+
+
+
+// Helper function to read the cart data from a JSON file
+function readCartData() {
+  const cartFilePath = path.join(__dirname, 'cart.json');
+  try {
+    const cartData = fs.readFileSync(cartFilePath, 'utf8');
+    return JSON.parse(cartData);
+  } catch (error) {
+    console.error('Error reading cart data:', error);
+    return [];
+  }
+}
+
+
 app.get('/order', (req, res) => {
-  const cartItems = req.session.cart || [];
+  // Read the cart items from the JSON file
+  const cartItems = readCartData();
+  console.log("Cart items:", cartItems);
   res.render('order', { cartItems });
 });
+
+
 
 
 app.listen(port, () => {
@@ -218,6 +260,10 @@ app.listen(port, () => {
 
 
 
+// app.get('/order', (req, res) => {
+//   const cartItems = req.session.cart || [];
+//   res.render('order', { cartItems });
+// });
 
 
 
