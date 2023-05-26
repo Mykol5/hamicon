@@ -10,7 +10,7 @@
   <title>Dashboard</title>
   <!-- <base href="/" /> -->
    <style>
-    .container {
+.container {
   margin: 0 auto;
   max-width: 800px;
   padding: 20px;
@@ -363,6 +363,8 @@ header {
 
 .user-icon img {
   max-height: 25px;
+  width: 30px;
+  border-radius: 100%;
 }
 
 .hamburger {
@@ -725,46 +727,144 @@ header {
 
    </style>
 
-   <script>
 
-            function addToCart(itemId) {
-              console.log('addToCart function called with itemId:', itemId);
-              // Get the item details from the DOM
-              const itemEl = document.getElementById(itemId);
-              const itemIdValue = itemEl.getAttribute('data-item-id');
-              const name = itemEl.querySelector('.cart-item-name').textContent;
-              const price = parseFloat(itemEl.querySelector('.cart-item-price').getAttribute('data-price'));
-              const quantity = parseInt(itemEl.querySelector('.cart-item-quantity-value').textContent);
+<script>
+// function addToCart(itemId) {
+//   console.log('addToCart function called with itemId:', itemId);
+//   // Get the item details from the DOM
+//   const itemEl = document.getElementById(itemId);
+//   const name = itemEl.querySelector('.cart-item-name').textContent;
+//   const price = parseFloat(itemEl.querySelector('.cart-item-price').getAttribute('data-price'));
+//   const quantity = parseInt(itemEl.querySelector('.cart-item-quantity-value').textContent);
 
-              // Create the cart item object
-              const cartItem = { itemId: itemIdValue, name, price, quantity };
+//   // Create the cart item object
+//   const cartItem = { name, price, quantity };
 
-              // Send the cart item data to the server
-              fetch('/add-to-cart', {
-                method: 'POST',
-                headers: {
-                  'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(cartItem),
-              })
-                .then(response => response.json())
-                .then(data => {
-                  console.log('Item added to cart:', data);
-                  // Handle the server response if needed
-                })
-                .catch(error => {
-                  console.error('Error adding item to cart:', error);
-                  // Handle the error if needed
-                });
-            }
+//   // Get the cart from the localStorage
+//   let cart = JSON.parse(localStorage.getItem('cart')) || [];
 
+//   // Check if the item already exists in the cart
+//   const existingItemIndex = cart.findIndex(item => item.name === name);
+//   if (existingItemIndex > -1) {
+//     // If the item already exists, update its quantity
+//     cart[existingItemIndex].quantity += quantity;
+//   } else {
+//     // If the item does not exist, add it to the cart
+//     cart.push(cartItem);
+//   }
 
-                    document.addEventListener('DOMContentLoaded', () => {
-                      // your code here
-                    });
+//   // Save the updated cart in the localStorage
+//   localStorage.setItem('cart', JSON.stringify(cart));
+
+//   console.log('Item added to cart:', cartItem);
+// }
 
 
-   </script>
+
+
+
+// function addToCart(itemId) {
+//   console.log('addToCart function called with itemId:', itemId);
+//   // Get the item details from the DOM
+//   const itemEl = document.getElementById(itemId);
+//   const itemIdValue = itemEl.getAttribute('data-item-id');
+//   console.log('Item ID:', itemIdValue);
+//   const name = itemEl.querySelector('.cart-item-name').textContent;
+//   console.log('Item name:', name);
+//   const price = parseFloat(itemEl.querySelector('.cart-item-price').getAttribute('data-price'));
+//   console.log('Item price:', price);
+//   const quantity = parseInt(itemEl.querySelector('.cart-item-quantity-value').textContent);
+//   console.log('Item quantity:', quantity);
+
+//   // Create the cart item object
+//   const cartItem = { itemId: itemIdValue, name, price, quantity };
+
+//   // Send the cart item data to the server
+//   fetch('/add-to-cart', {
+//     method: 'POST',
+//     headers: {
+//       'Content-Type': 'application/json',
+//     },
+//     body: JSON.stringify(cartItem),
+//   })
+//     .then(response => response.json())
+//     .then(data => {
+//       console.log('Item added to cart:', data);
+//       // Handle the server response if needed
+//     })
+//     .catch(error => {
+//       console.error('Error adding item to cart:', error);
+//       // Handle the error if needed
+//     });
+// }
+
+function addToCart(itemId) {
+  // Get the email value from the 'email' cookie
+  const email = getCookie('email');
+
+  console.log('addToCart function called with itemId:', itemId);
+  // Get the item details from the DOM
+  const itemEl = document.getElementById(itemId);
+  const itemIdValue = itemEl.getAttribute('data-item-id');
+  console.log('Item ID:', itemIdValue);
+  const name = itemEl.querySelector('.cart-item-name').textContent;
+  console.log('Item name:', name);
+  const price = parseFloat(itemEl.querySelector('.cart-item-price').getAttribute('data-price'));
+  console.log('Item price:', price);
+  const quantity = parseInt(itemEl.querySelector('.cart-item-quantity-value').textContent);
+  console.log('Item quantity:', quantity);
+  const imageUrl = itemEl.querySelector('.cart-item img').getAttribute('src');
+  console.log('Item image URL:', imageUrl);
+
+  // Create the cart item object
+  const cartItem = { itemId: itemIdValue, name, price, quantity, imageUrl, addedTime: Date.now() };
+  // Send the cart item data to the server
+  fetch('/add-to-cart', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(cartItem),
+  })
+    .then(response => response.json())
+    .then(data => {
+      console.log('Item added to cart:', data);
+      // Handle the server response if needed
+    })
+    .catch(error => {
+      console.error('Error adding item to cart:', error);
+      // Handle the error if needed
+    });
+}
+
+// Helper function to get the value of a cookie by name
+function getCookie(name) {
+  const cookieString = document.cookie;
+  const cookies = cookieString.split(';');
+
+  for (let i = 0; i < cookies.length; i++) {
+    const cookie = cookies[i].trim();
+
+    // Check if the cookie name matches the provided name
+    if (cookie.startsWith(name + '=')) {
+      // Extract and return the cookie value
+      return cookie.substring(name.length + 1);
+    }
+  }
+
+  // Return null if the cookie is not found
+  return null;
+}
+
+
+
+        document.addEventListener('DOMContentLoaded', () => {
+          // your code here
+        });
+
+      </script>
+
+
 
 </head>
 <body>
@@ -773,7 +873,9 @@ header {
       <img src="/images/WhatsApp_Image_2023-05-18_at_4.45.03_PM-removebg-preview.png" alt="Logo">
     </div>
     <div class="user-icon">
-      <img src="/images/usericon.png" alt="User Icon">
+      <!-- <img src="/images/usericon.png" alt="User Icon"> -->
+      <!-- Assuming 'user' is passed as a template variable -->
+      <img src="/profile-images/<%= user.profileImage %>">
     </div>
     <div class="hamburger">
       <div class="bar"></div>
@@ -795,7 +897,7 @@ header {
   </aside>
   <div class="overlay"></div>
     <div class="container">
-      <h3>Welcome to the dashboard, <%= user.name %>!</h3>
+      <h3>Welcome to the dashboard, <%= username %>!</h3>
       <div class="image-gallery">
         <div class="slideshow-container">
           <div class="slideshow">
@@ -1036,7 +1138,7 @@ header {
             <p>Description of Food 14</p>
             <button id="view-cart-btn14">View Cart</button>
 
-            <div id="cart-details14">
+            <div id="cart-details14" data-item-id="cart-details14">
               <div class="cart-item">
                 <button class="close-cart-btn">&times;</button>
                 <img src="/images/friedrice.jpg">
@@ -1048,7 +1150,7 @@ header {
                     <span class="cart-item-quantity-value">0</span>
                     <button class="cart-item-quantity-btn">+</button>
                   </div>
-                  <button class="cart-item-add-btn">Add to Cart</button>
+                  <button onclick="addToCart('cart-details14')" class="cart-item-add-btn">Add to Cart</button>
                 </div>
               </div>
             </div>
@@ -1060,7 +1162,7 @@ header {
             <p>Description of Food 15</p>
             <button id="view-cart-btn15">View Cart</button>
 
-            <div id="cart-details15">
+            <div id="cart-details15" data-item-id="cart-details15">
               <div class="cart-item">
                 <button class="close-cart-btn">&times;</button>
                 <img src="/images/friedrice.jpg">
@@ -1072,7 +1174,7 @@ header {
                     <span class="cart-item-quantity-value">0</span>
                     <button class="cart-item-quantity-btn">+</button>
                   </div>
-                  <button class="cart-item-add-btn">Add to Cart</button>
+                  <button onclick="addToCart('cart-details15')" class="cart-item-add-btn">Add to Cart</button>
                 </div>
               </div>
             </div>
@@ -1109,7 +1211,7 @@ header {
     </div>
 
     <div class="bottom-bar">
-      <a href="#" class="active">
+      <a href="/dashboard.html" class="active">
         <i class="fa fa-home"></i>
         Home
       </a>
@@ -1122,7 +1224,7 @@ header {
         <i class="fa fa-shopping-cart"></i>
         Orders
       </a>
-      <a href="#">
+      <a href="/profile">
         <i class="fa fa-user"></i>
         Profile
       </a>
@@ -1296,6 +1398,159 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 
 
+
+// Function to update the notification count on the order button
+function updateNotificationCount(count) {
+  const cartCountElement = document.getElementById('cart-count');
+  cartCountElement.textContent = count.toString();
+}
+
+// Function to fetch the cart count from the server and update the notification count
+function updateCartCount() {
+  fetch('/cart-count')
+    .then(response => response.json())
+    .then(data => {
+      updateNotificationCount(data.count);
+    })
+    .catch(error => {
+      console.error('Error updating cart count:', error);
+    });
+}
+
+// Call the updateCartCount function when the dashboard page loads
+document.addEventListener('DOMContentLoaded', updateCartCount);
+
+
+
+// document.getElementById("order-btn").addEventListener("click", function(event) {
+//   event.preventDefault(); // prevent default behavior of following the link
+
+//   // get the cart items from local storage
+//   let cartItems = JSON.parse(localStorage.getItem("cart"));
+
+//   // create a new array to hold the item names and prices
+//   let items = [];
+
+//   // iterate over the cart items and add the names and prices to the items array
+//   for (let item of cartItems) {
+//     items.push(item.name + " - $" + item.price.toFixed(2));
+//   }
+
+//   // display the items in an alert box
+//   if (items.length > 0) {
+//     alert("Your Cart:\n" + items.join("\n"));
+//   } else {
+//     alert("Your Cart is empty.");
+//   }
+// });
+
+
+
+// let cartItems = localStorage.getItem("cartItems");
+// cartItems = cartItems ? JSON.parse(cartItems) : [];
+
+// let cartCount = document.getElementById("cart-count");
+// cartCount.innerText = cartItems.length;
+
+// let orderBtn = document.getElementById("order-btn");
+// orderBtn.addEventListener("click", () => {
+//   let orderList = document.getElementById("order-list");
+//   orderList.innerHTML = ""; // clear any existing items
+
+//   for (let item of Array.from(cartItems)) { // convert cartItems to an array
+//     let listItem = document.createElement("li");
+//     listItem.innerHTML = `
+//       <span>${item.name}</span>
+//       <span>${item.price}</span>
+//     `;
+//     orderList.appendChild(listItem);
+//   }
+// });
+
     </script>
+
+
+
+<!-- <script>
+  const addToCartBtn = document.getElementById('add-to-cart-btn');
+  addToCartBtn.addEventListener('click', function() {
+    const itemDetails = {
+      name: 'Item 15',
+      price: 30.00, // change to actual price value
+      quantity: 1 // change to actual quantity value
+    };
+
+    const xhr = new XMLHttpRequest();
+    xhr.open('POST', '/add-to-cart');
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.onload = function() {
+      if (xhr.status === 200) {
+        console.log(xhr.responseText);
+      }
+    };
+    xhr.send(JSON.stringify(itemDetails));
+  });
+</script> -->
+
+    <script>
+
+// document.addEventListener('DOMContentLoaded', () => {
+//   // your code here
+//   function addToCart(itemId) {
+//     // Get the item details from the DOM
+//     const itemEl = document.getElementById(itemId);
+//     const name = itemEl.querySelector('.cart-item-name').textContent;
+//     const price = parseFloat(itemEl.querySelector('.cart-item-price').getAttribute('data-price'));
+//     const quantity = parseInt(itemEl.querySelector('.cart-item-quantity-value').textContent);
+  
+//     // Create the cart item object
+//     const cartItem = { name, price, quantity };
+  
+//     // Send a POST request to add the item to the cart
+//     fetch('/add-to-cart', {
+//       method: 'POST',
+//       headers: {
+//         'Content-Type': 'application/json'
+//       },
+//       body: JSON.stringify(cartItem)
+//     })
+//     .then(response => response.json())
+//     .then(data => {
+//       console.log('Item added to cart:', data);
+//     })
+//     .catch(error => {
+//       console.error('Error adding item to cart:', error);
+//     });
+//   }
+// });
+    </script>
+
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    updateCartCount();
+  
+    function updateCartCount() {
+      fetch('/cart-count')
+        .then(response => response.json())
+        .then(data => {
+          const cartCount = data.count;
+          const cartCountElement = document.getElementById('cart-count');
+          cartCountElement.textContent = cartCount;
+          if (cartCount > 0) {
+            cartCountElement.style.display = 'block';
+          } else {
+            cartCountElement.style.display = 'none';
+          }
+        })
+        .catch(error => {
+          console.error('Error updating cart count:', error);
+        });
+    }
+  });
+  </script>
+  
+
+
   </body>
 </html>

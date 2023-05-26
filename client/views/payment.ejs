@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+  <title>Payment</title>
+  <style>
+    /* Styles for the payment page */
+    /* body {
+      font-family: Arial, sans-serif;
+      background-color: #f2f2f2;
+    } */
+
+    .payment-container {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: #ffffff;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+      font-size: 24px;
+      margin-bottom: 20px;
+      color: #333333;
+    }
+
+    p {
+      margin: 5px 0;
+      color: #666666;
+    }
+
+    .total-price {
+      font-size: 18px;
+      font-weight: bold;
+      margin-top: 10px;
+    }
+
+    .payment-form {
+      margin-top: 20px;
+    }
+
+    .payment-input {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 10px;
+      border: 1px solid #dddddd;
+      border-radius: 4px;
+    }
+
+    .payment-button {
+      background-color: #11e493;
+      color: #ffffff;
+      border: none;
+      padding: 10px 20px;
+      font-size: 16px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="payment-container">
+    <h1>Payment</h1>
+    <p>Please enter your payment details below:</p>
+    <p>Total Price: $<%= totalPrice %></p>
+    <form class="payment-form" action="/process-payment" method="POST">
+      <input type="text" name="cardNumber" class="payment-input" placeholder="Card Number" required>
+      <input type="text" name="cardHolder" class="payment-input" placeholder="Card Holder" required>
+      <input type="text" name="expiryDate" class="payment-input" placeholder="Expiry Date (MM/YY)" required>
+      <input type="text" name="cvv" class="payment-input" placeholder="CVV" required>
+      <button type="submit" class="payment-button">Pay Now</button>
+    </form>
+  </div>
+</body>
+
+</html>
