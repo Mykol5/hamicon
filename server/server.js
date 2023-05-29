@@ -80,26 +80,6 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(cors()); // Allow cross-origin requests
 
-// // Configure session with file store
-// app.use(
-//   session({
-//     secret: 'mysecretkey',
-//     resave: false,
-//     saveUninitialized: true,
-//     genid: (req) => uuidv4(),
-//     name: 'sessionId',
-//     cookie: {
-//       secure: false,
-//       httpOnly: true,
-//       path: '/',
-//       sameSite: 'lax',
-//     },
-//     store: new FileStore({
-//       path: path.join(__dirname, 'sessions'),
-//       extension: '.json', // Specify the file extension
-//     }),
-//   })
-// );
 
 // Use express-session middleware
 app.use(session({
@@ -112,35 +92,6 @@ app.get('/signup.html', (req, res) => {
   res.setHeader('Content-Type', 'text/html');
   res.sendFile(path.join(__dirname + '/../client/signup.html'));
 });
-
-// app.post('/signup', (req, res) => {
-//   console.log('POST request received');
-//   const { name, email, password } = req.body;
-
-//   // Validate the input (e.g., check if email is valid and password is strong enough)
-
-//   // Hash the password for security
-//   bcrypt.hash(password, 10, (err, hash) => {
-//     // Check if the users.json file exists, and create it if it doesn't
-//     if (!fs.existsSync('users.json')) {
-//       fs.writeFileSync('users.json', '[]');
-//     }
-
-//     // Append the user's information to the JSON file
-//     const user = {
-//       name: name,
-//       email: email,
-//       password: hash
-//     };
-//     const users = JSON.parse(fs.readFileSync('users.json', 'utf8'));
-//     users.push(user);
-//     fs.writeFileSync('users.json', JSON.stringify(users));
-
-//     // Redirect the user to the login page
-//     res.redirect('/index.html');
-//   });
-// });
-
 
 
 app.post('/signup', (req, res) => {
@@ -180,40 +131,19 @@ app.post('/signup', (req, res) => {
     res.redirect('/index.html');
   });
 });
-// app.post('/login', (req, res) => {
-//   const { email, password } = req.body;
 
-//   // Find the user with the matching email in the JSON file
-//   const users = JSON.parse(fs.readFileSync('users.json', 'utf8'));
-//   const user = users.find(user => user.email === email);
-
-//   // Check if the user's credentials are correct
-//   bcrypt.compare(password, user.password, (err, result) => {
-//     if (result) {
-//       // Set a cookie to remember the user's email
-//       res.cookie('email', email);
-
-//       // Redirect the user to the dashboard page
-//       res.redirect('/dashboard.html');
-//     } else {
-//       // If the credentials are incorrect, show an error message
-//       res.send('Invalid email or password');
-//     }
-//   });
-// });
+const sessions = {};
 
 app.get('/index.html', (req, res) => {
   res.setHeader('Content-Type', 'text/html');
   res.sendFile(path.join(__dirname + '/../client/index.html'));
 });
 
-
-const sessions = {};
-const users = JSON.parse(fs.readFileSync('users.json', 'utf8'));
-
 app.post('/login', (req, res) => {
   const { email, password } = req.body;
 
+  const users = JSON.parse(fs.readFileSync('users.json', 'utf8'));
+  
   // Find the user with the matching email in the JSON file
   const user = users.find(user => user.email === email);
 
@@ -260,39 +190,6 @@ app.post('/login', (req, res) => {
   }
 });
 
-
-// app.get('/dashboard.html', (req, res) => {
-//   // Get the email from the cookie
-//   const email = req.cookies.email;
-
-//   // Redirect to login page if email is not found in the cookie
-//   if (!email) {
-//     return res.redirect('/index.html');
-//   }
-  
-
-//   // Find the user with the matching email in the JSON file
-//   const users = JSON.parse(fs.readFileSync('users.json', 'utf8'));
-//   const user = users.find(user => user.email === email);
-
-//   // Display the dashboard page with the user's name
-//   // res.send(`Welcome to the dashboard, ${user.name}!`);
-//   // Send the dashboard HTML file with the user's name
-//   // res.sendFile(__dirname + '/public/dashboard.html');
-
-//   // Render the dashboard EJS template with the user's name
-//   res.render('dashboard', { user: user });
-// });
-
-// app.get('/dashboard.html', (req, res) => {
-//   const sessionId = req.cookies.sessionId;
-//   const session = sessions[sessionId];
-//   const user = users.find(user => user.userId === session.userId);
-
-//   res.render('dashboard', { user: user });
-// });
-
-
 app.get('/dashboard.html', (req, res) => {
   // Assuming you have a way to identify the currently logged-in user
   const sessionId = req.cookies.sessionId;
@@ -327,32 +224,6 @@ app.get('/dashboard.html', (req, res) => {
     res.sendStatus(401); // Unauthorized access
   }
 });
-
-
-// app.get('/dashboard.html', (req, res) => {
-//   const sessionId = req.cookies.sessionId;
-//   const session = sessions[sessionId];
-
-//   if (session && session.userId) {
-//     const userId = session.userId;
-
-//     fs.readFile('users.json', 'utf8', (err, data) => {
-//       if (err) {
-//         console.error('Error reading users.json:', err);
-//         res.sendStatus(500);
-//         return;
-//       }
-
-//       const users = JSON.parse(data);
-//       const user = users.find(u => u.userId === userId);
-//       const username = user ? user.name : '';
-
-//       res.render('dashboard', { username });
-//     });
-//   } else {
-//     res.redirect('/index.html');
-//   }
-// });
 
 
 app.get('/profile', (req, res) => {
@@ -702,20 +573,6 @@ function clearCartData(userId) {
   }
 }
 
-// app.get('/order', (req, res) => {
-//   const sessionId = req.cookies.sessionId;
-//   const session = sessions[sessionId];
-
-//   if (session && session.userId) {
-//     const userId = session.userId;
-//     const orderData = readOrderData(userId);
-//     console.log("Order items:", orderData);
-//     res.render('order', { cartItems: orderData });
-//   } else {
-//     res.redirect('/index.html');
-//   }
-// });
-
 
 app.get('/order', (req, res) => {
   const sessionId = req.cookies.sessionId;
@@ -795,7 +652,6 @@ app.post('/process-payment', (req, res) => {
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
 });
-
 
 
 
