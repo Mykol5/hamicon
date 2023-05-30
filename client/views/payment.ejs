@@ -60,6 +60,79 @@
       border-radius: 4px;
       cursor: pointer;
     }
+
+                    /* Bottom Nav */
+              .bottom-bar {
+                position: fixed;
+                bottom: 0;
+                width: 100%;
+                height: 60px;
+                background-color: #f2f2f2;
+                display: flex;
+                justify-content: space-around;
+                align-items: center;
+                z-index: 1;
+              }
+
+        .bottom-bar a {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: #777;
+            text-decoration: none;
+            font-size: 12px;
+        }
+
+        .bottom-bar a.active {
+            color: #11e493;
+            background-color: #f2f2f2;
+        }
+
+        .bottom-bar a i {
+            font-size: 24px;
+        }
+
+
+   /* Styles for Pay to Bank Account section */
+   .bank-account-section {
+    margin-top: 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: calc(100vh - 160px); /* Adjust the height based on your requirements */
+    overflow-y: auto; /* Add a vertical scroll if needed */
+    padding-bottom: 60px; /* Add padding to create a scrolling space */
+  }
+
+  /* Styles for file upload */
+  .file-upload-container {
+    margin-top: 20px;
+    text-align: center;
+  }
+
+  .file-upload-input {
+    display: none;
+  }
+
+  .file-upload-label {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #11e493;
+    color: #ffffff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+
+  .uploaded-file {
+    margin-top: 20px;
+    text-align: center;
+  }
+
+  .submit-button {
+    margin-top: 20px;
+  }
   </style>
 </head>
 
@@ -75,7 +148,95 @@
       <input type="text" name="cvv" class="payment-input" placeholder="CVV" required>
       <button type="submit" class="payment-button">Pay Now</button>
     </form>
+
+    <!-- <hr>
+
+    <h1>Pay to Bank Account</h1>
+    <p>Please make the payment to the following bank account:</p>
+    <p>Account Number: <span id="account-number">1234567890</span></p>
+    <p>Upload Payment Proof:</p>
+    <input type="file" name="paymentProof" class="payment-input" required>
+
+    <button type="submit" class="payment-button">Submit Payment Proof</button> -->
   </div>
+
+  <br>
+
+  <div class="payment-container">
+      <!-- Pay to Bank Account section -->
+      <div class="bank-account-section">
+        <h1>Pay to Bank Account</h1>
+        <p>Please make the payment to the following account:</p>
+        <p>Account Number: 1234567890</p>
+    
+        <!-- File upload section -->
+        <div class="file-upload-container">
+          <input type="file" name="paymentProof" id="paymentProof" class="file-upload-input">
+          <label for="paymentProof" class="file-upload-label">Upload Payment Proof</label>
+        </div>
+    
+        <!-- Display uploaded file -->
+        <div class="uploaded-file">
+          <p>Uploaded File: <span id="uploadedFileName"></span></p>
+          <img src="" id="uploadedProofImage" style="max-width: 300px;">
+        </div>
+
+        <!-- Submit button -->
+        <button class="file-upload-label submit-button">Submit Payment Proof</button>
+      </div>
+  </div>
+
+  <!-- Bottom Nav -->
+  <div class="bottom-bar">
+    <a href="/dashboard.html" class="active">
+      <i class="fa fa-home"></i>
+      Home
+    </a>
+    <a href="#">
+      <i class="fa fa-info-circle"></i>
+      About
+    </a>
+    <a href="/order" id="order-btn">
+      <span class="notification" id="cart-count"></span>
+      <i class="fa fa-shopping-cart"></i>
+      Orders
+    </a>
+    <a href="/profile">
+      <i class="fa fa-user"></i>
+      Profile
+    </a>
+  </div>
+
+
+
+  <script>
+    // Display the uploaded file name
+    const fileUploadInput = document.getElementById('paymentProof');
+    const uploadedFileName = document.getElementById('uploadedFileName');
+    fileUploadInput.addEventListener('change', (event) => {
+      const fileName = event.target.value.split('\\').pop();
+      uploadedFileName.textContent = fileName;
+    });
+
+    // Display the uploaded proof image
+    const uploadedProofImage = document.getElementById('uploadedProofImage');
+    fileUploadInput.addEventListener('change', (event) => {
+      const file = event.target.files[0];
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        uploadedProofImage.src = e.target.result;
+      }
+      reader.readAsDataURL(file);
+    });
+
+    // Submit button event handler
+    const submitButton = document.querySelector('.submit-button');
+    submitButton.addEventListener('click', () => {
+      // Perform the submission logic here
+      alert('Payment proof submitted!');
+    });
+  </script>
 </body>
 
 </html>
+
