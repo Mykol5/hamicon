@@ -86,6 +86,12 @@ app.use(session({
   secret: 'mysecretkey',
   resave: false,
   saveUninitialized: true,
+  cookie: {
+    maxAge: 3600000, // Set the maximum age (in milliseconds) for the session cookie
+    // Additional cookie options can be added here
+  },
+  unset: 'destroy', // Clear the session data on expiration
+  rolling: true, // Extend the session expiration on each request
 }));
 
 app.get('/signup.html', (req, res) => {
@@ -221,7 +227,9 @@ app.get('/dashboard.html', (req, res) => {
       res.render('dashboard', { user, username: user.name });
     });
   } else {
-    res.sendStatus(401); // Unauthorized access
+    // Clear the session cookie and redirect to the login page
+    res.clearCookie('sessionId');
+    res.redirect('/index.html');
   }
 });
 
