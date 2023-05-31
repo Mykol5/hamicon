@@ -10,6 +10,7 @@ const session = require('express-session');
 // const FileStore = require('session-file-store')(session);
 const { v4: uuidv4 } = require('uuid');
 const ordersDirectory = path.join(__dirname, 'orders');
+const nodemailer = require('nodemailer');
 
 const app = express();
 const port = 8080;
@@ -94,6 +95,14 @@ app.use(session({
   rolling: true, // Extend the session expiration on each request
 }));
 
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: 'hamiconfectionery@gmail.com',
+    pass: 'avlcrmsamttomubt'
+  }
+});
+
 app.get('/signup.html', (req, res) => {
   res.setHeader('Content-Type', 'text/html');
   res.sendFile(path.join(__dirname + '/../client/signup.html'));
@@ -124,8 +133,6 @@ app.post('/signup', (req, res) => {
       password: hash
     };
 
-    
-
     // Read the existing users from the JSON file
     const users = JSON.parse(fs.readFileSync('users.json', 'utf8'));
     // Add the new user to the array
@@ -133,10 +140,31 @@ app.post('/signup', (req, res) => {
     // Write the updated users array back to the JSON file
     fs.writeFileSync('users.json', JSON.stringify(users));
 
+    // Send the welcome email to the user
+    const welcomeMailOptions = {
+      from: 'hamiconfectionery@gmail.com',
+      to: email,
+      subject: 'Welcome to Hami Confectionery!',
+      text: `Welcome to Hami Confectionery! We provide the best services in pastries and cuisines.
+
+      Thank you for signing up. Your login details are:
+      Email: ${email}
+      Password: ${password}`
+    };
+
+    transporter.sendMail(welcomeMailOptions, (error, info) => {
+      if (error) {
+        console.error('Error sending welcome email:', error);
+      } else {
+        console.log('Welcome email sent:', info.response);
+      }
+    });
+
     // Redirect the user to the login page
     res.redirect('/index.html');
   });
 });
+
 
 const sessions = {};
 
