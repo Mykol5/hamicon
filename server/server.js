@@ -176,11 +176,10 @@ app.post('/login', (req, res) => {
         };
 
         // Set the session ID as a cookie
-        res.cookie('sessionId', sessionId, { httpOnly: true });
-
+        res.cookie('sessionId', sessionId, { httpOnly: true, secure: true });
         
         // Set the email as a separate cookie
-        res.cookie('email', user.email, { httpOnly: true });
+        res.cookie('email', user.email, { httpOnly: true, secure: true });
 
         // Redirect the user to the dashboard page
         console.log('Redirecting to dashboard...');
