@@ -423,7 +423,7 @@ app.post('/update-profile', upload.single('profileImage'), (req, res) => {
 
         // Send an email to the user to confirm the profile update
         const updateMailOptions = {
-          from: 'your-email@gmail.com',
+          from: 'hamiconfectionery@gmail.com',
           to: email,
           subject: 'Profile Update Confirmation',
           html: `
