@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About Us</title>
+  <style>
+    /* CSS styles for the About Us page */
+    body {
+      /* font-family: Arial, sans-serif; */
+      background-color: #f2f2f2;
+    }
+
+    .about-container {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: #ffffff;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+      font-size: 24px;
+      margin-bottom: 20px;
+      color: #333333;
+    }
+
+    p {
+      margin-bottom: 10px;
+      color: #666666;
+    }
+
+    .owner-image {
+      max-width: 200px;
+      border-radius: 50%;
+      margin-bottom: 20px;
+    }
+
+    .owner-name {
+      font-weight: bold;
+    }
+
+    .owner-description {
+      margin-bottom: 20px;
+    }
+
+    .business-description {
+      margin-bottom: 20px;
+    }
+
+    .business-history {
+      margin-bottom: 20px;
+    }
+
+
+                    /* Bottom Nav */
+                    .bottom-bar {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            height: 60px;
+            background-color: #f2f2f2;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+        }
+
+        .bottom-bar a {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: #777;
+            text-decoration: none;
+            font-size: 12px;
+        }
+
+        .bottom-bar a.active {
+            color: #11e493;
+            background-color: #f2f2f2;
+        }
+
+        .bottom-bar a i {
+            font-size: 24px;
+        }
+  </style>
+</head>
+<body>
+  <div class="about-container">
+    <h1>About Us</h1>
+    <p class="business-description">Welcome to our Hami Confectionery, where indulgence meets artistry. We take pride in creating delectable pastries that not only delight the taste buds but also captivate the eyes. With a passion for the pastry craft and a commitment to quality, we strive to deliver unforgettable sweet experiences.</p>
+    <p class="business-history">Our pastry business has been serving the community since [year]. Over the years, we have built a reputation for excellence and have become a go-to destination for pastry lovers. From our humble beginnings to becoming a beloved establishment, we have stayed true to our core values of using the finest ingredients and crafting each pastry with utmost care.</p>
+    <img class="owner-image" src="path/to/owner-image.jpg" alt="Owner Image">
+    <p class="owner-name">Funmilola Kolawole</p>
+    <p class="owner-description">Funmilola Kolawole is the talented pastry chef and owner of our Hami Confectionery. With a passion for creating delicious and visually stunning desserts, Funmilola brings her expertise and creativity to every treat she makes. Her dedication to quality and attention to detail have earned her numerous accolades in the culinary world.</p>
+    <p>At Hami Confectionery, we use only the finest ingredients to ensure the highest level of taste and freshness. Each pastry is carefully handcrafted with precision and love, showcasing our commitment to excellence. From flaky croissants to decadent cakes, our wide range of offerings is designed to satisfy even the most discerning palates.</p>
+    <p>Visit our shop today and experience the artistry and flavor that Jane and her team bring to every creation. Whether it's a special celebration or a simple moment of indulgence, we're here to elevate your pastry experience and create sweet memories that linger long after the last bite.</p>
+  </div>
+
+  <br><br>
+
+  <div class="bottom-bar">
+    <a href="/dashboard.html" class="active">
+      <i class="fa fa-home"></i>
+      Home
+    </a>
+    <a href="/about">
+      <i class="fa fa-info-circle"></i>
+      About
+    </a>
+    <a href="/order" id="order-btn">
+      <span class="notification" id="cart-count"></span> <!-- Add the cart count element here -->
+      <i class="fa fa-shopping-cart"></i>
+      Orders
+    </a>
+    <a href="/profile">
+      <i class="fa fa-user"></i>
+      Profile
+    </a>
+  </div>
+  
+
+
+
+  <script>
+    // Fetch the About Us content from the server and insert it into the page
+    fetch('/about')
+      .then(response => response.text())
+      .then(data => {
+        const aboutContainer = document.getElementById('about-container');
+        aboutContainer.innerHTML = data;
+      })
+      .catch(error => {
+        console.error('Error fetching About Us content:', error);
+      });
+  </script>
+</body>
+</html>

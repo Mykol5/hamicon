@@ -266,6 +266,10 @@ app.get('/profile', (req, res) => {
 }});
 
 
+app.get('/about', (req, res) => {
+  res.sendFile(path.join(__dirname, '/../client/views/about-us.html'));
+});
+
 // app.post('/update-profile', (req, res) => {
 //   // Assuming you have a way to identify the currently logged-in user
 //   const sessionId = req.cookies.sessionId;
