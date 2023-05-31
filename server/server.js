@@ -369,7 +369,7 @@ const storage = multer.diskStorage({
 // Create a Multer instance with the storage configuration
 const upload = multer({ storage: storage });
 
-// Update the profile route to handle the file upload
+
 app.post('/update-profile', upload.single('profileImage'), (req, res) => {
   // Assuming you have a way to identify the currently logged-in user
   const sessionId = req.cookies.sessionId;
@@ -420,6 +420,43 @@ app.post('/update-profile', upload.single('profileImage'), (req, res) => {
 
         // Send a success response
         res.redirect('/profile?success=true');
+
+        // Send an email to the user to confirm the profile update
+        const updateMailOptions = {
+          from: 'your-email@gmail.com',
+          to: email,
+          subject: 'Profile Update Confirmation',
+          html: `
+            <html>
+              <head>
+                <style>
+                  /* CSS styles for the email */
+                  /* Add your custom CSS styles here */
+                </style>
+              </head>
+              <body>
+                <div class="container">
+                  <h1>Profile Update Confirmation</h1>
+                  <p>Your profile has been successfully updated.</p>
+                  <p>Here are your updated profile details:</p>
+                  <ul>
+                    <li><strong>Name:</strong> ${name}</li>
+                    <li><strong>Email:</strong> ${email}</li>
+                    <li><strong>Phone:</strong> ${phone}</li>
+                  </ul>
+                </div>
+              </body>
+            </html>
+          `
+        };
+
+        transporter.sendMail(updateMailOptions, (error, info) => {
+          if (error) {
+            console.error('Error sending profile update email:', error);
+          } else {
+            console.log('Profile update email sent:', info.response);
+          }
+        });
       });
     });
   } else {
