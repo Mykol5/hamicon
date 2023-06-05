@@ -133,6 +133,60 @@
   .submit-button {
     margin-top: 20px;
   }
+
+
+
+  #loading-animation-container {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 9999;
+}
+
+.loading-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* Adjust the opacity as desired */
+  backdrop-filter: blur(5px); /* Adjust the blur effect as desired */
+}
+
+.show-loading {
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Add your custom styles for the loading animation here */
+
+
+/* Define the keyframe animation */
+@keyframes spinner {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Apply the spinner animation to a pseudo-element of the loading animation element */
+#loading-animation::after {
+  content: '';
+  display: block;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 4px solid #ccc;
+  border-top-color: #333;
+  animation: spinner 7.0s linear infinite;
+}
+
   </style>
 </head>
 
@@ -169,21 +223,42 @@
         <p>Please make the payment to the following account:</p>
         <p>Account Number: 1234567890</p>
     
-        <!-- File upload section -->
-        <div class="file-upload-container">
-          <input type="file" name="paymentProof" id="paymentProof" class="file-upload-input">
-          <label for="paymentProof" class="file-upload-label">Upload Payment Proof</label>
-        </div>
-    
-        <!-- Display uploaded file -->
-        <div class="uploaded-file">
-          <p>Uploaded File: <span id="uploadedFileName"></span></p>
-          <img src="" id="uploadedProofImage" style="max-width: 300px;">
-        </div>
+        <form action="/submit-payment-proof" method="post" enctype="multipart/form-data">
+          <!-- File upload section -->
+          <div class="file-upload-container">
+            <input type="file" name="paymentProof" id="paymentProof" class="file-upload-input">
+            <label for="paymentProof" class="file-upload-label">Upload Payment Proof</label>
+          </div>
+          
+            <!-- Hidden input fields to store order details -->
+            <!-- Hidden input fields to store order details -->
+            <% cartItems.forEach(item => { %>
+              <input type="hidden" name="items[]" value="<%= item.name %>">
+              <input type="hidden" name="quantity[]" value="<%= item.quantity %>">
+              <input type="hidden" name="itemId[]" value="<%= item.itemId %>">
+              <input type="hidden" name="itemImage[]" value="<%= item.imageUrl %>"> <!-- Add this line for item image -->
+            <% }) %>
 
-        <!-- Submit button -->
-        <button class="file-upload-label submit-button">Submit Payment Proof</button>
+
+
+            <!-- Hidden input fields for email and total -->
+           
+            <input type="hidden" name="total" value="<%= totalPrice %>">
+
+          <!-- Display uploaded file -->
+          <div class="uploaded-file">
+            <p>Uploaded File: <span id="uploadedFileName"></span></p>
+            <img src="" id="uploadedProofImage" style="max-width: 300px;">
+          </div>
+
+          <!-- Submit button -->
+          <button type="submit" class="file-upload-label submit-button" id="submit-btn">Submit Payment Proof</button>
+        </form>
       </div>
+  </div>
+  <div id="loading-animation-container">
+    <div class="loading-overlay"></div>
+    <div id="loading-animation"></div>
   </div>
 
   <!-- Bottom Nav -->
@@ -236,7 +311,30 @@
       alert('Payment proof submitted!');
     });
   </script>
+
+<script>
+
+  const addToCartButton = document.getElementById('submit-btn');
+  const loadingAnimationContainer = document.getElementById('loading-animation-container');
+  
+  addToCartButton.addEventListener('click', () => {
+    // Show the loading animation
+    loadingAnimationContainer.classList.add('show-loading');
+  
+    // Simulate a delay for demonstration purposes
+    setTimeout(() => {
+      // Perform the add to cart operation here
+      console.log('Item added to cart');
+  
+      // Hide the loading animation after the task is completed
+      loadingAnimationContainer.classList.remove('show-loading');
+    }, 4000); // Simulate a 2-second delay
+  });
+  
+  
+      </script>
+
+
 </body>
 
 </html>
-

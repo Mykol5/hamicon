@@ -150,32 +150,142 @@
             color: rgb(241, 236, 236);
             background-color: rgb(236, 15, 15);
         } 
+
+
+
+
+
+#loading-animation-container {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 9999;
+}
+
+.loading-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* Adjust the opacity as desired */
+  backdrop-filter: blur(5px); /* Adjust the blur effect as desired */
+}
+
+.show-loading {
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Add your custom styles for the loading animation here */
+
+
+/* Define the keyframe animation */
+@keyframes spinner {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Apply the spinner animation to a pseudo-element of the loading animation element */
+#loading-animation::after {
+  content: '';
+  display: block;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 4px solid #ccc;
+  border-top-color: #333;
+  animation: spinner 7.0s linear infinite;
+}
+
+/* Apply the new loading animation style */
+/* #loading-animation::after {
+  content: '';
+  display: block;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: #333;
+  animation: pulsate 1s ease-in-out infinite;
+} */
+
+/* Define the pulsating animation */
+/* @keyframes pulsate {
+  0% {
+    transform: scale(0.8);
+    opacity: 0.8;
+  }
+  50% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(0.8);
+    opacity: 0.8;
+  }
+} */
+
+/* Apply the new loading animation style */
+/* #loading-animation::after {
+  content: '';
+  display: block;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: radial-gradient(circle at center, #ff00ff, #00ff00, #0000ff);
+  animation: spin 1.5s linear infinite;
+} */
+
+/* Define the spin animation */
+/* @keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+} */
+
     </style>
 </head>
 
 <body>
     <div class="order-container">
         <h1>Your Cart Items:</h1>
-        <% cartItems.forEach(function(item) { %>
-        <div class="item-container">
-            <img src="<%= item.imageUrl %>" alt="<%= item.name %>" class="item-image">
-            <div>
-                <p>Item ID: <%= item.itemId %></p>
-                <p>Name: <%= item.name %></p>
-                <p>Price: <%= item.price %></p>
-                <p>Quantity: <%= item.quantity %></p>
-                <button class="delete-btn" data-item-id="<%= item.itemId %>">Delete</button>
-            </div>
-        </div>
-        <% }) %>
-
+ <!-- Render order items -->
+<% cartItems.forEach(item => { %>
+    <div class="item-container" data-item-id="<%= item.itemId %>" data-quantity="<%= item.quantity %>" data-image-url="<%= item.imageUrl %>">
+      <!-- Item details -->
+      <img src="<%= item.imageUrl %>" alt="<%= item.name %>" class="item-image">
+      <div>
+        <p>Item ID: <%= item.itemId %></p>
+        <p>Name: <%= item.name %></p>
+        <p>Price: <%= item.price %></p>
+        <p>Quantity: <%= item.quantity %></p>
+        <button class="delete-btn" data-item-id="<%= item.itemId %>">Delete</button>
+      </div>
+    </div>
+  <% }) %>
+  
         <% if (cartItems.length === 0) { %>
         <p class="empty-cart">Your cart is empty</p>
         <% } %>
 
         <div class="checkout-button">
-          <button onclick="checkout()">Checkout</button>
+          <button onclick="checkout()" id="checkout-btn">Checkout</button>
         </div>
+    </div>
+    <div id="loading-animation-container">
+        <div class="loading-overlay"></div>
+        <div id="loading-animation"></div>
     </div>
 
     <div class="bottom-bar">
@@ -197,6 +307,28 @@
             Profile
         </a>
     </div>
+
+    <script>
+
+        const addToCartButton = document.getElementById('checkout-btn');
+        const loadingAnimationContainer = document.getElementById('loading-animation-container');
+        
+        addToCartButton.addEventListener('click', () => {
+          // Show the loading animation
+          loadingAnimationContainer.classList.add('show-loading');
+        
+          // Simulate a delay for demonstration purposes
+          setTimeout(() => {
+            // Perform the add to cart operation here
+            console.log('Item added to cart');
+        
+            // Hide the loading animation after the task is completed
+            loadingAnimationContainer.classList.remove('show-loading');
+          }, 3000); // Simulate a 2-second delay
+        });
+        
+        
+            </script>
 
 
     <script>
@@ -271,33 +403,6 @@
             // Redirect to the payment page with the total price
             window.location.href = '/payment?totalPrice=' + totalPrice;
         }
-
-
-
-
-                //         // Function to update the notification count on the order button
-                // function updateNotificationCount(count) {
-                //   const cartCountElement = document.getElementById('cart-count');
-                //   cartCountElement.textContent = count.toString();
-                // }
-
-                // // Function to fetch the cart count from the server and update the notification count
-                // function updateCartCount() {
-                //   fetch('/cart-count')
-                //     .then(response => response.json())
-                //     .then(data => {
-                //       updateNotificationCount(data.count);
-                //     })
-                //     .catch(error => {
-                //       console.error('Error updating cart count:', error);
-                //     });
-                // }
-
-                // // Call the updateCartCount function when the dashboard page loads
-                // document.addEventListener('DOMContentLoaded', updateCartCount);
-
-
-
     </script>
 
 </body>
