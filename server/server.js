@@ -708,12 +708,24 @@ app.post('/delete-from-cart', (req, res) => {
 
 
 
-// Add a new route for the payment page
 app.get('/payment', (req, res) => {
-  const totalPrice = req.query.totalPrice;
-  // Render the payment page and pass the total price to the template
-  res.render('payment', { totalPrice });
+  const sessionId = req.cookies.sessionId;
+  const session = sessions[sessionId];
+
+  if (session && session.userId) {
+    const userId = session.userId;
+    const orderData = readOrderData(userId);
+    console.log("Order items:", orderData);
+
+    // Calculate the total price based on the order items
+    const totalPrice = orderData.reduce((total, item) => total + item.price * item.quantity, 0);
+
+    res.render('payment', { cartItems: orderData, totalPrice }); // Pass order data and total price to the payment page
+  } else {
+    res.redirect('/index.html');
+  }
 });
+
 
 // Handle the form submission from the payment page
 app.post('/process-payment', (req, res) => {
@@ -723,6 +735,200 @@ app.post('/process-payment', (req, res) => {
   // Assuming the payment is successful, redirect the user to a success page
   res.redirect('/payment-success');
 });
+
+app.post('/submit-payment-proof', upload.single('paymentProof'), (req, res) => {
+  const sessionId = req.cookies.sessionId;
+  const session = sessions[sessionId];
+
+  if (session && session.userId) {
+    const userId = session.userId;
+    const userEmail = session.email; // Retrieve the user's email from the session
+    const orderData = readOrderData(userId);
+    console.log("Order items:", orderData);
+
+    // // Fetch the order items from orderData using the provided itemId values
+    // const items = itemId.map(id => orderData.find(item => item.itemId === id));
+
+    // Assuming you have access to the order details and user information
+    const { items, quantity, itemId, itemImage, total, deliveryTime } = req.body;
+
+    console.log('Payment proof submitted:', req.file);
+    console.log('User Email:', userEmail);
+    console.log('Order Items:', items);
+    console.log('Quantity:', quantity);
+    console.log('Item IDs:', itemId);
+    console.log('Item Images:', itemImage);
+    console.log('Total:', total);
+    console.log('Delivery Time:', deliveryTime);
+    
+    // Process the payment proof submission and perform necessary actions (e.g., save payment proof file)
+
+    const baseUrl = 'https://hamcon.onrender.com';
+
+    // // Populate itemImage array with absolute image URLs
+    // const items = orderData.map(item => ({
+    //   ...item,
+    //   imageUrl: baseUrl + item.imageUrl
+    // }));
+
+    // Send confirmation email to the user
+    const userConfirmationMailOptions = {
+      from: 'hamiconfectionery@gmail.com',
+      to: userEmail,
+      subject: 'Order Confirmation',
+      html: `
+      <html>
+        <head>
+          <style>
+            /* CSS styles for the email */
+            /* Add your custom CSS styles here */
+          </style>
+        </head>
+        <body>
+          <div class="container">
+            <h1>Order Confirmation</h1>
+            <p>Thank you for your order!</p>
+            <p>Your order has been confirmed and is being processed.</p>
+            <p>Items:</p>
+            <ul>
+              ${items.map((item, index) => `
+                <li>
+                  <h3>${item}</h3>
+                  <p>Quantity: ${quantity[index]}</p>
+                  <p>ItemId: ${itemId[index]}</p>
+                  <img src="${baseUrl}${item.imageUrl}" alt="Item Image" />
+                </li>
+              `).join('')}
+            </ul>
+            <p>Total: $${total}</p>
+            <p>Delivery Time: ${deliveryTime}</p>
+            <p>We will deliver your order as soon as possible. If you have any questions, please contact us.</p>
+          </div>
+        </body>
+      </html>
+    `    
+    };
+
+    transporter.sendMail(userConfirmationMailOptions, (error, info) => {
+      if (error) {
+        console.error('Error sending order confirmation email to user:', error);
+      } else {
+        console.log('Order confirmation email sent to user:', info.response);
+      }
+    });
+
+    // Send notification email to the admin
+    const adminNotificationMailOptions = {
+      from: 'hamiconfectionery@gmail.com',
+      to: 'michaelkolawole25@gmail.com', // Replace with the admin's email address
+      subject: 'New Order Received',
+      html: `
+      <html>
+        <head>
+          <style>
+            /* CSS styles for the email */
+            /* Add your custom CSS styles here */
+          </style>
+        </head>
+        <body>
+          <div class="container">
+            <h1>New Order Received</h1>
+            <p>A new order has been received.</p>
+            <p>User Email: ${userEmail}</p>
+            <p>Items:</p>
+            <ul>
+              ${items.map((item, index) => `
+                <li>
+                  <h3>${item}</h3>
+                  <p>Quantity: ${quantity[index]}</p>
+                  <p>ItemId: ${itemId[index]}</p>
+                  <img src="${baseUrl}${item.imageUrl}" alt="Item Image" />
+                </li>
+              `).join('')}
+            </ul>
+            <p>Total: $${total}</p>
+            <p>Delivery Time: ${deliveryTime}</p>
+            <p>Please process the order and contact the user for further details.</p>
+            <p>Payment Proof:</p>
+            <img src="cid:paymentProof" alt="Payment Proof Image" /> <!-- Use 'cid' for embedding the image -->
+          </div>
+        </body>
+      </html>
+      `,
+      attachments: [
+        {
+          filename: req.file.originalname,
+          content: fs.createReadStream(req.file.path),
+          cid: 'paymentProof' // Use the same 'cid' as in the img src attribute
+        }
+      ]
+    };
+
+    transporter.sendMail(adminNotificationMailOptions, (error, info) => {
+      if (error) {
+        console.error('Error sending order notification email to admin:', error);
+      } else {
+        console.log('Order notification email sent to admin:', info.response);
+      }
+    });
+
+// Send a response to the client
+res.send(`
+  <html>
+    <head>
+      <style>
+      /* CSS styles for the success message */
+      html, body {
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      
+      .success-message {
+        text-align: center;
+        padding: 20px;
+        background-color: #f0f8f3;
+      }
+      
+      .success-message .icon {
+        font-size: 48px;
+        color: green;
+      }
+      
+      .success-message .message {
+        margin-top: 10px;
+        font-size: 24px;
+        color: #333;
+      }
+      
+      .success-message .button {
+        margin-top: 30px;
+        padding: 10px 20px;
+        background-color: green;
+        color: white;
+        font-size: 16px;
+        text-decoration: none;
+        border-radius: 4px;
+        display: block; /* Add this line to make the button a block-level element */
+        width: 100px; /* Adjust the width as needed */
+        margin: 0 auto; /* Add this line to center the button horizontally */
+      }      
+      </style>
+    </head>
+    <body>
+      <div class="success-message">
+        <div class="icon">&#10004;</div>
+        <div class="message">Payment proof submitted successfully</div>
+        <br>
+        <a class="button" href="/dashboard.html">Continue</a>
+      </div>
+    </body>
+  </html>
+`);
+  }
+});
+
 
 
 app.listen(port, () => {
