@@ -10,113 +10,93 @@
     <title>Log In - Pastry</title>
 
     <style>
-      .container {
-        margin: 0 auto;
-        max-width: 400px;
-        padding: 20px;
-        text-align: center;
-      }
+.container {
+  margin: 0 auto;
+  max-width: 400px;
+  padding: 20px;
+  text-align: center;
+}
 
-      h1 {
-        margin-bottom: 20px;
-      }
+h1 {
+  margin-bottom: 20px;
+}
 
-      form {
-        display: flex;
-        flex-direction: column;
-      }
+form {
+  display: flex;
+  flex-direction: column;
+}
 
-      label {
-        margin-bottom: 10px;
-      }
+label {
+  margin-bottom: 10px;
+}
 
-      input {
-        padding: 10px;
-        margin-bottom: 20px;
-      }
+input {
+  padding: 10px;
+  margin-bottom: 20px;
+}
 
-      button {
-        background-color: #4CAF50;
-        color: white;
-        border: none;
-        padding: 10px;
-        cursor: pointer;
-        margin-bottom: 20px;
-      }
+button {
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+  margin-bottom: 20px;
+  position: relative;
+}
 
-      a {
-        display: block;
-        margin-top: 20px;
-      }
+a {
+  display: block;
+  margin-top: 20px;
+}
 
+.button-container {
+  display: flex;
+  justify-content: center;
+}
 
+.loading-animation {
+  position: relative;
+  width: 100px; /* Adjust the width as needed */
+  height: 40px; /* Adjust the height as needed */
+}
 
+.loading-dots {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  background-color: #086608; /* Adjust the dot color as needed */
+  border-radius: 50%;
+  animation: loadingDots 1s infinite linear;
+  margin-right: 5px; /* Adjust the spacing between dots as needed */
+}
 
-
-        /* Reset default margin and padding */
-/* * {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
+@keyframes loadingDots {
+  0% {
+    transform: translateX(0);
   }
-  
-  /* Apply a background color to the body 
-  body {
-    background-color: #f2f2f2;
+  33% {
+    transform: translateX(10px); /* Adjust the distance between dots as needed */
   }
-  
-  /* Apply styles to the form element 
-  form {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
+  66% {
+    transform: translateX(20px); /* Adjust the distance between dots as needed */
   }
-  
-  /* Apply styles to the input elements 
-  input[type="email"],
-  input[type="password"] {
-    padding: 12px 20px;
-    margin: 8px 0;
-    box-sizing: border-box;
-    border: none;
-    border-radius: 4px;
-    background-color: #fff;
-    font-size: 16px;
+  100% {
+    transform: translateX(0);
   }
-  
-  /* Apply styles to the submit button 
-  button[type="submit-btn"] {
-    background-color: #4CAF50;
-    color: white;
-    padding: 14px 20px;
-    margin: 8px 0;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 16px;
-    text-transform: uppercase;
-    font-weight: bold;
-    transition: background-color 0.3s ease;
-  }
-  
-  /* Change the background color of the button when the mouse is hovering over it 
-  button[type="submit-btn"]:hover {
-    background-color: #3e8e41;
-  } */
-  
+}
+
     </style>
 </head>
 <body>
   <div class="container">
     <h1>Login</h1>
-    <form action="/login" method="POST">
+    <form action="/login" method="POST" class="button-container">
       <label for="email-input">Email:</label>
       <input type="email" id="email-input" name="email">
       <label for="password-input">Password:</label>
       <input type="password" id="password-input" name="password">
-      <button type="submit-btn">Submit</button>
+      <button type="submit-btn" id="login-button" class="loading-animation" onclick="showLoadingAnimation(this)">Submit</button>
     </form>
     <a href="#">Forgot password?</a>
     <a href="/signup.html">Don't have an account? Sign up</a>
@@ -133,5 +113,22 @@
       
         <button type="submit-btn">Log In</button>
       </form>       -->
+      <script>
+
+function showLoadingAnimation(button) {
+  const buttonContainer = button.parentElement;
+  const loadingAnimation = document.createElement('div');
+  loadingAnimation.className = 'loading-animation';
+  loadingAnimation.innerHTML = '<span class="loading-dots"></span><span class="loading-dots"></span><span class="loading-dots"></span>';
+
+  // Hide the button by setting its display property to 'none'
+  button.style.display = 'none';
+
+  // Append the loading animation element to the button container
+  buttonContainer.appendChild(loadingAnimation);
+}
+
+
+      </script>
 </body>
 </html>
