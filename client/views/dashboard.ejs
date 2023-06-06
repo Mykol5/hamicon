@@ -412,14 +412,14 @@ header {
   background-color: none;
   transition: background-color 0.3s ease-in-out;
   border-radius: 4px;
-  padding: 5px 115px 1px 43px;
+  padding: 5px 70px 1px 30px;
   text-align: inline;
 }
 
 .sidebar a {
   color: #ffffff;
   text-decoration: none;
-  font-size: 1.2rem;
+  font-size: 1rem;
 }
 .sidebar li:hover {
   background-color: rgb(78, 141, 102);
@@ -826,7 +826,30 @@ header {
   animation: custom-spinner 1s linear infinite;
 } */
 
+#sidebtn {
+  margin-top: 300px;
+  margin-left: 20px;
+  margin-bottom: 0px;
+  color: white;
+  background-color: transparent;
+  font-size: 1rem;
+  font-family: 'Times New Roman', Times, serif;
+}
+#downloadbtn{
+  margin-left: 20px;
+  color: white;
+  background-color: transparent;
+  font-size: 1rem;
+  font-family: 'Times New Roman', Times, serif;
+  margin-top: 0px;
+}
 
+#copyright {
+  font-size: 12.5px;
+  margin-left: 24px;
+  margin-top: 0px;
+  color: #eedf89;
+}
 
    </style>
 
@@ -921,15 +944,21 @@ header {
   <aside class="sidebar">
     <nav>
       <ul>
-        <li><a id="home" href="#">Home</a></li>
-        <li id="dashboard"><a href="#">Dashboard</a></li>
-        <li><a href="#">My Cart</a></li>
-        <form method="POST" action="/logout">
-          <button type="submit">Logout</button>
-        </form>
+        <li><a id="home" href="/dashboard.html"><i class="fas fa-home"></i> Home</i></a></li>
+        <li id="dashboard"><a href="/profile"><i class="fas fa-chart-line fa-fw"></i> Dashboard</a></li>
+        <li><a href="/order"><i class="fas fa-shopping-cart fa-fw"></i> My Cart</a></li>
+
       </ul>
+      
+      <form method="POST" action="/logout">
+        <button type="submit" id="sidebtn"><i class="fas fa-sign-out-alt fa-fw"></i>Logout</button>
+        <button type="#" id="downloadbtn"><i class="fas fa-sign-out-alt fa-fw"></i>Download App</button>
+      </form>
+      <hr>
+      <a id="copyright">© Copyright 2023 SmartTechHubInc.</a>
     </nav>
   </aside>
+  
   <div class="overlay"></div>
     <div class="container">
       <h3>Welcome to the dashboard, <%= username %>!</h3>
