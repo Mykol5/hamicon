@@ -108,17 +108,43 @@ h1 {
 
 .cart {
   margin-top: 30px;
+  padding: 10px;
+  background-color: #ffffff;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  overflow-x: auto;
+  max-width: 400px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.cart h2 {
+  font-size: 21px;
+  text-align: left;
+  position: sticky;
+  left: 10px;
+  margin-top: 0;
+  margin-bottom: 10px;
+  background-color: #ffffff;
+  padding: 10px;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  z-index: 1;
 }
 
 .cart-items {
   display: flex;
   overflow-x: scroll;
   scroll-snap-type: x mandatory;
-  scroll-behavior: smooth;
   -webkit-overflow-scrolling: touch;
-  max-height: 300px;
-  -ms-overflow-style: none;  /* IE and Edge */
-  scrollbar-width: none;  /* Firefox */
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  padding-bottom: 10px;
+  transition: transform 1s ease-in-out;
+}
+
+.cart-items:hover {
+  transition-duration: 1s;
 }
 
 ul {
@@ -128,52 +154,24 @@ ul {
   scroll-snap-align: start;
 }
 
-.cart-items li {
+/* .cart-items li {
   flex: 0 0 auto;
-  width: 300px;
+  width: 200px;
   margin-right: 10px;
   border: 1px solid #ccc;
   border-radius: 5px;
   text-align: center;
   padding: 10px;
-  font-size: 16px;
-}
+  font-size: 14px;
+  background-color: #fff;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+} */
+
 .cart-items::-webkit-scrollbar {
   display: none;
 }
 
-li img {
-  max-width: 220%;
-  height: 30%;
-  margin-bottom: 0px;
-}
-
-button {
-  display: block;
-  margin: 10px auto;
-  padding: 5px 10px;
-  background-color: #7ff3bd;
-  color: #000a06;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-
-/*fixed cart */
-.fixed-cart {
-  margin-top: 30px;
-  }
-  
-  .fixed-cart ul {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  align-items: center;
-  list-style: none;
-  }
-  
-  .fixed-cart li {
+.cart-items li {
   flex: 0 0 auto;
   width: 150px;
   margin-right: 10px;
@@ -181,17 +179,95 @@ button {
   border-radius: 5px;
   text-align: center;
   padding: 10px;
-  font-size: 16px;
-  margin-bottom: 10px;
-  }
-  
-  .fixed-cart li img {
+  font-size: 12px;
+  background-color: #fff;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+li img {
   max-width: 100%;
   height: auto;
+  margin-bottom: 5px;
+  object-fit: cover;
+}
+
+button {
+  display: block;
+  margin: 5px auto;
+  padding: 3px 8px;
+  background-color: #7ff3bd;
+  color: #000a06;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.cart-item {
+  position: relative;
+}
+
+.cart .close-cart-btn {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  background: transparent;
+  color: #333131;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.cart .cart-item img {
+  max-width: 100px;
+  height: 100px;
+  margin-top: 25px;
+  margin-right: 20px;
   margin-bottom: 0px;
-  }
-  
-  .fixed-cart button {
+}
+
+
+/*fixed cart */
+.fixed-cart {
+  margin-top: 30px;
+}
+
+.fixed-cart ul {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.fixed-cart li {
+  flex: 0 0 calc(50% - 10px);
+  max-width: 300px;
+  margin-bottom: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  text-align: center;
+  padding: 10px;
+  font-size: 14px;
+  background-color: #fff;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  position: relative;
+}
+
+.fixed-cart li:nth-child(odd) {
+  margin-right: 20px;
+}
+
+.fixed-cart li img {
+  max-width: 100%;
+  height: auto;
+  margin-bottom: 5px;
+  object-fit: cover;
+}
+
+.fixed-cart button {
   display: block;
   margin: 10px auto;
   padding: 5px 10px;
@@ -200,17 +276,17 @@ button {
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  }
+}
 
-  .fixed-cart .cart-item-add-btn {
-    background-color: #1c7ebd;
-    color: white;
-  }
+.fixed-cart .cart-item-add-btn {
+  background-color: #1c7ebd;
+  color: white;
+}
 
-  .fixed-cart .cart-item img {
-  max-width: 100px;
-  height: 100px;
-  margin-top: 50px;
+.fixed-cart .cart-item img {
+  max-width: 80px;
+  height: 80px;
+  margin-top: 25px;
   margin-right: 20px;
   margin-bottom: 0px;
 }
@@ -236,15 +312,17 @@ button {
 
 .fixed-cart .close-cart-btn {
   position: absolute;
-  top: 130px;
-  right: 25px;
+  top: 5px;
+  right: 5px;
   font-size: 20px;
   font-weight: bold;
   color: #333;
-  background-color: #fff;
+  background-color: transparent;
   border: none;
   cursor: pointer;
 }
+
+
 
 
 /*
@@ -354,6 +432,7 @@ header {
   left: 0;
   width: 100%;
   z-index: 1000;
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.5);
 }
 
 .logo img {
@@ -394,8 +473,8 @@ header {
   width: 250px;
   height: 100%;
   background-color: #0b945b;
-  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.5);
-  transition: all 0.8s ease;
+  /* box-shadow: 2px 0 10px rgba(0, 0, 0, 0.5); */
+  transition: all 0.9s ease;
   z-index: 999;
 }
 
@@ -846,7 +925,7 @@ header {
 
 #copyright {
   font-size: 12.5px;
-  margin-left: 24px;
+  margin-left: 21.5px;
   margin-top: 0px;
   color: #eedf89;
 }
@@ -995,7 +1074,7 @@ header {
               <p>Description of Food 1</p>
               <button id="view-cart-btn1">View Cart</button>
 
-              <div id="cart-details1">
+              <div id="cart-details1" data-item-id="cart-details1">
                 <div class="cart-item">
                   <button class="close-cart-btn">&times;</button>
                   <img src="/images/friedrice.jpg">
@@ -1007,12 +1086,17 @@ header {
                       <span class="cart-item-quantity-value">0</span>
                       <button class="cart-item-quantity-btn">+</button>
                     </div>
-                    <button class="cart-item-add-btn">Add to Cart</button>
+                    <button onclick="addToCart('cart-details1')" class="cart-item-add-btn" id="cart-button">Add to Cart</button>
+
                   </div>
                 </div>
               </div>
-
-
+              <div id="loading-animation-container">
+                <div class="loading-overlay"></div>
+                <div id="loading-animation" class="custom-loader">
+                  <div class="loader-circle"></div>
+                </div>
+              </div>
               <button>Add to Cart</button>
             </li>
             <li>
@@ -1041,8 +1125,8 @@ header {
               <button>Add to Cart</button>
             </li>
             <!-- Add more food items here -->
-          </ul>
-          <ul>
+          <!-- </ul>
+          <ul> -->
             <li>
               <img src="/images/friedrice.jpg" alt="Food 8">
               <h3>Food 8</h3>
@@ -1097,7 +1181,242 @@ header {
           </ul>
         </div>
       </div>
-      <div class="fixed-cart">
+
+
+      <div class="cart">
+        <h2>Cart</h2>
+        <div class="cart-items">
+          <ul>
+            <li>
+              <img src="/images/friedrice.jpg" alt="Food 1">
+              <h3>Food 1</h3>
+              <p>Description of Food 1</p>
+              <button id="view-cart-btn1">View Cart</button>
+
+              <div id="cart-details1">
+                <div class="cart-item">
+                  <button class="close-cart-btn">&times;</button>
+                  <img src="/images/friedrice.jpg">
+                  <div class="cart-item-details">
+                    <p class="cart-item-name">Item 1</p>
+                    <p class="cart-item-price" data-price="10.00">$0.00</p>
+                    <div class="cart-item-quantity">
+                      <button class="cart-item-quantity-btn">-</button>
+                      <span class="cart-item-quantity-value">0</span>
+                      <button class="cart-item-quantity-btn">+</button>
+                    </div>
+                    <button class="cart-item-add-btn">Add to Cart</button>
+                  </div>
+                </div>
+              </div>
+
+
+              <button>Add to Cart</button>
+            </li>
+            <li>
+              <img src="/images/friedrice.jpg" alt="Food 2">
+              <h3>Food 2</h3>
+              <p>Description of Food 2</p>
+              <button id="view-cart-btn2">View Cart</button>
+
+              <div id="cart-details2">
+                <div class="cart-item">
+                  <button class="close-cart-btn">&times;</button>
+                  <img src="/images/friedrice.jpg">
+                  <div class="cart-item-details">
+                    <p class="cart-item-name">Item 2</p>
+                    <p class="cart-item-price" data-price="20.00">$0.00</p>
+                    <div class="cart-item-quantity">
+                      <button class="cart-item-quantity-btn">-</button>
+                      <span class="cart-item-quantity-value">0</span>
+                      <button class="cart-item-quantity-btn">+</button>
+                    </div>
+                    <button class="cart-item-add-btn">Add to Cart</button>
+                  </div>
+                </div>
+              </div>
+
+              <button>Add to Cart</button>
+            </li>
+            <!-- Add more food items here -->
+          <!-- </ul>
+          <ul> -->
+            <li>
+              <img src="/images/friedrice.jpg" alt="Food 8">
+              <h3>Food 8</h3>
+              <p>Description of Food 8</p>
+              <button id="view-cart-btn8">View Cart</button>
+
+              <div id="cart-details8">
+                <div class="cart-item">
+                  <button class="close-cart-btn">&times;</button>
+                  <img src="/images/friedrice.jpg">
+                  <div class="cart-item-details">
+                    <p class="cart-item-name">Item 8</p>
+                    <p class="cart-item-price" data-price="10.00">$0.00</p>
+                    <div class="cart-item-quantity">
+                      <button class="cart-item-quantity-btn">-</button>
+                      <span class="cart-item-quantity-value">0</span>
+                      <button class="cart-item-quantity-btn">+</button>
+                    </div>
+                    <button class="cart-item-add-btn">Add to Cart</button>
+                  </div>
+                </div>
+              </div>
+
+              <button>Add to Cart</button>
+            </li>
+            <li>
+              <img src="/images/friedrice.jpg" alt="Food 9">
+              <h3>Food 9</h3>
+              <p>Description of Food 9</p>
+              <button id="view-cart-btn9">View Cart</button>
+
+              <div id="cart-details9">
+                <div class="cart-item">
+                  <button class="close-cart-btn">&times;</button>
+                  <img src="/images/friedrice.jpg">
+                  <div class="cart-item-details">
+                    <p class="cart-item-name">Item 9</p>
+                    <p class="cart-item-price" data-price="30.00">$0.00</p>
+                    <div class="cart-item-quantity">
+                      <button class="cart-item-quantity-btn">-</button>
+                      <span class="cart-item-quantity-value">0</span>
+                      <button class="cart-item-quantity-btn">+</button>
+                    </div>
+                    <button class="cart-item-add-btn">Add to Cart</button>
+                  </div>
+                </div>
+              </div>
+
+              <button>Add to Cart</button>
+            </li>
+            <!-- Add more food items here -->
+          </ul>
+        </div>
+      </div>
+
+
+      <div class="cart">
+        <h2>Cart</h2>
+        <div class="cart-items">
+          <ul>
+            <li>
+              <img src="/images/friedrice.jpg" alt="Food 1">
+              <h3>Food 1</h3>
+              <p>Description of Food 1</p>
+              <button id="view-cart-btn1">View Cart</button>
+
+              <div id="cart-details1" data-item-id="cart-details1">
+                <div class="cart-item">
+                  <button class="close-cart-btn">&times;</button>
+                  <img src="/images/friedrice.jpg">
+                  <div class="cart-item-details">
+                    <p class="cart-item-name">Item 1</p>
+                    <p class="cart-item-price" data-price="10.00">$0.00</p>
+                    <div class="cart-item-quantity">
+                      <button class="cart-item-quantity-btn">-</button>
+                      <span class="cart-item-quantity-value">0</span>
+                      <button class="cart-item-quantity-btn">+</button>
+                    </div>
+                    <button onclick="addToCart('cart-details1')" class="cart-item-add-btn" id="cart-button">Add to Cart</button>
+
+                  </div>
+                </div>
+              </div>
+              <div id="loading-animation-container">
+                <div class="loading-overlay"></div>
+                <div id="loading-animation" class="custom-loader">
+                  <div class="loader-circle"></div>
+                </div>
+              </div>
+              <button>Add to Cart</button>
+            </li>
+            <li>
+              <img src="/images/friedrice.jpg" alt="Food 2">
+              <h3>Food 2</h3>
+              <p>Description of Food 2</p>
+              <button id="view-cart-btn2">View Cart</button>
+
+              <div id="cart-details2">
+                <div class="cart-item">
+                  <button class="close-cart-btn">&times;</button>
+                  <img src="/images/friedrice.jpg">
+                  <div class="cart-item-details">
+                    <p class="cart-item-name">Item 2</p>
+                    <p class="cart-item-price" data-price="20.00">$0.00</p>
+                    <div class="cart-item-quantity">
+                      <button class="cart-item-quantity-btn">-</button>
+                      <span class="cart-item-quantity-value">0</span>
+                      <button class="cart-item-quantity-btn">+</button>
+                    </div>
+                    <button class="cart-item-add-btn">Add to Cart</button>
+                  </div>
+                </div>
+              </div>
+
+              <button>Add to Cart</button>
+            </li>
+            <!-- Add more food items here -->
+          <!-- </ul>
+          <ul> -->
+            <li>
+              <img src="/images/friedrice.jpg" alt="Food 8">
+              <h3>Food 8</h3>
+              <p>Description of Food 8</p>
+              <button id="view-cart-btn8">View Cart</button>
+
+              <div id="cart-details8">
+                <div class="cart-item">
+                  <button class="close-cart-btn">&times;</button>
+                  <img src="/images/friedrice.jpg">
+                  <div class="cart-item-details">
+                    <p class="cart-item-name">Item 8</p>
+                    <p class="cart-item-price" data-price="10.00">$0.00</p>
+                    <div class="cart-item-quantity">
+                      <button class="cart-item-quantity-btn">-</button>
+                      <span class="cart-item-quantity-value">0</span>
+                      <button class="cart-item-quantity-btn">+</button>
+                    </div>
+                    <button class="cart-item-add-btn">Add to Cart</button>
+                  </div>
+                </div>
+              </div>
+
+              <button>Add to Cart</button>
+            </li>
+            <li>
+              <img src="/images/friedrice.jpg" alt="Food 9">
+              <h3>Food 9</h3>
+              <p>Description of Food 9</p>
+              <button id="view-cart-btn9">View Cart</button>
+
+              <div id="cart-details9">
+                <div class="cart-item">
+                  <button class="close-cart-btn">&times;</button>
+                  <img src="/images/friedrice.jpg">
+                  <div class="cart-item-details">
+                    <p class="cart-item-name">Item 9</p>
+                    <p class="cart-item-price" data-price="30.00">$0.00</p>
+                    <div class="cart-item-quantity">
+                      <button class="cart-item-quantity-btn">-</button>
+                      <span class="cart-item-quantity-value">0</span>
+                      <button class="cart-item-quantity-btn">+</button>
+                    </div>
+                    <button class="cart-item-add-btn">Add to Cart</button>
+                  </div>
+                </div>
+              </div>
+
+              <button>Add to Cart</button>
+            </li>
+            <!-- Add more food items here -->
+          </ul>
+        </div>
+      </div>
+
+
+      <!-- <div class="fixed-cart">
         <ul>
           <li>
             <img src="/images/friedrice.jpg" alt="Food 10">
@@ -1252,9 +1571,8 @@ header {
             </div>
             <button>Add to Cart</button>
           </li>
-          <!-- Add more fixed cart items here -->
         </ul>
-      </div>
+      </div> -->
       
      <!-- <div class="cart">
         <h2>Cart</h2>
