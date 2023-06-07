@@ -367,36 +367,36 @@ button {
   cursor: pointer;
 }*/
 .reviews {
-  clear: both;
-  margin-top: 50px;
-  width: 100%;
-  max-width: 800px;
-  margin-left: auto;
-  margin-right: auto;
+  overflow: hidden;
+  position: relative;
 }
 
-.reviews ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
+.review-container {
   display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
+  white-space: nowrap;
+  animation: moveReviews 15s linear infinite;
 }
 
-.reviews li {
-  width: calc(50% - 10px);
-  margin-bottom: 20px;
-  background-color: #f7f7f7;
-  padding: 20px;
-  box-sizing: border-box;
+.review {
+  flex: 0 0 auto;
+  padding: 10px;
+  background-color: #f2f2f2;
+  margin-right: 10px;
 }
 
-@media (max-width: 768px) {
-  .reviews li {
-    width: 100%;
+@keyframes moveReviews {
+  0% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(-100%);
   }
 }
+
+.reviews h2 {
+  font-size: 21px;
+}
+
 
 /* Logo */
 .logo {
@@ -431,7 +431,7 @@ header {
   top: 0;
   left: 0;
   width: 100%;
-  z-index: 1000;
+  z-index: 10001;
   box-shadow: 2px 0 10px rgba(0, 0, 0, 0.5);
 }
 
@@ -475,7 +475,7 @@ header {
   background-color: #0b945b;
   /* box-shadow: 2px 0 10px rgba(0, 0, 0, 0.5); */
   transition: all 0.9s ease;
-  z-index: 999;
+  z-index: 10000;
 }
 
 .sidebar ul {
@@ -518,8 +518,8 @@ header {
   background-color: rgba(0, 0, 0, 0.5);
   opacity: 0;
   visibility: hidden;
-  transition: all 0.2s ease;
-  z-index: 998;
+  transition: all 0.9s ease;
+  z-index: 9999;
 }
 
 .overlay.active {
@@ -553,6 +553,7 @@ header {
   display: flex;
   justify-content: space-around;
   align-items: center;
+  z-index: 9999; /* Adjust the z-index value as needed */
 }
 
 .bottom-bar a {
@@ -1414,6 +1415,7 @@ header {
           </ul>
         </div>
       </div>
+      <br>
 
 
       <!-- <div class="fixed-cart">
@@ -1585,20 +1587,23 @@ header {
       </div>-->
       <div class="reviews">
         <h2>Reviews</h2>
-        <ul>
-          <li>
+        <div class="review-container">
+          <div class="review">
             <h3>Pastry 1</h3>
             <p>Delicious pastry, will definitely order again!</p>
             <span class="author">- John Doe</span>
-          </li>
-          <li>
+          </div>
+          <div class="review">
             <h3>Pastry 2</h3>
             <p>Amazing taste and texture, highly recommend!</p>
             <span class="author">- Jane Smith</span>
-          </li>
-        </ul>
-      </div>
+          </div>
+        </div>
+      </div>      
     </div>
+    <br>
+    <br>
+    <br>
 
     <div class="bottom-bar">
       <a href="/dashboard.html" class="active">
