@@ -206,6 +206,7 @@ button {
 
 .cart-item {
   position: relative;
+  z-index: 1001;
 }
 
 .cart .close-cart-btn {
@@ -553,7 +554,7 @@ header {
   display: flex;
   justify-content: space-around;
   align-items: center;
-  z-index: 9999; /* Adjust the z-index value as needed */
+  z-index: 500; /* Adjust the z-index value as needed */
 }
 
 .bottom-bar a {
@@ -701,10 +702,12 @@ header {
 .cart-item {
   display: flex;
   margin: 20px;
+  margin-top: 60px;
   padding: 20px;
   background-color: #fff;
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+  z-index: 99999;
 }
 
 .cart-item img {
