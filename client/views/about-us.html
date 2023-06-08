@@ -13,7 +13,6 @@
       /* font-family: Arial, sans-serif; */
       background-color: #f2f2f2;
     }
-
     body {
       font-family: system-ui, 'Open Sans';
       font-size: 14px;
@@ -40,9 +39,10 @@
     }
 
     .owner-image {
-      max-width: 200px;
+      max-width: 150px;
       border-radius: 50%;
-      margin-bottom: 20px;
+      margin-top: 20px;
+      margin-bottom: 10px;
     }
 
     .owner-name {
@@ -59,6 +59,15 @@
 
     .business-history {
       margin-bottom: 20px;
+    }
+
+    .business-description,
+    .owner-description,
+    .pastry-description,
+    .shop-description,
+    .business-history {
+      text-align: justify;
+      text-justify: inter-word;
     }
 
 
@@ -92,37 +101,51 @@
         .bottom-bar a i {
             font-size: 24px;
         }
-  </style>
+
+  .bottom-bar a.loading i {
+    animation: spin 2s infinite linear;
+  }
+
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+</style>
+
 </head>
 <body>
-  <div class="about-container">
+  <div class="about-container" id="about-container">
     <h1>About Us</h1>
-    <p class="business-description">Welcome to our Hami Confectionery, where indulgence meets artistry. We take pride in creating delectable pastries that not only delight the taste buds but also captivate the eyes. With a passion for the pastry craft and a commitment to quality, we strive to deliver unforgettable sweet experiences.</p>
-    <p class="business-history">Our pastry business has been serving the community since [year]. Over the years, we have built a reputation for excellence and have become a go-to destination for pastry lovers. From our humble beginnings to becoming a beloved establishment, we have stayed true to our core values of using the finest ingredients and crafting each pastry with utmost care.</p>
-    <img class="owner-image" src="path/to/owner-image.jpg" alt="Owner Image">
+    <p class="business-description">Welcome to our pastry shop, where indulgence meets artistry. We take pride in creating delectable pastries that not only delight the taste buds but also captivate the eyes. With a passion for the pastry craft and a commitment to quality, we strive to deliver unforgettable sweet experiences.</p>
+    <p class="business-history">Our pastry business has been serving the community since 2021. Over the years, we have built a reputation for excellence and have become a go-to destination for pastry lovers. From our humble beginnings to becoming a beloved establishment, we have stayed true to our core values of using the finest ingredients and crafting each pastry with utmost care.</p>
+    <img class="owner-image" src="/images/ceo.jpeg" alt="Owner Image">
     <p class="owner-name">Funmilola Kolawole</p>
-    <p class="owner-description">Funmilola Kolawole is the talented pastry chef and owner of our Hami Confectionery. With a passion for creating delicious and visually stunning desserts, Funmilola brings her expertise and creativity to every treat she makes. Her dedication to quality and attention to detail have earned her numerous accolades in the culinary world.</p>
-    <p>At Hami Confectionery, we use only the finest ingredients to ensure the highest level of taste and freshness. Each pastry is carefully handcrafted with precision and love, showcasing our commitment to excellence. From flaky croissants to decadent cakes, our wide range of offerings is designed to satisfy even the most discerning palates.</p>
-    <p>Visit our shop today and experience the artistry and flavor that Jane and her team bring to every creation. Whether it's a special celebration or a simple moment of indulgence, we're here to elevate your pastry experience and create sweet memories that linger long after the last bite.</p>
+    <p class="owner-description">Funmilola Kolawole is the talented pastry chef and owner of our pastry shop. With a passion for creating delicious and visually stunning desserts, Funmilola brings her expertise and creativity to every treat she makes. Her dedication to quality and attention to detail have earned her numerous accolades in the culinary world.</p>
+    <p class="shop-description">At our pastry shop, we use only the finest ingredients to ensure the highest level of taste and freshness. Each pastry is carefully handcrafted with precision and love, showcasing our commitment to excellence. From flaky croissants to decadent cakes, our wide range of offerings is designed to satisfy even the most discerning palates.</p>
+    <p class="pastry-description">Visit our shop today and experience the artistry and flavor that Funmilola and her team bring to every creation. Whether it's a special celebration or a simple moment of indulgence, we're here to elevate your pastry experience and create sweet memories that linger long after the last bite.</p>
   </div>
 
   <br><br>
 
   <div class="bottom-bar">
-    <a href="/dashboard.html" class="active">
+    <a href="/dashboard.html" class="bottom-icon" id="home-icon">
       <i class="fa fa-home"></i>
       Home
     </a>
-    <a href="/about">
+    <a href="/about" class="bottom-icon" id="about-icon">
       <i class="fa fa-info-circle"></i>
       About
     </a>
-    <a href="/order" id="order-btn">
+    <a href="/order" id="order-btn" class="bottom-icon" id="order-icon">
       <span class="notification" id="cart-count"></span> <!-- Add the cart count element here -->
       <i class="fa fa-shopping-cart"></i>
       Orders
     </a>
-    <a href="/profile">
+    <a href="/profile" class="bottom-icon" id="profile-icon">
       <i class="fa fa-user"></i>
       Profile
     </a>
@@ -132,16 +155,57 @@
 
 
   <script>
-    // Fetch the About Us content from the server and insert it into the page
-    fetch('/about')
-      .then(response => response.text())
-      .then(data => {
-        const aboutContainer = document.getElementById('about-container');
-        aboutContainer.innerHTML = data;
-      })
-      .catch(error => {
-        console.error('Error fetching About Us content:', error);
-      });
+    document.addEventListener('DOMContentLoaded', function() {
+  // Your code here to modify the element's innerHTML
+  // Fetch the About Us content from the server and insert it into the page
+  fetch('/about')
+    .then(response => response.text())
+    .then(data => {
+      const aboutContainer = document.getElementById('about-container');
+      aboutContainer.innerHTML = data;
+    })
+    .catch(error => {
+      console.error('Error fetching About Us content:', error);
+    });
+});
+
   </script>
+
+<script>
+  // Add an event listener to the dashboard icon
+  const dashboardLink = document.querySelector('.bottom-bar a[href="/dashboard.html"]');
+  dashboardLink.addEventListener('click', handleDashboardClick);
+
+  function handleDashboardClick(event) {
+    event.preventDefault();
+
+    // Add the loading animation class to the dashboard icon
+    dashboardLink.classList.add('loading');
+
+    // Simulate a delay to mimic loading
+    setTimeout(() => {
+      // Remove the loading animation class after the delay
+      dashboardLink.classList.remove('loading');
+
+      // Navigate to the dashboard page
+      window.location.href = "/dashboard.html";
+    }, 2000);
+  }
+</script>
+
+<script>
+  // Get the current URL path
+  const currentPath = window.location.pathname;
+
+  // Find the corresponding bottom icon and add the "active" class
+  const bottomIcons = document.querySelectorAll('.bottom-icon');
+  bottomIcons.forEach(icon => {
+    if (icon.getAttribute('href') === currentPath) {
+      icon.classList.add('active');
+    }
+  });
+</script>
+
+
 </body>
 </html>

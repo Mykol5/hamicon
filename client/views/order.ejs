@@ -21,6 +21,7 @@
           font-size: 14px;
         }
 
+
         .order-container {
             max-width: 600px;
             margin: 0 auto;
@@ -259,7 +260,21 @@
   }
 } */
 
-    </style>
+
+.bottom-bar a.loading i {
+    animation: spin 2s infinite linear;
+  }
+
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+</style>
+
 </head>
 
 <body>
@@ -294,20 +309,20 @@
     </div>
 
     <div class="bottom-bar">
-        <a href="/dashboard.html" class="active">
+        <a href="/dashboard.html" class="bottom-icon" id="home-icon">
             <i class="fa fa-home"></i>
             Home
         </a>
-        <a href="/about">
+        <a href="/about" class="bottom-icon" id="about-icon">
             <i class="fa fa-info-circle"></i>
             About
         </a>
-        <a href="/order" id="order-btn">
+        <a href="/order" id="order-btn" class="bottom-icon" id="order-icon">
             <span class="notification" id="cart-count"></span>
             <i class="fa fa-shopping-cart"></i>
             Orders
         </a>
-        <a href="/profile">
+        <a href="/profile" class="bottom-icon" id="profile-icon">
             <i class="fa fa-user"></i>
             Profile
         </a>
@@ -329,7 +344,7 @@
         
             // Hide the loading animation after the task is completed
             loadingAnimationContainer.classList.remove('show-loading');
-          }, 3000); // Simulate a 2-second delay
+          }, 4000); // Simulate a 2-second delay
         });
         
         
@@ -409,6 +424,42 @@
             window.location.href = '/payment?totalPrice=' + totalPrice;
         }
     </script>
+
+<script>
+  // Add an event listener to the dashboard icon
+  const dashboardLink = document.querySelector('.bottom-bar a[href="/dashboard.html"]');
+  dashboardLink.addEventListener('click', handleDashboardClick);
+
+  function handleDashboardClick(event) {
+    event.preventDefault();
+
+    // Add the loading animation class to the dashboard icon
+    dashboardLink.classList.add('loading');
+
+    // Simulate a delay to mimic loading
+    setTimeout(() => {
+      // Remove the loading animation class after the delay
+      dashboardLink.classList.remove('loading');
+
+      // Navigate to the dashboard page
+      window.location.href = "/dashboard.html";
+    }, 2000);
+  }
+</script>
+
+<script>
+  // Get the current URL path
+  const currentPath = window.location.pathname;
+
+  // Find the corresponding bottom icon and add the "active" class
+  const bottomIcons = document.querySelectorAll('.bottom-icon');
+  bottomIcons.forEach(icon => {
+    if (icon.getAttribute('href') === currentPath) {
+      icon.classList.add('active');
+    }
+  });
+</script>
+
 
 </body>
 
