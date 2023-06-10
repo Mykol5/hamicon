@@ -187,9 +187,9 @@ app.post('/login', (req, res) => {
   const { email, password } = req.body;
 
   const users = JSON.parse(fs.readFileSync('users.json', 'utf8'));
-  
+
   // Find the user with the matching email in the JSON file
-  const user = users.find(user => user.email === email);
+  const user = users.find((user) => user.email === email);
 
   const loginTime = Date.now();
   req.session.loginTime = loginTime;
@@ -206,18 +206,30 @@ app.post('/login', (req, res) => {
         console.log('User object:', user);
         console.log('Name:', user.name);
 
+        // Check if the user is a new user (first login)
+        const isNewUser = !user.lastLoginTime;
+
+        if (isNewUser) {
+          // Update the last login time for the user if it's a new user
+          user.lastLoginTime = loginTime;
+
+          // Update the users.json file with the updated user data
+          fs.writeFileSync('users.json', JSON.stringify(users));
+        }
+
         // Associate the session ID with the user's session data
         sessions[sessionId] = {
           userId: user.userId,
-          name: user.name, // Include the name property
+          name: user.name,
           email: user.email,
+          isNewUser,
         };
 
         // Set the session ID as a cookie
-        res.cookie('sessionId', sessionId, { httpOnly: true, secure: true });
-        
+        res.cookie('sessionId', sessionId, { httpOnly: true });
+
         // Set the email as a separate cookie
-        res.cookie('email', user.email, { httpOnly: true, secure: true });
+        res.cookie('email', user.email, { httpOnly: true });
 
         // Redirect the user to the dashboard page
         console.log('Redirecting to dashboard...');
@@ -261,7 +273,16 @@ app.get('/dashboard.html', (req, res) => {
         return;
       }
 
-      res.render('dashboard', { user, username: user.name });
+      // Retrieve the notification message based on whether the user is a new user or an old user
+      let notificationMessage;
+      if (session.isNewUser) {
+        notificationMessage = `<p><strong>Welcome to Hami Confectionery, ${user.name}!</strong></p> This is your first login, go and complete your KYC in the Profile section. <p>We are here to serve you better.</p>`;
+      } else {
+        notificationMessage = `<p><strong>Welcome back, ${user.name}!</strong></p> Our services runs from 08:00 - 18:00 Mondays - Saturdays. <p>You can reach us via Call/Chat 08145336427.</p>`;
+      }
+
+      // Render the dashboard page and pass the user and notification message to the template
+      res.render('dashboard', { user, username: user.name, notificationMessage });
     });
   } else {
     // Clear the session cookie and redirect to the login page
@@ -269,6 +290,101 @@ app.get('/dashboard.html', (req, res) => {
     res.redirect('/index.html');
   }
 });
+
+
+// app.post('/login', (req, res) => {
+//   const { email, password } = req.body;
+
+//   const users = JSON.parse(fs.readFileSync('users.json', 'utf8'));
+  
+//   // Find the user with the matching email in the JSON file
+//   const user = users.find((user) => user.email === email);
+
+//   const loginTime = Date.now();
+//   req.session.loginTime = loginTime;
+
+//   if (user) {
+//     // Check if the user's credentials are correct
+//     bcrypt.compare(password, user.password, (err, result) => {
+//       if (result) {
+//         // Generate a session ID
+//         const sessionId = uuidv4();
+//         console.log('Generated session ID:', sessionId);
+
+//         // Verify the presence and value of the name property
+//         console.log('User object:', user);
+//         console.log('Name:', user.name);
+
+//         // Associate the session ID with the user's session data
+//         sessions[sessionId] = {
+//           userId: user.userId,
+//           name: user.name, // Include the name property
+//           email: user.email,
+//         };
+
+//         // Set the session ID as a cookie
+//         res.cookie('sessionId', sessionId, { httpOnly: true });
+
+//         // Set the email as a separate cookie
+//         res.cookie('email', user.email, { httpOnly: true });
+
+//         // Set the notification message based on whether the user is new or returning
+//         const isFirstLogin = !user.lastLoginTime;
+//         const notificationMessage = isFirstLogin ? "Welcome to Hami Confectionery, we are here to serve you better. Our working hours are 08:00 - 15:00" : "Welcome back!";
+
+//         // Redirect the user to the dashboard page and pass the notification message as a query parameter
+//         res.redirect(`/dashboard.html?notification=${encodeURIComponent(notificationMessage)}`);
+//       } else {
+//         // If the credentials are incorrect, show an error message
+//         res.send('Invalid email or password');
+//       }
+//     });
+//   } else {
+//     // If the user is not found, show an error message
+//     res.send('User not found');
+//   }
+// });
+
+// app.get('/dashboard.html', (req, res) => {
+//   // Assuming you have a way to identify the currently logged-in user
+//   const sessionId = req.cookies.sessionId;
+//   const session = sessions[sessionId];
+
+//   if (session && session.userId) {
+//     const userId = session.userId;
+
+//     // Read the contents of the users.json file
+//     fs.readFile('users.json', 'utf8', (err, data) => {
+//       if (err) {
+//         console.error('Error reading users.json:', err);
+//         res.sendStatus(500);
+//         return;
+//       }
+
+//       // Parse the JSON data into an array of user objects
+//       const users = JSON.parse(data);
+
+//       // Find the user with the matching ID
+//       const user = users.find(u => u.userId === userId);
+
+//       if (!user) {
+//         console.error('User not found:', userId);
+//         res.sendStatus(404);
+//         return;
+//       }
+
+//       // Retrieve the notification message from the query parameters
+//       const notificationMessage = req.query.notification;
+
+//       res.render('dashboard', { user, username: user.name, notificationMessage });
+//     });
+//   } else {
+//     // Clear the session cookie and redirect to the login page
+//     res.clearCookie('sessionId');
+//     res.redirect('/index.html');
+//   }
+// });
+
 
 
 app.get('/profile', (req, res) => {
