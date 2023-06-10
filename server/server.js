@@ -43,7 +43,7 @@ app.use(express.static(path.join(__dirname, 'client'), {
   maxAge: 0,
   lastModified: false,
   cacheControl: false,
-  extensions: ['html', 'css', 'js', 'jpeg', 'png']
+  extensions: ['html', 'css', 'js', 'jpeg', 'png', 'mp4']
 }));
 
 app.get('/images/:filename', (req, res) => {
@@ -69,6 +69,8 @@ function getContentType(filePath) {
       return 'image/jpeg';
     case '.png':
       return 'image/png';
+    case '.mp4':
+      return 'image/mp4'; 
     default:
       return 'application/octet-stream';
   }
@@ -108,6 +110,10 @@ app.get('/signup.html', (req, res) => {
   res.sendFile(path.join(__dirname + '/../client/signup.html'));
 });
 
+app.get('/signup-success.html', (req, res) => {
+  res.setHeader('Content-Type', 'text/html');
+  res.sendFile(path.join(__dirname + '/../client/signup-success.html'));
+});
 
 app.post('/signup', (req, res) => {
   console.log('POST request received');
@@ -158,10 +164,14 @@ app.post('/signup', (req, res) => {
       } else {
         console.log('Welcome email sent:', info.response);
       }
+      
+      // Redirect the user to the sign-up success page
+      res.redirect('/signup-success.html');
+  
+      // Redirect the user to the login page
+      res.redirect('/index.html');
     });
 
-    // Redirect the user to the login page
-    res.redirect('/index.html');
   });
 });
 

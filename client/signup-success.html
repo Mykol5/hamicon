@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <title>Sign Up Successful</title>
+    <style>
+        body {
+          margin: 0;
+          font-family: system-ui, 'Open Sans';
+          padding: 0;
+          /* background: url('images/ceo.jpeg') no-repeat center center fixed; */
+          background-size: cover;
+        }
+        
+        .overlay {
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background-color: rgba(0, 0, 0, 0.5);
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        }
+        
+        .container {
+          max-width: 500px;
+          padding: 40px;
+          background-color: #ffffff;
+          border-radius: 5px;
+          box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+          text-align: center;
+        }
+        
+        h1 {
+          font-size: 24px;
+          margin: 0 0 20px;
+          font-weight: bold;
+        }
+        
+        p {
+          font-size: 16px;
+          margin: 0 0 10px;
+        }
+        
+        .success-icon {
+  position: relative;
+  width: 80px;
+  height: 80px;
+  background-color: #ffffff;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto 20px;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+  animation: twistMark 0.2s linear 3s infinite;
+}
+
+.success-icon::before {
+  content: "\2714";
+  position: absolute;
+  font-size: 40px;
+  color: #00ff00;
+}
+
+/* @keyframes twistMark {
+  0%, 100% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(360deg);
+  }
+} */
+
+        
+        .login-link {
+          display: block;
+          margin-top: 20px;
+          color: #007bff;
+          text-decoration: none;
+          font-weight: bold;
+        }
+        
+        .login-link:hover {
+          text-decoration: underline;
+        }
+
+        /* Media query for smaller devices */
+        @media (max-width: 767px) {
+        .container {
+            margin: 0 30px; /* Adjust the margin for smaller devices */
+        }
+        }
+
+        #background-video {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -1;
+        }
+
+      </style>
+    </head>
+    <body>
+        <video autoplay muted loop id="background-video">
+            <source src="/images/hamtestvid.mp4" type="video/mp4">
+        </video>
+          
+      <div class="overlay">
+        <div class="container">
+          <div class="success-icon"></div>
+          <h1>Sign Up Successful</h1>
+          <p>Congratulations! Your account has been successfully created.</p>
+          <p>You can now proceed to the login page to access your account.</p>
+          <a href="/index.html" class="login-link">Go to Login Page</a>
+        </div>
+      </div>
+
+
+      
+<script>
+
+const successIcon = document.querySelector('.success-icon');
+
+function startTwistAnimation() {
+  successIcon.classList.add('twist-animation');
+  setTimeout(stopTwistAnimation, 200);
+}
+
+function stopTwistAnimation() {
+  successIcon.classList.remove('twist-animation');
+  setTimeout(startTwistAnimation, 3000);
+}
+
+// Start the twist animation after 3 seconds
+setTimeout(startTwistAnimation, 3000);
+
+
+        </script>
+    </body>
+
+    </html>
