@@ -180,19 +180,27 @@
     </div>
 
     <script>
-        function showLoadingAnimation(button) {
-            const buttonContainer = button.parentElement;
-            const loadingAnimation = document.createElement('div');
-            loadingAnimation.className = 'loading-animation';
-            loadingAnimation.innerHTML = '<span class="loading-dots"></span><span class="loading-dots"></span><span class="loading-dots"></span>';
+      function showLoadingAnimation(button) {
+          const emailInput = document.getElementById('email-input');
+          const passwordInput = document.getElementById('password-input');
 
-            // Hide the button by setting its display property to 'none'
-            button.style.display = 'none';
+          if (emailInput.value.trim() === '' || passwordInput.value.trim() === '') {
+              // If any of the input fields are empty, return without showing the animation
+              return;
+          }
 
-            // Append the loading animation element to the button container
-            buttonContainer.appendChild(loadingAnimation);
-        }
-    </script>
+          const buttonContainer = button.parentElement;
+          const loadingAnimation = document.createElement('div');
+          loadingAnimation.className = 'loading-animation';
+          loadingAnimation.innerHTML = '<span class="loading-dots"></span><span class="loading-dots"></span><span class="loading-dots"></span>';
+
+          // Hide the button by setting its display property to 'none'
+          button.style.display = 'none';
+
+          // Append the loading animation element to the button container
+          buttonContainer.appendChild(loadingAnimation);
+      }
+  </script>
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
