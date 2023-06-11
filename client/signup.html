@@ -9,45 +9,105 @@
     <base href="/" />
     <title>Sign Up - Pastry</title>
     <style>
+        body {
+            font-family: system-ui, 'Open Sans';
+            font-size: 14px;
+            margin: 0;
+            padding: 0;
+        }
+
         .container {
-          margin: 0 auto;
-          max-width: 400px;
-          padding: 20px;
-          text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
         }
 
         h1 {
-          margin-bottom: 20px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .logo {
+            width: 200px; /* Adjust the logo size as needed */
+            margin-bottom: 20px;
+        }
+
+        video {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -1;
+        }
+
+        .glass-panel {
+            background-color: rgba(255, 255, 255, 0.3); /* Adjust the alpha value (0.0 - 1.0) to change the transparency */
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .glass-panel a {
+            text-align: center;
         }
 
         form {
-          display: flex;
-          flex-direction: column;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
         label {
-          margin-bottom: 10px;
+            margin-bottom: 10px;
         }
 
         input {
-          padding: 10px;
-          margin-bottom: 20px;
+            padding: 10px;
+            margin-bottom: 20px;
+            width: 100%;
+            box-sizing: border-box;
+            background-color: transparent;
+            border: none;
+            border-bottom: 1px solid #fff;
+            color: #fff;
+        }
+
+        input:focus {
+            outline: none;
+            border-bottom: 1px solid #4CAF50;
         }
 
         button {
-          background-color: #4CAF50;
-          color: white;
-          border: none;
-          padding: 10px;
-          cursor: pointer;
-          margin-bottom: 20px;
+            background-color: #4CAF50;
+            color: white;
+            border-radius: 5px;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+            margin-bottom: 20px;
+            position: relative;
         }
 
         a {
-          display: block;
-          margin-top: 20px;
+            display: block;
+            margin-top: 20px;
+            color: #fff;
+            text-decoration: underline;
         }
 
+        a #fgtp {
+            padding-bottom: 0px;
+        }
+
+        .button-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
 
         #loading-animation-container {
   display: none;
@@ -105,8 +165,15 @@
 
 </head>
 <body>
-  <div class="container">
-    <h1>Sign Up</h1>
+
+<video autoplay loop muted>
+    <source src="/images/chopping.mp4" type="video/mp4"> <!-- Replace "path_to_your_video.mp4" with the actual path to your video file -->
+</video>
+
+<div class="container">
+    <h1><img src="/images/WhatsApp_Image_2023-05-18_at_4.45.03_PM-removebg-preview.png" alt="Logo" class="logo"></h1> <!-- Replace "path_to_your_logo.png" with the actual path to your logo image file -->
+
+  <div class="glass-panel">
     <form action="/signup" method="POST" id="signup-form">
       <label for="name">Name:</label>
       <input type="text" id="name" name="name">
@@ -118,6 +185,13 @@
     </form>
     <a href="/index.html">Already have an account? Login</a>
   </div>
+</div>
+
+
+  <!-- <div class="container">
+    <h1>Sign Up</h1>
+
+  </div> -->
   <div id="loading-animation-container">
     <div class="loading-overlay"></div>
     <div id="loading-animation"></div>
@@ -150,24 +224,38 @@
 
       <script>
 
-        const addToCartButton = document.getElementById('signup-btn');
-        const loadingAnimationContainer = document.getElementById('loading-animation-container');
-        
-        addToCartButton.addEventListener('click', () => {
-          // Show the loading animation
-          loadingAnimationContainer.classList.add('show-loading');
-        
-          // Simulate a delay for demonstration purposes
-          setTimeout(() => {
-            // Perform the add to cart operation here
-            console.log('Item added to cart');
-        
-            // Hide the loading animation after the task is completed
-            loadingAnimationContainer.classList.remove('show-loading');
-          }, 4000); // Simulate a 2-second delay
-        });
+const signUpButton = document.getElementById('signup-btn');
+const loadingAnimationContainer = document.getElementById('loading-animation-container');
 
-        
+signUpButton.addEventListener('click', (event) => {
+  const nameInput = document.getElementById('name');
+  const emailInput = document.getElementById('email');
+  const passwordInput = document.getElementById('password');
+
+  if (nameInput.value.trim() === '' || emailInput.value.trim() === '' || passwordInput.value.trim() === '') {
+    // If any of the input fields are empty, prevent form submission and return
+    event.preventDefault();
+    return;
+  }
+
+  // Show the loading animation
+  loadingAnimationContainer.classList.add('show-loading');
+
+  // Simulate a delay for demonstration purposes
+  setTimeout(() => {
+    // Perform the sign-up operation here
+    console.log('Sign up successful');
+
+    // Hide the loading animation after the task is completed
+    loadingAnimationContainer.classList.remove('show-loading');
+
+    // Redirect to the login page after a delay
+    setTimeout(() => {
+      window.location.href = '/index.html';
+    }, 3000);
+  }, 4000); // Simulate a 4-second delay
+});
+
       </script>
 
 <!-- <script>
