@@ -169,10 +169,10 @@
       <div class="glass-panel">
           <form action="/login" method="POST" class="button-container">
               <label for="email-input">Email:</label>
-              <input type="email" id="email-input" name="email">
+              <input type="email" id="email-input" name="email" required>
               <label for="password-input">Password:</label>
-              <input type="password" id="password-input" name="password">
-              <button type="submit-btn" id="login-button" class="loading-animation" onclick="showLoadingAnimation(this)">Login</button>
+              <input type="password" id="password-input" name="password" required>
+              <button type="submit-btn" id="login-button" class="loading-animation" onclick="showLoadingAnimation(this)">Submit</button>
           </form>
           <a href="#">Forgot password?</a>
           <a href="/signup.html">Don't have an account? Sign up</a>
@@ -222,3 +222,4 @@
     </script>
 </body>
 </html>
+

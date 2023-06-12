@@ -273,16 +273,22 @@ app.get('/dashboard.html', (req, res) => {
         return;
       }
 
-      // Retrieve the notification message based on whether the user is a new user or an old user
+      // Determine if the pop-up should be shown based on the session's isNewUser flag
+      const shouldShowPopup = session.isNewUser;
+
+      // Determine the notification message based on whether the user is a new user or an existing user
       let notificationMessage;
-      if (session.isNewUser) {
+      if (shouldShowPopup) {
         notificationMessage = `<p><strong>Welcome to Hami Confectionery, ${user.name}!</strong></p> This is your first login, go and complete your KYC in the Profile section. <p>We are here to serve you better.</p>`;
       } else {
-        notificationMessage = `<p><strong>Welcome back, ${user.name}!</strong></p> Our services runs from 08:00 - 18:00 Mondays - Saturdays. <p>You can reach us via Call/Chat 08145336427.</p>`;
+        notificationMessage = `<p><strong>Welcome back, ${user.name}!</strong></p> Our services run from 08:00 - 18:00, Mondays - Saturdays. <p>You can reach us via Call/Chat 08145336427.</p>`;
       }
 
-      // Render the dashboard page and pass the user and notification message to the template
-      res.render('dashboard', { user, username: user.name, notificationMessage });
+      // Update the isNewUser flag to false for the current session
+      session.isNewUser = false;
+
+      // Render the dashboard page and pass the user, username, notificationMessage, and shouldShowPopup to the template
+      res.render('dashboard', { user, username: user.name, notificationMessage, shouldShowPopup });
     });
   } else {
     // Clear the session cookie and redirect to the login page
@@ -290,6 +296,7 @@ app.get('/dashboard.html', (req, res) => {
     res.redirect('/index.html');
   }
 });
+
 
 
 // app.post('/login', (req, res) => {

@@ -929,6 +929,7 @@ header {
 
 .no-items-added {
   display: none;
+  margin-bottom: 0px;
 }
 
 .no-items-added.visible {
@@ -979,6 +980,7 @@ header {
   font-size: 18px;
   cursor: pointer;
 }
+
 
    </style>
 
@@ -1058,13 +1060,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
 </head>
 <body>
-  <div id="notification" class="<%= notificationMessage ? 'show' : '' %>">
+  <!-- <div id="notification" class="">
+    <div id="notification-box">
+      <span id="notification-message"></span>
+      <button id="notification-close">×</button>
+    </div>
+  </div> -->
+  
+  <div id="notification" class="<%= shouldShowPopup ? 'show' : '' %>">
     <div id="notification-box">
       <span id="notification-message"><%- notificationMessage %></span>
       <button id="notification-close">×</button>
     </div>
   </div>
-
+  
+  
   <header>
     <div class="logo">
       <img src="/images/WhatsApp_Image_2023-05-18_at_4.45.03_PM-removebg-preview.png" alt="Logo">
@@ -1100,7 +1110,7 @@ document.addEventListener('DOMContentLoaded', () => {
   
   <div class="overlay"></div>
     <div class="container">
-      <h3>Welcome to the dashboard, <%= username %>!</h3>
+      <h3>Welcome <%= username %>!</h3>
       <div class="image-gallery">
         <div class="slideshow-container">
           <div class="slideshow">
@@ -1124,6 +1134,8 @@ document.addEventListener('DOMContentLoaded', () => {
         <img src="https://via.placeholder.com/150" alt="Pastry 4">
         <img src="https://via.placeholder.com/150" alt="Pastry 5">
       </div> -->
+
+
       <div class="cart">
         <h2>Cart</h2>
         <div class="cart-items">
@@ -1149,7 +1161,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <button onclick="addToCart('cart-details1')" class="cart-item-add-btn" id="cart-button">Add to Cart</button>
                   </div>
                 </div>
-                <p id="no-items-added-message" class="no-items-added-message">No items added</p>
+                <p id="no-items-added-message" class="no-items-added-message">No items added!</p>
               </div>
               
               <div id="loading-animation-container">
@@ -1937,19 +1949,56 @@ function addToCart(cartId) {
   });
 </script>
 
-<script>
-  // Add JavaScript code to handle the notification behavior
-  const notificationBox = document.getElementById('notification');
-  const closeButton = document.getElementById('notification-close');
+ <!-- <script>
+    // Add JavaScript code to handle the notification behavior
+    const notificationBox = document.getElementById('notification');
+    const closeButton = document.getElementById('notification-close');
 
-  closeButton.addEventListener('click', () => {
-    notificationBox.style.display = 'none';
-  });
+    closeButton.addEventListener('click', () => {
+      notificationBox.style.display = 'none';
+    });
 
-  // Show the notification message
-  notificationBox.style.display = 'block';
+    // Show the notification message
+    notificationBox.style.display = 'block';
+    
+  </script> -->
+
+  <script>
+    // Add JavaScript code to handle the notification behavior
+    const notificationBox = document.getElementById('notification');
+    const closeButton = document.getElementById('notification-close');
   
-</script>
+    closeButton.addEventListener('click', () => {
+      notificationBox.style.display = 'none';
+    });
+  
+    // Check if the notification should be shown
+    const shouldShowNotification = localStorage.getItem('showNotification');
+  
+    if (shouldShowNotification === null) {
+      // Retrieve the notification message from the server-side
+      const notificationMessage = '<%- notificationMessage %>';
+  
+      // Set the notification message content
+      const notificationMessageElement = document.getElementById('notification-message');
+      notificationMessageElement.innerHTML = '<%- notificationMessage %>';
+  
+      // Show the notification message for the first time
+      notificationBox.style.display = 'block';
+      localStorage.setItem('showNotification', 'false');
+    } else {
+      // Hide the notification if it should not be shown
+      notificationBox.style.display = 'none';
+    }
+  
+    // Clear the notification flag when the user logs out
+    const logoutButton = document.getElementById('sidebtn');
+  
+    logoutButton.addEventListener('click', () => {
+      localStorage.removeItem('showNotification');
+    });
+  </script>
+  
 
   </body>
 </html>
