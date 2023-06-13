@@ -982,6 +982,29 @@ header {
 }
 
 
+
+.news-flash-container {
+  position: relative;
+  overflow: hidden;
+  height: 30px;
+}
+
+.fas .fa-bell .announcement-icon {
+  width: 50px;
+}
+
+.news-flash {
+  display: inline-block;
+  position: absolute;
+  white-space: nowrap;
+  animation: news-flash-animation 10s linear infinite;
+}
+
+@keyframes news-flash-animation {
+  0% { left: 100%; }
+  100% { left: -100%; }
+}
+
    </style>
 
 
@@ -1135,6 +1158,15 @@ document.addEventListener('DOMContentLoaded', () => {
         <img src="https://via.placeholder.com/150" alt="Pastry 5">
       </div> -->
 
+
+      <div class="news-flash-container">
+        <div class="news-flash">
+          <span><strong>Announcement:</strong></span>
+          <span>Please update your profile information before placing any order. Kindly take note.</span>
+        </div>
+        <i class="fas fa-bell announcement-icon"></i>
+      </div>
+      
 
       <div class="cart">
         <h2>Cart</h2>

@@ -8,6 +8,156 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
   <title>About Us</title>
   <style>
+
+    /* Logo */
+.logo {
+  position: absolute;
+  top: 5%;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+/* User Icon */
+.user-icon {
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding-right: 27px;
+  padding-top: 8px;
+}
+
+
+body {
+  overflow-x: hidden;
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #0b945b;
+  color: #fff;
+  padding: 10px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 10001;
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.5);
+}
+
+.logo img {
+  max-height: 45px;
+  width: 180px;
+}
+
+.user-icon img {
+  max-height: 25px;
+  width: 30px;
+  border-radius: 100%;
+}
+
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: -250px;
+  width: 250px;
+  height: 100%;
+  background-color: #0b945b;
+  /* box-shadow: 2px 0 10px rgba(0, 0, 0, 0.5); */
+  transition: all 0.9s ease;
+  z-index: 10000;
+}
+
+.sidebar ul {
+  list-style: none;
+  margin: 0;
+  padding-top: 35%;
+  padding-left: 0%;
+  display: table;
+}
+
+.sidebar li {
+  margin-bottom: 5px;
+  background-color: none;
+  transition: background-color 0.3s ease-in-out;
+  border-radius: 4px;
+  padding: 5px 70px 1px 30px;
+  text-align: inline;
+}
+
+.sidebar a {
+  color: #ffffff;
+  text-decoration: none;
+  font-size: 1rem;
+}
+.sidebar li:hover {
+  background-color: rgb(78, 141, 102);
+  color: white;
+}
+
+.sidebar.active {
+  left: 0;
+}
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.9s ease;
+  z-index: 9999;
+}
+
+.overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+
+.hamburger {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 30px;
+  height: 20px;
+  cursor: pointer;
+  margin-top: 2px;
+}
+
+.bar {
+  height: 2px;
+  background-color: #fff;
+  border-radius: 2px;
+  transition: all 0.8s ease;
+  margin-bottom: 5px; /* Adjust the spacing between the lines */
+}
+
+.bar:not(:last-child) {
+  margin-bottom: 0px; /* Adjust the spacing between the lines */
+}
+
+.hamburger.active .bar:first-child {
+  transform: rotate(45deg) translate(5px, 6px);
+}
+
+.hamburger.active .bar:nth-child(2) {
+  opacity: 0;
+}
+
+.hamburger.active .bar:last-child {
+  transform: rotate(-45deg) translate(5px, -6px);
+}
+
+
+
+
+
+
     /* CSS styles for the About Us page */
     body {
       /* font-family: Arial, sans-serif; */
@@ -118,15 +268,67 @@
 
 </head>
 <body>
+  <header>
+    <div class="logo">
+      <img src="/images/WhatsApp_Image_2023-05-18_at_4.45.03_PM-removebg-preview.png" alt="Logo">
+    </div>
+    <!-- <div class="user-icon"> -->
+      <!-- <img src="/images/usericon.png" alt="User Icon"> -->
+      <!-- Assuming 'user' is passed as a template variable -->
+      <!-- <img src="/profile-images/<%= user.profileImage %>"> -->
+    </div>
+    <div class="hamburger">
+      <!-- <div class="bar"></div>
+      <div class="bar"></div>
+      <div class="bar"></div> -->
+    </div>
+  </header>
+  <aside class="sidebar">
+    <nav>
+      <ul>
+        <li><a id="home" href="/dashboard.html"><i class="fas fa-home"></i> Home</i></a></li>
+        <li id="dashboard"><a href="/profile"><i class="fas fa-chart-line fa-fw"></i> Dashboard</a></li>
+        <li><a href="/order"><i class="fas fa-shopping-cart fa-fw"></i> My Cart</a></li>
+
+      </ul>
+      
+      <form method="POST" action="/logout">
+        <button type="submit" id="sidebtn"><i class="fas fa-sign-out-alt fa-fw"></i>Logout</button>
+        <button type="#" id="downloadbtn"><i class="fas fa-sign-out-alt fa-fw"></i>Download App</button>
+      </form>
+      <hr>
+      <a id="copyright">© Copyright 2023 SmartTechHubInc.</a>
+    </nav>
+  </aside>
+
+    <br>
+
   <div class="about-container" id="about-container">
     <h1>About Us</h1>
     <p class="business-description">Welcome to our pastry shop, where indulgence meets artistry. We take pride in creating delectable pastries that not only delight the taste buds but also captivate the eyes. With a passion for the pastry craft and a commitment to quality, we strive to deliver unforgettable sweet experiences.</p>
-    <p class="business-history">Our pastry business has been serving the community since 2021. Over the years, we have built a reputation for excellence and have become a go-to destination for pastry lovers. From our humble beginnings to becoming a beloved establishment, we have stayed true to our core values of using the finest ingredients and crafting each pastry with utmost care.</p>
+    <p class="business-history">Our pastry business has been serving the community since [year]. Over the years, we have built a reputation for excellence and have become a go-to destination for pastry lovers. From our humble beginnings to becoming a beloved establishment, we have stayed true to our core values of using the finest ingredients and crafting each pastry with utmost care.</p>
     <img class="owner-image" src="/images/ceo.jpeg" alt="Owner Image">
     <p class="owner-name">Funmilola Kolawole</p>
     <p class="owner-description">Funmilola Kolawole is the talented pastry chef and owner of our pastry shop. With a passion for creating delicious and visually stunning desserts, Funmilola brings her expertise and creativity to every treat she makes. Her dedication to quality and attention to detail have earned her numerous accolades in the culinary world.</p>
     <p class="shop-description">At our pastry shop, we use only the finest ingredients to ensure the highest level of taste and freshness. Each pastry is carefully handcrafted with precision and love, showcasing our commitment to excellence. From flaky croissants to decadent cakes, our wide range of offerings is designed to satisfy even the most discerning palates.</p>
     <p class="pastry-description">Visit our shop today and experience the artistry and flavor that Funmilola and her team bring to every creation. Whether it's a special celebration or a simple moment of indulgence, we're here to elevate your pastry experience and create sweet memories that linger long after the last bite.</p>
+    <br>
+      <!-- Social media icons -->
+  <div class="social-icons">
+    <a href="https://wa.me/1234567890" target="_blank" rel="noopener noreferrer">
+      <img src="/path/to/whatsappicon.png" alt="WhatsApp">
+    </a>
+    <a href="https://www.facebook.com/yourpage" target="_blank" rel="noopener noreferrer">
+      <img src="/path/to/facebook-icon.png" alt="Facebook">
+    </a>
+    <a href="mailto:hamiconfectionery@gmail.com" target="_blank" rel="noopener noreferrer">
+      <img src="/path/to/email-icon.png" alt="Email">
+    </a>
+    <a href="https://www.instagram.com/yourprofile" target="_blank" rel="noopener noreferrer">
+      <img src="/path/to/instagram-icon.png" alt="Instagram">
+    </a>
+  </div>
+  
   </div>
 
   <br><br>
@@ -151,14 +353,27 @@
     </a>
   </div>
   
+  <script>
+    const hamburger = document.querySelector('.hamburger');
+    const body = document.querySelector('body');
+    const sidebar = document.querySelector('.sidebar');
+    const overlay = document.querySelector('.overlay');
+  
+    hamburger.addEventListener('click', function() {
+      body.classList.toggle('active');
+      sidebar.classList.toggle('active');
+      overlay.classList.toggle('active');
+      hamburger.classList.toggle('active');
+    });
+  </script>
 
 
 
   <script>
     document.addEventListener('DOMContentLoaded', function() {
-  // Your code here to modify the element's innerHTML
-  // Fetch the About Us content from the server and insert it into the page
-  fetch('/about')
+      // Your code here to modify the element's innerHTML
+      // Fetch the About Us content from the server and insert it into the page
+      fetch('/about')
     .then(response => response.text())
     .then(data => {
       const aboutContainer = document.getElementById('about-container');
@@ -205,6 +420,7 @@
     }
   });
 </script>
+
 
 
 </body>

@@ -10,6 +10,153 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <title>Order</title>
     <style>
+
+                /* Logo */
+.logo {
+  position: absolute;
+  top: 5%;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+/* User Icon */
+/* .user-icon {
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding-right: 27px;
+  padding-top: 8px;
+} */
+
+
+body {
+  overflow-x: hidden;
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #0b945b;
+  color: #fff;
+  padding: 10px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 10001;
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.5);
+}
+
+.logo img {
+  max-height: 45px;
+  width: 180px;
+}
+
+.user-icon img {
+  max-height: 25px;
+  width: 30px;
+  border-radius: 100%;
+}
+
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: -250px;
+  width: 250px;
+  height: 100%;
+  background-color: #0b945b;
+  /* box-shadow: 2px 0 10px rgba(0, 0, 0, 0.5); */
+  transition: all 0.9s ease;
+  z-index: 10000;
+}
+
+.sidebar ul {
+  list-style: none;
+  margin: 0;
+  padding-top: 35%;
+  padding-left: 0%;
+  display: table;
+}
+
+.sidebar li {
+  margin-bottom: 5px;
+  background-color: none;
+  transition: background-color 0.3s ease-in-out;
+  border-radius: 4px;
+  padding: 5px 70px 1px 30px;
+  text-align: inline;
+}
+
+.sidebar a {
+  color: #ffffff;
+  text-decoration: none;
+  font-size: 1rem;
+}
+.sidebar li:hover {
+  background-color: rgb(78, 141, 102);
+  color: white;
+}
+
+.sidebar.active {
+  left: 0;
+}
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.9s ease;
+  z-index: 9999;
+}
+
+.overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+
+.hamburger {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 30px;
+  height: 20px;
+  cursor: pointer;
+  margin-top: 2px;
+}
+
+.bar {
+  height: 2px;
+  background-color: #fff;
+  border-radius: 2px;
+  transition: all 0.8s ease;
+  margin-bottom: 5px; /* Adjust the spacing between the lines */
+}
+
+.bar:not(:last-child) {
+  margin-bottom: 0px; /* Adjust the spacing between the lines */
+}
+
+.hamburger.active .bar:first-child {
+  transform: rotate(45deg) translate(5px, 6px);
+}
+
+.hamburger.active .bar:nth-child(2) {
+  opacity: 0;
+}
+
+.hamburger.active .bar:last-child {
+  transform: rotate(-45deg) translate(5px, -6px);
+}
+
+
+
         /* Styles for the order page */
         /* body {
             font-family: Arial, sans-serif;
@@ -278,6 +425,41 @@
 </head>
 
 <body>
+
+  <header>
+    <div class="logo">
+      <img src="/images/WhatsApp_Image_2023-05-18_at_4.45.03_PM-removebg-preview.png" alt="Logo">
+    </div>
+
+    </div>
+    <div class="hamburger">
+      <!-- <div class="bar"></div>
+      <div class="bar"></div>
+      <div class="bar"></div> -->
+    </div>
+  </header>
+  <aside class="sidebar">
+    <nav>
+      <ul>
+        <li><a id="home" href="/dashboard.html"><i class="fas fa-home"></i> Home</i></a></li>
+        <li id="dashboard"><a href="/profile"><i class="fas fa-chart-line fa-fw"></i> Dashboard</a></li>
+        <li><a href="/order"><i class="fas fa-shopping-cart fa-fw"></i> My Cart</a></li>
+
+      </ul>
+      
+      <form method="POST" action="/logout">
+        <button type="submit" id="sidebtn"><i class="fas fa-sign-out-alt fa-fw"></i>Logout</button>
+        <button type="#" id="downloadbtn"><i class="fas fa-sign-out-alt fa-fw"></i>Download App</button>
+      </form>
+      <hr>
+      <a id="copyright">© Copyright 2023 SmartTechHubInc.</a>
+    </nav>
+  </aside>
+
+<br>
+<br>
+<br>
+  
     <div class="order-container">
         <h1>Your Cart Items:</h1>
  <!-- Render order items -->
@@ -348,7 +530,7 @@
         });
         
         
-            </script>
+      </script>
 
 
     <script>
