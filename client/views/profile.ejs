@@ -213,31 +213,38 @@
           </style>
 
           <script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const userDetails = readUserDetails();
+  
+    const userNameElement = document.getElementById('user-name');
+    const userEmailElement = document.getElementById('user-email');
+    const userPhoneElement = document.getElementById('user-phone');
+  
+    if (userDetails && userDetails.name) {
+      userNameElement.textContent = userDetails.name;
+    }
+  
+    if (userDetails && userDetails.email) {
+      userEmailElement.textContent = userDetails.email;
+    }
+  
+    if (userDetails && userDetails.phone) {
+      userPhoneElement.textContent = userDetails.phone;
+    }
+  });
+  
+  function readUserDetails() {
+  return fetch('/profile')
+    .then(response => response.json())
+    .then(data => data.userDetails)
+    .catch(error => {
+      console.error('Error retrieving user details:', error);
+      return null;
+    });
+}
 
-            // Wait for the DOM content to load
-document.addEventListener('DOMContentLoaded', () => {
-  // Retrieve the user details
-  const userDetails = readUserDetails();
-
-  // Populate the user details on the profile page
-  const userNameElement = document.getElementById('user-name');
-  const userEmailElement = document.getElementById('user-email');
-  const userPhoneElement = document.getElementById('user-phone');
-
-  if (userDetails.name) {
-    userNameElement.textContent = userDetails.name;
-  }
-
-  if (userDetails.email) {
-    userEmailElement.textContent = userDetails.email;
-  }
-
-  if (userDetails.phone) {
-    userPhoneElement.textContent = userDetails.phone;
-  }
-});
-
-          </script>
+  </script>
+  
 </head>
 <body>
           <div class="container">

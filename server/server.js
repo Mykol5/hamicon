@@ -707,27 +707,53 @@ app.post('/add-to-cart', (req, res) => {
   if (session && session.userId) {
     const userId = session.userId;
 
-    // Read the existing order data for the user from the JSON file
-    const orderFilePath = path.join(ordersDirectory, `${userId}.json`);
-    const orderData = readOrderData(userId);
+    // Read the user profile from the users.json file
+    fs.readFile('users.json', 'utf8', (err, data) => {
+      if (err) {
+        console.error('Error reading users.json:', err);
+        res.sendStatus(500);
+        return;
+      }
 
-    // Add the new cart item to the existing order data
-    orderData.push(cartItem);
+      // Parse the JSON data into an array of user objects
+      const users = JSON.parse(data);
 
-    // Write the updated order data to the user-specific JSON file
-    try {
-      fs.writeFileSync(orderFilePath, JSON.stringify(orderData), 'utf8');
-    } catch (error) {
-      console.error('Error writing order data:', error);
-    }
+      // Find the user with the matching ID
+      const user = users.find(u => u.userId === userId);
 
-    res.json({ status: 'success', message: 'Item added to cart', data: { itemId: cartItem.itemId } });
+      if (!user) {
+        console.error('User not found:', userId);
+        res.sendStatus(404);
+        return;
+      }
+
+      // Check if the user's profile is complete
+      if (!user.phone || !user.profileImage) {
+        res.status(403).json({ status: 'error', message: 'Please update your profile information before placing an order.' });
+        return;
+      }
+
+      // Read the existing order data for the user from the JSON file
+      const orderFilePath = path.join(ordersDirectory, `${userId}.json`);
+      const orderData = readOrderData(userId);
+
+      // Add the new cart item to the existing order data
+      orderData.push(cartItem);
+
+      // Write the updated order data to the user-specific JSON file
+      try {
+        fs.writeFileSync(orderFilePath, JSON.stringify(orderData), 'utf8');
+      } catch (error) {
+        console.error('Error writing order data:', error);
+      }
+
+      res.json({ status: 'success', message: 'Item added to cart', data: { itemId: cartItem.itemId } });
+    });
   } else {
     // Handle the case where the user is not logged in
     res.status(401).json({ status: 'error', message: 'User not authenticated' });
   }
 });
-
 
 function readOrderData(userId) {
   const filePath = path.join(ordersDirectory, `${userId}.json`);

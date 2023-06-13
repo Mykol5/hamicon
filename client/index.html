@@ -140,7 +140,7 @@
             }
         }
 
-        .notification {
+        /* .notification {
             position: fixed;
             top: 20px;
             right: 20px;
@@ -155,12 +155,64 @@
             cursor: pointer;
             float: right;
             font-weight: bold;
-        }
+        } */
+
+
+        #loading-animation-container {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 9999;
+}
+
+.loading-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* Adjust the opacity as desired */
+  backdrop-filter: blur(5px); /* Adjust the blur effect as desired */
+}
+
+.show-loading {
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Add your custom styles for the loading animation here */
+
+
+/* Define the keyframe animation */
+@keyframes spinner {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Apply the spinner animation to a pseudo-element of the loading animation element */
+#loading-animation::after {
+  content: '';
+  display: block;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 4px solid #ccc;
+  border-top-color: #333;
+  animation: spinner 7.0s linear infinite;
+}
     </style>
 </head>
 <body>
     <video autoplay loop muted>
-        <source src="/images/chopping.mp4" type="video/mp4"> <!-- Replace "path_to_your_video.mp4" with the actual path to your video file -->
+        <source src="/images/potato.mp4" type="video/mp4"> <!-- Replace "path_to_your_video.mp4" with the actual path to your video file -->
     </video>
 
     <div class="container">
@@ -172,14 +224,42 @@
               <input type="email" id="email-input" name="email" required>
               <label for="password-input">Password:</label>
               <input type="password" id="password-input" name="password" required>
-              <button type="submit-btn" id="login-button" class="loading-animation" onclick="showLoadingAnimation(this)">Submit</button>
+              <button type="submit-btn" id="login-button" class="" onclick="">Submit</button>
           </form>
           <a href="#">Forgot password?</a>
           <a href="/signup.html">Don't have an account? Sign up</a>
       </div>
     </div>
 
-    <script>
+    <div id="loading-animation-container">
+        <div class="loading-overlay"></div>
+        <div id="loading-animation"></div>
+      </div>
+
+
+
+      <script>
+
+        const addToCartButton = document.getElementById('login-button');
+        const loadingAnimationContainer = document.getElementById('loading-animation-container');
+        
+        addToCartButton.addEventListener('click', () => {
+          // Show the loading animation
+          loadingAnimationContainer.classList.add('show-loading');
+        
+          // Simulate a delay for demonstration purposes
+          setTimeout(() => {
+            // Perform the add to cart operation here
+            console.log('Item added to cart');
+        
+            // Hide the loading animation after the task is completed
+            loadingAnimationContainer.classList.remove('show-loading');
+          }, 4000); // Simulate a 2-second delay
+        });
+        
+        
+      </script>
+    <!-- <script>
       function showLoadingAnimation(button) {
           const emailInput = document.getElementById('email-input');
           const passwordInput = document.getElementById('password-input');
@@ -200,7 +280,7 @@
           // Append the loading animation element to the button container
           buttonContainer.appendChild(loadingAnimation);
       }
-  </script>
+  </script> -->
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
@@ -220,6 +300,7 @@
             }
         });
     </script>
+
+    
 </body>
 </html>
-
