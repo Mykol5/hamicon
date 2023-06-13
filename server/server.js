@@ -627,50 +627,238 @@ app.post('/logout', (req, res) => {
 });
 
 
+// app.get('/', (req, res) => {
+//   res.send(`
+//   <style>
+//   .welcome-container {
+//     width: 100%;
+//     height: 100vh;
+//     display: flex;
+//     flex-direction: column;
+//     justify-content: center;
+//     align-items: center;
+//     background-color: lightblue;
+//   }
+//   .welcome-header {
+//     font-size: 4em;
+//     margin-bottom: 30px;
+//     text-align: center;
+//   }
+//   .welcome-text {
+//     font-size: 1.5em;
+//     text-align: center;
+//   }
+//   .welcome-link {
+//     color: #FFA500;
+//     text-decoration: none;
+//     border-bottom: 2px solid #FFA500;
+//   }
+//   .welcome-link:hover {
+//     color: #FF8C00;
+//     border-bottom: 2px solid #FF8C00;
+//   }
+//   .logo {
+//     width: 300px;
+//     height: 300px;
+//     height: auto;
+//     margin-bottom: 20px;
+//   }
+// </style>
+//     <div class="welcome-container">
+//       <img class="logo" src="/images/WhatsApp_Image_2023-05-18_at_4.45.03_PM-removebg-preview.png" alt="Hami Confectionery Logo">
+//       <h1 class="welcome-header">Hello, Welcome To Hami Confectionery!</h1>
+//       <p class="welcome-text">Thank you for visiting our website. Please <a class="welcome-link" href="/signup.html">sign up</a> to access our exclusive deals and offers.</p>
+//     </div>
+//   `);
+// });
+
 app.get('/', (req, res) => {
   res.send(`
   <style>
-  .welcome-container {
-    width: 100%;
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    background-color: lightblue;
-  }
-  .welcome-header {
-    font-size: 4em;
-    margin-bottom: 30px;
-    text-align: center;
-  }
-  .welcome-text {
-    font-size: 1.5em;
-    text-align: center;
-  }
-  .welcome-link {
-    color: #FFA500;
-    text-decoration: none;
-    border-bottom: 2px solid #FFA500;
-  }
-  .welcome-link:hover {
-    color: #FF8C00;
-    border-bottom: 2px solid #FF8C00;
-  }
-  .logo {
-    width: 300px;
-    height: 300px;
-    height: auto;
-    margin-bottom: 20px;
-  }
-</style>
-    <div class="welcome-container">
-      <img class="logo" src="/images/WhatsApp_Image_2023-05-18_at_4.45.03_PM-removebg-preview.png" alt="Hami Confectionery Logo">
-      <h1 class="welcome-header">Hello, Welcome To Hami Confectionery!</h1>
-      <p class="welcome-text">Thank you for visiting our website. Please <a class="welcome-link" href="/signup.html">sign up</a> to access our exclusive deals and offers.</p>
-    </div>
+    /* Global Styles */
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    /* Navbar Styles */
+    .navbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 0;
+      background-color: green;
+    }
+    .navbar-logo {
+      width: 150px;
+      height: 50px;
+      margin-right: 10px;
+    }
+    .navbar-links {
+      display: flex;
+    }
+    .navbar-link {
+      margin-right: 20px;
+      text-decoration: none;
+      color: white;
+      font-weight: bold;
+    }
+    /* Welcome Section Styles */
+    .welcome-section {
+      background-image: url('/images/WhatsApp Image 2023-05-12 at 1.50.53 PM (2).jpeg');
+      background-size: cover;
+      background-position: center;
+      color: #fff;
+      padding: 100px 0;
+      text-align: center;
+    }
+    .welcome-section h2 {
+      font-size: 3em;
+      font-weight: bold;
+      margin-bottom: 30px;
+    }
+    /* Services Section Styles */
+    .services-section {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 50px 0;
+    }
+    .service {
+      text-align: center;
+    }
+    .service-icon {
+      width: 100px;
+      height: 100px;
+      margin-bottom: 20px;
+    }
+    .service-title {
+      font-size: 1.3em;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+    .service-description {
+      font-size: 1em;
+    }
+    /* Testimonials Section Styles */
+    .testimonials-section {
+      text-align: center;
+      padding: 50px 0;
+      background-color: grey;
+    }
+    .testimonial {
+      display: none;
+    }
+    .testimonial.active {
+      display: block;
+    }
+    /* Footer Styles */
+    .footer {
+      text-align: center;
+      padding: 20px 0;
+      background-color: #333333;
+    }
+    .footer-links {
+      margin-top: 10px;
+    }
+    .footer-link {
+      text-decoration: none;
+      color: white;
+      margin-right: 10px;
+    }
+    /* Media Queries */
+    @media (max-width: 768px) {
+      .navbar {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 10px;
+      }
+      .navbar-logo {
+        margin-bottom: 10px;
+      }
+      .navbar-links {
+        flex-direction: column;
+      }
+      .navbar-link {
+        margin-bottom: 10px;
+      }
+      .welcome-section h2 {
+        font-size: 2em;
+      }
+      .service-icon {
+        width: 80px;
+        height: 80px;
+      }
+    }
+  </style>
+
+  <div class="container">
+    <nav class="navbar">
+      <img class="navbar-logo" src="/images/WhatsApp_Image_2023-05-18_at_4.45.03_PM-removebg-preview.png" alt="Hami Confectionery Logo">
+      <div class="navbar-links">
+        <a class="navbar-link" href="/">Home</a>
+        <a class="navbar-link" href="/">About</a>
+        <a class="navbar-link" href="/contact">Contact</a>
+        <a class="navbar-link" href="/index.html">Login</a>
+        <a class="navbar-link" href="/signup.html">Signup</a>
+      </div>
+    </nav>
+
+    <section class="welcome-section">
+      <h2>Welcome to Hami Confectionery!</h2>
+      <p>Your best cuisines and pastry plug.</p>
+    </section>
+
+    <section class="services-section">
+      <div class="service">
+        <img class="service-icon" src="/images/WhatsApp Image 2023-05-12 at 1.50.54 PM (1).jpeg" alt="Service 1 Icon">
+        <h3 class="service-title">Service 1</h3>
+        <p class="service-description">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+      </div>
+      <div class="service">
+        <img class="service-icon" src="/images/WhatsApp Image 2023-05-12 at 1.50.54 PM.jpeg" alt="Service 2 Icon">
+        <h3 class="service-title">Service 2</h3>
+        <p class="service-description">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+      </div>
+      <div class="service">
+        <img class="service-icon" src="/images/WhatsApp Image 2023-05-12 at 1.50.54 PM.jpeg" alt="Service 3 Icon">
+        <h3 class="service-title">Service 3</h3>
+        <p class="service-description">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+      </div>
+    </section>
+
+    <section class="testimonials-section">
+      <div class="testimonial active">
+        <p>"Lorem ipsum dolor sit amet, consectetur adipiscing elit."</p>
+        <p>- John Doe</p>
+      </div>
+      <div class="testimonial">
+        <p>"Lorem ipsum dolor sit amet, consectetur adipiscing elit."</p>
+        <p>- Jane Smith</p>
+      </div>
+      <div class="testimonial">
+        <p>"Lorem ipsum dolor sit amet, consectetur adipiscing elit."</p>
+        <p>- Mike Johnson</p>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <p>&copy; 2023 Hami Confectionery. All rights reserved.</p>
+      <div class="footer-links">
+        <a class="footer-link" href="/privacy">Privacy Policy</a>
+        <a class="footer-link" href="/terms">Terms of Service</a>
+        <a class="footer-link" href="/contact">Contact Us</a>
+      </div>
+    </footer>
+  </div>
   `);
 });
+
 
 
 // Parse JSON request bodies

@@ -983,14 +983,12 @@ header {
 
 
 
+
+
 .news-flash-container {
   position: relative;
   overflow: hidden;
   height: 30px;
-}
-
-.fas .fa-bell .announcement-icon {
-  width: 50px;
 }
 
 .news-flash {
@@ -1001,9 +999,32 @@ header {
 }
 
 @keyframes news-flash-animation {
-  0% { left: 100%; }
-  100% { left: -100%; }
+  0% {
+    /* Initial state of the news flash */
+    transform: translateX(100%);
+  }
+  50% {
+    /* Halfway point of the animation */
+    transform: translateX(0%);
+  }
+  100% {
+    /* Final state of the news flash */
+    transform: translateX(-100%);
+  }
 }
+
+
+
+.news-flash {
+  /* Other CSS styles */
+  animation-name: news-flash-animation;
+  animation-duration: 15s;
+  animation-timing-function: linear; /* Adjust the timing function as needed */
+  animation-iteration-count: infinite; /* Make the animation repeat indefinitely */
+}
+
+
+
 
    </style>
 
@@ -1158,15 +1179,25 @@ document.addEventListener('DOMContentLoaded', () => {
         <img src="https://via.placeholder.com/150" alt="Pastry 5">
       </div> -->
 
+      <!-- Modal Dialog HTML -->
+<!-- Add a modal element -->
+<!-- <div id="profileUpdateModal" class="modal">
+  <div class="modal-content">
+    <span class="close">&times;</span>
+    <p id="modalMessage"></p>
+  </div>
+</div> -->
 
-      <div class="news-flash-container">
-        <div class="news-flash">
-          <span><strong>Announcement:</strong></span>
-          <span>Please update your profile information before placing any order. Kindly take note.</span>
-        </div>
-        <i class="fas fa-bell announcement-icon"></i>
-      </div>
-      
+
+<div class="news-flash-container">
+  <div class="news-flash">
+    <span><strong>Announcement:</strong></span>
+    <span>Please update your profile information before placing any order. Kindly take note.</span>
+  </div>
+  <i class="fas fa-bell announcement-icon fa-1.5x"></i>
+</div>
+
+
 
       <div class="cart">
         <h2>Cart</h2>
@@ -2030,7 +2061,30 @@ function addToCart(cartId) {
       localStorage.removeItem('showNotification');
     });
   </script>
+
   
+<script>
+  // Function to handle the response from the server
+  function handleResponse(response) {
+    if (response.status === 'success') {
+      // Item added to cart successfully
+      console.log('Item added to cart:', response.message);
+      // Add any additional logic or UI update here
+
+      // Start the animation or loading indicator after a delay
+      setTimeout(startAnimation, 500); // Delay of 500 milliseconds (adjust as needed)
+    } else if (response.status === 'error') {
+      // Error occurred, show the error message in a popup or window alert
+      console.log('Error:', response.message);
+      alert(response.message);
+    }
+  }
+
+  // Function to start the animation or loading indicator
+  function startAnimation() {
+    // Code to start the animation here
+  }
+</script>
 
   </body>
 </html>
