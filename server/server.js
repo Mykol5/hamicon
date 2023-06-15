@@ -674,188 +674,469 @@ app.post('/logout', (req, res) => {
 
 app.get('/', (req, res) => {
   res.send(`
-  <style>
-    /* Global Styles */
-    body {
-      margin: 0;
-      padding: 0;
-      font-family: Arial, sans-serif;
-    }
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 20px;
-    }
+  <!DOCTYPE html>
+  <html lang="en">
+  
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hami Confectionery</title>
+    <link href="https://fonts.googleapis.com/css?family=Roboto|Open+Sans:200,300,400,700,800,900&subset=latin"
+      rel="stylesheet">
+    <style>
+      /* Global Styles */
+      body {
+        margin: 0;
+        padding: 0;
+        font-family: 'Roboto', 'Open Sans', sans-serif;
+        overflow-x: hidden;
+      }
+  
+    /* Navbar Styles */
     /* Navbar Styles */
     .navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 30px;
       display: flex;
-      align-items: center;
       justify-content: space-between;
-      padding: 10px 0;
-      background-color: green;
+      align-items: center;
+      padding: 20px;
+      background-color: #535252;
+      color: #333;
+      z-index: 101;
+      margin-left: -30px;
     }
+  
     .navbar-logo {
       width: 150px;
-      height: 50px;
-      margin-right: 10px;
+      margin-left: 25px;
+      margin-top: 5px;
     }
+  
     .navbar-links {
       display: flex;
     }
+  
     .navbar-link {
-      margin-right: 20px;
       text-decoration: none;
-      color: white;
-      font-weight: bold;
+      color: #fff;
+      margin-right: 10px;
     }
+  
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      cursor: pointer;
+    }
+  
+    /* .hamburger span {
+      display: block;
+      width: 25px;
+      height: 3px;
+      background-color: #fff;
+      margin-bottom: 5px;
+    } */
+  
     /* Welcome Section Styles */
     .welcome-section {
-      background-image: url('/images/WhatsApp Image 2023-05-12 at 1.50.53 PM (2).jpeg');
-      background-size: cover;
-      background-position: center;
-      color: #fff;
-      padding: 100px 0;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+    }
+    
+    .welcome-video {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    
+    .welcome-heading {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 2.5em;
       text-align: center;
+      color: #fff;
     }
-    .welcome-section h2 {
-      font-size: 3em;
-      font-weight: bold;
-      margin-bottom: 30px;
-    }
-    /* Services Section Styles */
-    .services-section {
+    
+    .carousel-arrows {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 50px 0;
+      width: 100%;
+      z-index: 1;
     }
-    .service {
+    
+    .carousel-arrow {
+      font-size: 2em;
+      color: #fff;
+      cursor: pointer;
+      opacity: 0.8;
+      transition: opacity 0.3s ease-in-out;
+    }
+    
+    .carousel-arrow:hover {
+      opacity: 1;
+    }
+    
+    .carousel-prev {
+      margin-left: 20px;
+    }
+    
+    .carousel-next {
+      margin-right: 20px;
+    }
+    
+    
+    /* Services Section Styles */
+    .services-section {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      padding: 50px 20px;
+      background-color: #f5f5f5;
+    }
+  
+    .service-card {
+      flex-basis: 30%;
+      margin: 20px;
+      padding: 20px;
+      border-radius: 5px;
       text-align: center;
+      background-color: #fff;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
     }
-    .service-icon {
+  
+    .service-card-icon {
       width: 100px;
       height: 100px;
-      margin-bottom: 20px;
-    }
-    .service-title {
-      font-size: 1.3em;
-      font-weight: bold;
       margin-bottom: 10px;
     }
-    .service-description {
-      font-size: 1em;
+  
+    .service-card-title {
+      font-size: 1.5em;
+      margin-bottom: 10px;
     }
+  
+    .service-card-description {
+      font-size: 1em;
+      color: #666;
+    }
+  
     /* Testimonials Section Styles */
     .testimonials-section {
       text-align: center;
-      padding: 50px 0;
-      background-color: grey;
+      padding: 50px 20px;
+      background-color: #333;
+      color: #fff;
     }
-    .testimonial {
+  
+    .testimonial-slide {
       display: none;
     }
-    .testimonial.active {
+  
+    .testimonial-slide.active {
       display: block;
     }
+  
+    .testimonial-slide p {
+      font-size: 1.2em;
+      margin-bottom: 10px;
+    }
+  
+    .testimonial-slide span {
+      font-weight: bold;
+    }
+  
     /* Footer Styles */
     .footer {
       text-align: center;
-      padding: 20px 0;
-      background-color: #333333;
+      padding: 20px;
+      background-color: #333;
+      color: #fff;
     }
-    .footer-links {
-      margin-top: 10px;
-    }
+  
     .footer-link {
       text-decoration: none;
-      color: white;
+      color: #fff;
       margin-right: 10px;
     }
+  
+    /* Navbar Styles */
+    .navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px;
+      background-color: #189259;
+      color: #333;
+      z-index: 100;
+    }
+  
+    .navbar-logo {
+      width: 150px;
+    }
+  
+    .navbar-links {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+    }
+  
+    .navbar-link {
+      text-decoration: none;
+      color: #fafafa;
+      margin-right: 30px;
+      transition: color 0.9s ease-in;
+    }
+  
+    .navbar-link:hover {
+      color: #bceec7;
+    }
+  
+    .hamburger {
+      display: none;
+      position: relative;
+      cursor: pointer;
+      z-index: 101;
+    }
+  
+    .hamburger span {
+      display: block;
+      width: 25px;
+      height: 3px;
+      background-color: #ffffff;
+      margin-bottom: 5px;
+      transition: background-color 0.7s ease-in;
+    }
+  
+    .hamburger.active span:nth-child(1) {
+      transform: translateY(8px) rotate(45deg);
+      background-color: #bceec7;
+    }
+  
+    .hamburger.active span:nth-child(2) {
+      opacity: 0;
+    }
+  
+    .hamburger.active span:nth-child(3) {
+      transform: translateY(-8px) rotate(-45deg);
+      background-color: #bceec7;
+    }
+  
     /* Media Queries */
-    @media (max-width: 768px) {
-      .navbar {
-        flex-direction: column;
-        align-items: flex-start;
-        padding: 10px;
-      }
-      .navbar-logo {
-        margin-bottom: 10px;
-      }
+    @media screen and (max-width: 768px) {
       .navbar-links {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100vh;
+        display: flex;
         flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        background-color: #189259;
+        transform: translateX(100%);
+        transition: transform 0.3s ease-in;
+        z-index: 100;
       }
+  
+      .navbar-links.active {
+        transform: translateX(0%);
+      }
+  
       .navbar-link {
         margin-bottom: 10px;
       }
-      .welcome-section h2 {
-        font-size: 2em;
+  
+      .navbar-link:hover {
+        color: #bceec7;
       }
-      .service-icon {
-        width: 80px;
-        height: 80px;
+  
+      .hamburger {
+        display: flex;
+        margin-left: 10px;
       }
     }
   </style>
-
-  <div class="container">
+  
+  </head>
+  
+  <body>
     <nav class="navbar">
       <img class="navbar-logo" src="/images/WhatsApp_Image_2023-05-18_at_4.45.03_PM-removebg-preview.png" alt="Hami Confectionery Logo">
       <div class="navbar-links">
         <a class="navbar-link" href="/">Home</a>
         <a class="navbar-link" href="/">About</a>
-        <a class="navbar-link" href="/contact">Contact</a>
+        <a class="navbar-link" href="/">Contact</a>
         <a class="navbar-link" href="/index.html">Login</a>
-        <a class="navbar-link" href="/signup.html">Signup</a>
+        <a class="navbar-link" href="/signup.html">Sign Up</a>
+      </div>
+      <div class="hamburger">
+        <span></span>
+        <span></span>
+        <span></span>
       </div>
     </nav>
-
+  
     <section class="welcome-section">
-      <h2>Welcome to Hami Confectionery!</h2>
-      <p>Your best cuisines and pastry plug.</p>
-    </section>
-
+    <video class="welcome-video" src="/images/chopping.mp4" autoplay muted loop></video>
+    <h2 class="welcome-heading">
+      <span id="word-carousel"></span>
+    </h2>
+    <div class="carousel-arrows">
+      <div class="carousel-arrow carousel-prev">&#8249;</div>
+      <div class="carousel-arrow carousel-next">&#8250;</div>
+    </div>
+  </section>
+  
+  
+  
     <section class="services-section">
-      <div class="service">
-        <img class="service-icon" src="/images/WhatsApp Image 2023-05-12 at 1.50.54 PM (1).jpeg" alt="Service 1 Icon">
-        <h3 class="service-title">Service 1</h3>
-        <p class="service-description">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+      <div class="service-card">
+        <img class="service-card-icon" src="/images/service-icon-1.png" alt="Service 1 Icon">
+        <h3 class="service-card-title">Service 1</h3>
+        <p class="service-card-description">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
       </div>
-      <div class="service">
-        <img class="service-icon" src="/images/WhatsApp Image 2023-05-12 at 1.50.54 PM.jpeg" alt="Service 2 Icon">
-        <h3 class="service-title">Service 2</h3>
-        <p class="service-description">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+      <div class="service-card">
+        <img class="service-card-icon" src="/images/service-icon-2.png" alt="Service 2 Icon">
+        <h3 class="service-card-title">Service 2</h3>
+        <p class="service-card-description">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
       </div>
-      <div class="service">
-        <img class="service-icon" src="/images/WhatsApp Image 2023-05-12 at 1.50.54 PM.jpeg" alt="Service 3 Icon">
-        <h3 class="service-title">Service 3</h3>
-        <p class="service-description">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+      <div class="service-card">
+        <img class="service-card-icon" src="/images/service-icon-3.png" alt="Service 3 Icon">
+        <h3 class="service-card-title">Service 3</h3>
+        <p class="service-card-description">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
       </div>
     </section>
-
+  
     <section class="testimonials-section">
-      <div class="testimonial active">
-        <p>"Lorem ipsum dolor sit amet, consectetur adipiscing elit."</p>
-        <p>- John Doe</p>
+      <div class="testimonial-slide active">
+        <p>"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis semper sapien a nisi laoreet congue. Nam non
+          hendrerit tellus."</p>
+        <span>- John Doe</span>
       </div>
-      <div class="testimonial">
-        <p>"Lorem ipsum dolor sit amet, consectetur adipiscing elit."</p>
-        <p>- Jane Smith</p>
+      <div class="testimonial-slide">
+        <p>"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis semper sapien a nisi laoreet congue. Nam non
+          hendrerit tellus."</p>
+        <span>- Jane Smith</span>
       </div>
-      <div class="testimonial">
-        <p>"Lorem ipsum dolor sit amet, consectetur adipiscing elit."</p>
-        <p>- Mike Johnson</p>
+      <div class="testimonial-slide">
+        <p>"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis semper sapien a nisi laoreet congue. Nam non
+          hendrerit tellus."</p>
+        <span>- David Johnson</span>
       </div>
     </section>
-
+  
     <footer class="footer">
-      <p>&copy; 2023 Hami Confectionery. All rights reserved.</p>
-      <div class="footer-links">
-        <a class="footer-link" href="/privacy">Privacy Policy</a>
-        <a class="footer-link" href="/terms">Terms of Service</a>
-        <a class="footer-link" href="/contact">Contact Us</a>
+      <div class="footer-icons">
+        <a class="footer-icon" href="https://www.whatsapp.com"><img src="/images/whatsapp-icon.png" alt="WhatsApp Icon"></a>
+        <a class="footer-icon" href="mailto:info@hamiconfectionery.com"><img src="/images/email-icon.png" alt="Email Icon"></a>
+        <a class="footer-icon" href="https://www.instagram.com/hamiconfectionery"><img src="/images/instagram-icon.png" alt="Instagram Icon"></a>
+        <a class="footer-icon" href="https://www.facebook.com/hamiconfectionery"><img src="/images/facebook-icon.png" alt="Facebook Icon"></a>
       </div>
+      <div class="footer-links">
+        <a class="footer-link" href="/privacy-policy">Privacy Policy</a>
+        <a class="footer-link" href="/terms-of-service">Terms of Service</a>
+      </div>
+      <p>&copy; 2023 Hami Confectionery. All rights reserved.</p>
+      <p>123 Main Street, City, Country</p>
     </footer>
-  </div>
+  
+    <script>
+      const hamburger = document.querySelector('.hamburger');
+      const navbarLinks = document.querySelector('.navbar-links');
+    
+      hamburger.addEventListener('click', () => {
+        hamburger.classList.toggle('active');
+        navbarLinks.classList.toggle('active');
+      });
+    
+      window.addEventListener('resize', () => {
+        if (window.innerWidth > 768) {
+          navbarLinks.classList.remove('active');
+          hamburger.classList.remove('active');
+        }
+      });
+    
+      const testimonialSlides = document.querySelectorAll('.testimonial-slide');
+      let currentSlide = 0;
+    
+      function showSlide() {
+        testimonialSlides.forEach((slide) => slide.classList.remove('active'));
+        testimonialSlides[currentSlide].classList.add('active');
+        currentSlide = (currentSlide + 1) % testimonialSlides.length;
+      }
+    
+      setInterval(showSlide, 3000);
+    
+      window.addEventListener('scroll', () => {
+        const navbar = document.querySelector('.navbar');
+        navbar.classList.toggle('sticky', window.scrollY > 0);
+      });
+    </script>
+    
+
+    <script>
+      
+    const words = [
+      "Welcome to Hami Confectionery! Your best cuisines and pastries plug",
+      "Our services are top-notch! We provide your taste",
+      "Hami Confectionery! We make your taste"
+    ];
+    
+    let currentIndex = 0;
+    const wordCarousel = document.getElementById("word-carousel");
+    
+    function rotateWords() {
+      wordCarousel.innerHTML = words[currentIndex];
+      currentIndex = (currentIndex + 1) % words.length;
+    }
+    
+    function showNextWord() {
+      currentIndex = (currentIndex + 1) % words.length;
+      rotateWords();
+    }
+    
+    function showPreviousWord() {
+      currentIndex = (currentIndex - 1 + words.length) % words.length;
+      rotateWords();
+    }
+    
+    // Initial word rotation
+    rotateWords();
+    
+    // Automatic word rotation every 4 seconds
+    setInterval(showNextWord, 4000);
+    
+    // Arrow button event listeners
+    document.querySelector(".carousel-prev").addEventListener("click", showPreviousWord);
+    document.querySelector(".carousel-next").addEventListener("click", showNextWord);
+    
+    
+    </script>
+    
+  </body>
+  
+  </html>
+  
   `);
 });
 
