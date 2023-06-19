@@ -13,6 +13,7 @@ const ordersDirectory = path.join(__dirname, 'orders');
 const nodemailer = require('nodemailer');
 const sqlite3 = require('sqlite3');
 const db = require('./database.js');
+const SQLiteStore = require('connect-sqlite3')(session);
 
 // const sqlite3 = require('sqlite3').verbose();
 // const db = new sqlite3.Database('./database.db');
@@ -69,18 +70,25 @@ app.use(cookieParser());
 app.use(cors()); // Allow cross-origin requests
 
 
-// Use express-session middleware
-app.use(session({
-  secret: 'mysecretkey',
-  resave: false,
-  saveUninitialized: true,
-  cookie: {
-    maxAge: 3600000, // Set the maximum age (in milliseconds) for the session cookie
-    // Additional cookie options can be added here
-  },
-  unset: 'destroy', // Clear the session data on expiration
-  rolling: true, // Extend the session expiration on each request
-}));
+// Configure express-session middleware
+app.use(
+  session({
+    secret: 'mysecretkey',
+    resave: false,
+    saveUninitialized: true,
+    cookie: {
+      maxAge: 3600000, // Set the maximum age (in milliseconds) for the session cookie
+      // Additional cookie options can be added here
+    },
+    unset: 'destroy', // Clear the session data on expiration
+    rolling: true, // Extend the session expiration on each request
+    store: new SQLiteStore({
+      db: './database.db', // Path to your SQLite database file
+      table: 'session_store', // Change the table name to 'session_store'
+      // Additional options can be added here
+    }),
+  })
+);
 
 
 const transporter = nodemailer.createTransport({
