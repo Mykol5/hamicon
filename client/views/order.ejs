@@ -8,6 +8,7 @@
     <meta http-equiv="Content-Type" content="application/javascript">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <title>Order</title>
     <style>
 
@@ -430,7 +431,7 @@ header {
     <div class="logo">
       <img src="/images/WhatsApp_Image_2023-05-18_at_4.45.03_PM-removebg-preview.png" alt="Logo">
     </div>
-
+ 
     </div>
     <div class="hamburger">
       <!-- <div class="bar"></div>
@@ -456,193 +457,170 @@ header {
     </nav>
   </aside>
 
-<br>
-<br>
-<br>
-  
-    <div class="order-container">
-        <h1>Your Cart Items:</h1>
- <!-- Render order items -->
-<% cartItems.forEach(item => { %>
-    <div class="item-container" data-item-id="<%= item.itemId %>" data-quantity="<%= item.quantity %>" data-image-url="<%= item.imageUrl %>">
-      <!-- Item details -->
-      <img src="<%= item.imageUrl %>" alt="<%= item.name %>" class="item-image">
-      <div>
-        <p>Item ID: <%= item.itemId %></p>
-        <p>Name: <%= item.name %></p>
-        <p>Price: <%= item.price %></p>
-        <p>Quantity: <%= item.quantity %></p>
-        <button class="delete-btn" data-item-id="<%= item.itemId %>">Delete</button>
-      </div>
-    </div>
-  <% }) %>
-  
-        <% if (cartItems.length === 0) { %>
-        <p class="empty-cart">Your cart is empty</p>
-        <% } %>
+  <br>
+  <br>
+  <br>
 
-        <div class="checkout-button">
-          <button onclick="checkout()" id="checkout-btn">Checkout</button>
+
+
+  <div class="order-container">
+    <h1>Your Cart Items:</h1>
+    <!-- Render order items -->
+    <% cartItems.forEach(item => { %>
+      <div class="item-container" data-item-id="<%= item.itemId %>" data-quantity="<%= item.quantity %>" data-image-url="<%= item.imageUrl %>">
+        <!-- Item details -->
+        <img src="<%= item.imageUrl %>" alt="<%= item.name %>" class="item-image">
+        <div>
+          <p>Item ID: <%= item.itemId %></p>
+          <p>Name: <%= item.name %></p>
+          <p>Price: <%= item.price %></p>
+          <p>Quantity: <%= item.quantity %></p>
+          <button class="delete-btn" data-item-id="<%= item.itemId %>">Delete</button>
         </div>
+      </div>
+    <% }) %>
+    
+    <% if (cartItems.length === 0) { %>
+      <p class="empty-cart">Your cart is empty</p>
+    <% } %>
+  
+    <div class="checkout-button">
+      <button onclick="checkout()" id="checkout-btn">Checkout</button>
     </div>
-    <div id="loading-animation-container">
-        <div class="loading-overlay"></div>
-        <div id="loading-animation"></div>
-    </div>
+  </div>
+  
+  <!-- Loading animation -->
+  <div id="loading-animation-container">
+    <div class="loading-overlay"></div>
+    <div id="loading-animation"></div>
+  </div>
+  
+  <div class="bottom-bar">
+    <a href="/dashboard.html" class="bottom-icon" id="home-icon">
+      <i class="fa fa-home"></i>
+      Home
+    </a>
+    <a href="/about" class="bottom-icon" id="about-icon">
+      <i class="fa fa-info-circle"></i>
+      About
+    </a>
+    <a href="/order" id="order-btn" class="bottom-icon active" id="order-icon">
+      <span class="notification" id="cart-count"></span>
+      <i class="fa fa-shopping-cart"></i>
+      Orders
+    </a>
+    <a href="/profile" class="bottom-icon" id="profile-icon">
+      <i class="fa fa-user"></i>
+      Profile
+    </a>
+  </div>
+  
+  <script>
+      // Wait for the DOM content to load
+      document.addEventListener('DOMContentLoaded', () => {
+        const orderContainer = document.querySelector('.order-container');
 
-    <div class="bottom-bar">
-        <a href="/dashboard.html" class="bottom-icon" id="home-icon">
-            <i class="fa fa-home"></i>
-            Home
-        </a>
-        <a href="/about" class="bottom-icon" id="about-icon">
-            <i class="fa fa-info-circle"></i>
-            About
-        </a>
-        <a href="/order" id="order-btn" class="bottom-icon" id="order-icon">
-            <span class="notification" id="cart-count"></span>
-            <i class="fa fa-shopping-cart"></i>
-            Orders
-        </a>
-        <a href="/profile" class="bottom-icon" id="profile-icon">
-            <i class="fa fa-user"></i>
-            Profile
-        </a>
-    </div>
-
-    <script>
-
-        const addToCartButton = document.getElementById('checkout-btn');
-        const loadingAnimationContainer = document.getElementById('loading-animation-container');
-        
-        addToCartButton.addEventListener('click', () => {
-          // Show the loading animation
-          loadingAnimationContainer.classList.add('show-loading');
-        
-          // Simulate a delay for demonstration purposes
-          setTimeout(() => {
-            // Perform the add to cart operation here
-            console.log('Item added to cart');
-        
-            // Hide the loading animation after the task is completed
-            loadingAnimationContainer.classList.remove('show-loading');
-          }, 4000); // Simulate a 2-second delay
-        });
-        
-        
-      </script>
-
-
-    <script>
-                        // Wait for the DOM content to load
-                        document.addEventListener('DOMContentLoaded', () => {
-                      // Add event listeners to the delete buttons
-                      const deleteButtons = document.querySelectorAll('.delete-btn');
-                      deleteButtons.forEach(button => {
-                        button.addEventListener('click', deleteCartItem);
-                      });
-                    });
-                
-
-                    // Function to handle deleting a cart item
-                    function deleteCartItem(event) {
-                      const button = event.currentTarget;
-                      const itemId = button.getAttribute('data-item-id');
-
-                      console.log('Item ID:', itemId);
-
-                      // Send a request to delete the item from the cart
-                      fetch('/delete-from-cart', {
-                        method: 'POST',
-                        headers: {
-                          'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({ itemId }),
-                      })
-                        .then(response => response.json())
-                        .then(data => {
-                          console.log('Item deleted from cart:', data);
-                          // Refresh the page or update the cart display if needed
-
-                          if (data.success) {
-                            // Remove the deleted item from the DOM
-                            const itemContainer = button.closest('.item-container');
-                            itemContainer.remove();
-                          }
-                        })
-                        .catch(error => {
-                          console.error('Error deleting item from cart:', error);
-                          // Handle the error if needed
-                        });
-                    }
-
-        </script>
-
-
-    <script>
-
-      function onLoadFunct(){
-        // Update the checkout button click event handler
-        document.getElementById('checkout-btn').addEventListener('click', function() {
-          const cartItems = getCartItemsFromStorage(); // Implement the function to get cart items
-          if (cartItems.length === 0) {
-            alert('No items have been added to the cart.');
-            return;
+        // Add event listener to the parent container and handle click events on delete buttons
+        orderContainer.addEventListener('click', (event) => {
+          if (event.target.classList.contains('delete-btn')) {
+            const button = event.target;
+            deleteCartItem(button);
           }
-          // Proceed with the checkout process
-          // ...
         });
+      });
+  
+      function deleteCartItem(button) {
+        const itemContainer = button.closest('.item-container');
+        
+        if (itemContainer) {
+          const itemId = itemContainer.getAttribute('data-item-id');
+        
+          console.log('Item ID:', itemId);
+        
+          // Send a request to delete the item from the cart
+          fetch('/delete-from-cart', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ itemId }),
+          })
+            .then(response => response.json())
+            .then(data => {
+              console.log('Item deleted from cart:', data);
+              // Refresh the page or update the cart display if needed
+        
+              if (data.success) {
+                // Remove the deleted item from the DOM
+                itemContainer.remove();
+              }
+            })
+            .catch(error => {
+              console.error('Error deleting item from cart:', error);
+              // Handle the error if needed
+            });
+        }
       }
 
-
-        function checkout() {
-            // Calculate the total price
-            let totalPrice = 0;
-            <% cartItems.forEach(function(item) { %>
-            totalPrice += <%= item.price %> * <%= item.quantity %>;
-            <% }) %>
-
-            // Redirect to the payment page with the total price
-            window.location.href = '/payment?totalPrice=' + totalPrice;
-        }
-    </script>
-
-<script>
-  // Add an event listener to the dashboard icon
-  const dashboardLink = document.querySelector('.bottom-bar a[href="/dashboard.html"]');
-  dashboardLink.addEventListener('click', handleDashboardClick);
-
-  function handleDashboardClick(event) {
-    event.preventDefault();
-
-    // Add the loading animation class to the dashboard icon
-    dashboardLink.classList.add('loading');
-
-    // Simulate a delay to mimic loading
-    setTimeout(() => {
-      // Remove the loading animation class after the delay
-      dashboardLink.classList.remove('loading');
-
-      // Navigate to the dashboard page
-      window.location.href = "/dashboard.html";
-    }, 2000);
-  }
-</script>
-
-<script>
-  // Get the current URL path
-  const currentPath = window.location.pathname;
-
-  // Find the corresponding bottom icon and add the "active" class
-  const bottomIcons = document.querySelectorAll('.bottom-icon');
-  bottomIcons.forEach(icon => {
-    if (icon.getAttribute('href') === currentPath) {
-      icon.classList.add('active');
+  
+    // Function to handle checkout
+    function checkout() {
+      const cartItems = Array.from(document.querySelectorAll('.item-container')).map(container => ({
+        itemId: container.getAttribute('data-item-id'),
+        name: container.querySelector('p:nth-child(2)').textContent.replace('Name: ', ''),
+        price: parseFloat(container.querySelector('p:nth-child(3)').textContent.replace('Price: ', '')),
+        quantity: parseInt(container.querySelector('p:nth-child(4)').textContent.replace('Quantity: ', '')),
+        imageUrl: container.getAttribute('data-image-url'),
+      }));
+  
+      if (cartItems.length === 0) {
+        alert('No items have been added to the cart.');
+        return;
+      }
+  
+      // Calculate the total price
+      const totalPrice = cartItems.reduce((total, item) => total + (item.price * item.quantity), 0);
+  
+      // Redirect to the payment page with the total price
+      window.location.href = '/payment?totalPrice=' + totalPrice;
     }
-  });
-</script>
-
-
+  </script>
+  
+  <script>
+    // Add an event listener to the dashboard icon
+    const dashboardLink = document.querySelector('.bottom-bar a[href="/dashboard.html"]');
+    dashboardLink.addEventListener('click', handleDashboardClick);
+  
+    function handleDashboardClick(event) {
+      event.preventDefault();
+  
+      // Add the loading animation class to the dashboard icon
+      dashboardLink.classList.add('loading');
+  
+      // Simulate a delay to mimic loading
+      setTimeout(() => {
+        // Remove the loading animation class after the delay
+        dashboardLink.classList.remove('loading');
+  
+        // Navigate to the dashboard page
+        window.location.href = "/dashboard.html";
+      }, 2000);
+    }
+  </script>
+  
+  <script>
+    // Get the current URL path
+    const currentPath = window.location.pathname;
+  
+    // Find the corresponding bottom icon and add the "active" class
+    const bottomIcons = document.querySelectorAll('.bottom-icon');
+    bottomIcons.forEach(icon => {
+      if (icon.getAttribute('href') === currentPath) {
+        icon.classList.add('active');
+      }
+    });
+  </script>
+  
 </body>
 
 </html>

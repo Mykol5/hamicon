@@ -363,35 +363,35 @@ header {
           </style>
 
 <script>
-  document.addEventListener('DOMContentLoaded', () => {
-    const userDetails = readUserDetails();
-  
-    const userNameElement = document.getElementById('user-name');
-    const userEmailElement = document.getElementById('user-email');
-    const userPhoneElement = document.getElementById('user-phone');
-  
-    if (userDetails && userDetails.name) {
-      userNameElement.textContent = userDetails.name;
-    }
-  
-    if (userDetails && userDetails.email) {
-      userEmailElement.textContent = userDetails.email;
-    }
-  
-    if (userDetails && userDetails.phone) {
-      userPhoneElement.textContent = userDetails.phone;
-    }
-  });
-  
-  function readUserDetails() {
-  return fetch('/profile')
+document.addEventListener('DOMContentLoaded', () => {
+  loadUserDetails();
+});
+
+function loadUserDetails() {
+  fetch('/profile')
     .then(response => response.json())
-    .then(data => data.userDetails)
+    .then(data => {
+      const userNameElement = document.getElementById('user-name');
+      const userEmailElement = document.getElementById('user-email');
+      const userPhoneElement = document.getElementById('user-phone');
+
+      if (data.user && data.user.name) {
+        userNameElement.textContent = data.user.name;
+      }
+
+      if (data.user && data.user.email) {
+        userEmailElement.textContent = data.user.email;
+      }
+
+      if (data.user && data.user.phone) {
+        userPhoneElement.textContent = data.user.phone;
+      }
+    })
     .catch(error => {
       console.error('Error retrieving user details:', error);
-      return null;
     });
 }
+
 
   </script>
   
