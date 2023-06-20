@@ -532,14 +532,14 @@ app.get('/', (req, res) => {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hami Confectionery</title>
-    <link href="https://fonts.googleapis.com/css?family=Roboto|Open+Sans:200,300,400,700,800,900&subset=latin"
-      rel="stylesheet">
+    // <link href="https://fonts.googleapis.com/css?family=Roboto|Open+Sans:200,300,400,700,800,900&subset=latin" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <style>
       /* Global Styles */
       body {
         margin: 0;
         padding: 0;
-        font-family: 'Roboto', 'Open Sans', sans-serif;
+        font-family: system-ui, 'Open Sans';
         overflow-x: hidden;
       }
   
@@ -673,17 +673,23 @@ app.get('/', (req, res) => {
     .service-card-icon {
       width: 100px;
       height: 100px;
-      margin-bottom: 10px;
+      margin-bottom: 0px;
+      font-size: 40px;
     }
   
     .service-card-title {
       font-size: 1.5em;
       margin-bottom: 10px;
+      margin-top: 0px;
     }
   
     .service-card-description {
       font-size: 1em;
       color: #666;
+    }
+
+    .fas fa-birthday-cake service-card-icon {
+      padding-bottom: 2px;
     }
   
     /* Testimonials Section Styles */
@@ -723,6 +729,9 @@ app.get('/', (req, res) => {
       text-decoration: none;
       color: #fff;
       margin-right: 10px;
+    }
+    .footer-icon {
+      color: #fff;
     }
   
     /* Navbar Styles */
@@ -835,10 +844,10 @@ app.get('/', (req, res) => {
       <img class="navbar-logo" src="/images/WhatsApp_Image_2023-05-18_at_4.45.03_PM-removebg-preview.png" alt="Hami Confectionery Logo">
       <div class="navbar-links">
         <a class="navbar-link" href="/">Home</a>
-        <a class="navbar-link" href="/">About</a>
-        <a class="navbar-link" href="/">Contact</a>
-        <a class="navbar-link" href="/index.html">Login</a>
-        <a class="navbar-link" href="/signup.html">Sign Up</a>
+        <a class="navbar-link" href="/about">About</a>
+        <a class="navbar-link" href="/contact">Contact</a>
+        <a class="navbar-link" href="/login">Login</a>
+        <a class="navbar-link" href="/signup">Sign Up</a>
       </div>
       <div class="hamburger">
         <span></span>
@@ -860,55 +869,54 @@ app.get('/', (req, res) => {
   
   
   
-    <section class="services-section">
-      <div class="service-card">
-        <img class="service-card-icon" src="/images/service-icon-1.png" alt="Service 1 Icon">
-        <h3 class="service-card-title">Service 1</h3>
-        <p class="service-card-description">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-      </div>
-      <div class="service-card">
-        <img class="service-card-icon" src="/images/service-icon-2.png" alt="Service 2 Icon">
-        <h3 class="service-card-title">Service 2</h3>
-        <p class="service-card-description">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-      </div>
-      <div class="service-card">
-        <img class="service-card-icon" src="/images/service-icon-3.png" alt="Service 3 Icon">
-        <h3 class="service-card-title">Service 3</h3>
-        <p class="service-card-description">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-      </div>
-    </section>
+  <section class="services-section">
+  <div class="service-card">
+    <i class="fas fa-birthday-cake service-card-icon"></i>
+    <h3 class="service-card-title">Cakes</h3>
+    <p class="service-card-description">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+  </div>
+  <div class="service-card">
+    <i class="fas fa-utensils service-card-icon"></i>
+    <h3 class="service-card-title">Pastry</h3>
+    <p class="service-card-description">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+  </div>
+  <div class="service-card">
+    <i class="fas fa-utensil-spoon service-card-icon"></i>
+    <h3 class="service-card-title">Cuisines</h3>
+    <p class="service-card-description">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+  </div>
+</section>
   
     <section class="testimonials-section">
       <div class="testimonial-slide active">
         <p>"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis semper sapien a nisi laoreet congue. Nam non
           hendrerit tellus."</p>
-        <span>- John Doe</span>
+        <span>- Charissa Isaiah</span>
       </div>
       <div class="testimonial-slide">
         <p>"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis semper sapien a nisi laoreet congue. Nam non
           hendrerit tellus."</p>
-        <span>- Jane Smith</span>
+        <span>- Bankebi Akinsola</span>
       </div>
       <div class="testimonial-slide">
         <p>"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis semper sapien a nisi laoreet congue. Nam non
           hendrerit tellus."</p>
-        <span>- David Johnson</span>
-      </div>
+        <span>- Peter Adegoke</span>
     </section>
   
     <footer class="footer">
       <div class="footer-icons">
-        <a class="footer-icon" href="https://www.whatsapp.com"><img src="/images/whatsapp-icon.png" alt="WhatsApp Icon"></a>
-        <a class="footer-icon" href="mailto:info@hamiconfectionery.com"><img src="/images/email-icon.png" alt="Email Icon"></a>
-        <a class="footer-icon" href="https://www.instagram.com/hamiconfectionery"><img src="/images/instagram-icon.png" alt="Instagram Icon"></a>
-        <a class="footer-icon" href="https://www.facebook.com/hamiconfectionery"><img src="/images/facebook-icon.png" alt="Facebook Icon"></a>
+          <a class="footer-icon" href="https://wa.me/+2348145336427" target="_blank"><i class="fab fa-whatsapp"></i></a>
+          <a class="footer-icon" href="mailto:hamiconfectionery@gmail.com"><i class="fas fa-envelope"></i></a>
+          <a class="footer-icon" href="https://facebook.com" target="_blank"><i class="fab fa-facebook"></i></a>
+          <a class="footer-icon" href="https://instagram.com" target="_blank"><i class="fab fa-instagram"></i></a>
       </div>
       <div class="footer-links">
         <a class="footer-link" href="/privacy-policy">Privacy Policy</a>
         <a class="footer-link" href="/terms-of-service">Terms of Service</a>
       </div>
       <p>&copy; 2023 Hami Confectionery. All rights reserved.</p>
-      <p>123 Main Street, City, Country</p>
+      <p>Kemta Idi-aba, Abeokuta, Nigeria</p>
     </footer>
   
     <script>
@@ -982,12 +990,13 @@ app.get('/', (req, res) => {
     document.querySelector(".carousel-next").addEventListener("click", showNextWord);
     
     
+    
     </script>
     
   </body>
   
   </html>
-  
+
   `);
 });
 
@@ -1186,7 +1195,7 @@ app.get('/payment', (req, res) => {
       });
     } else {
       // Session or user not found, redirect to the login page
-      res.redirect('/login');
+      res.redirect('/index.html');
     }
   });
 });

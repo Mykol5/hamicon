@@ -1215,7 +1215,7 @@ document.addEventListener('DOMContentLoaded', () => {
                   <img src="/images/friedrice.jpg">
                   <div class="cart-item-details">
                     <p class="cart-item-name">Item 1</p>
-                    <p class="cart-item-price" data-price="10.00">$10.00</p>
+                    <p class="cart-item-price" data-price="10.00">$0.00</p>
                     <div class="cart-item-quantity">
                       <button class="cart-item-quantity-btn">-</button>
                       <span class="cart-item-quantity-value">0</span>
@@ -1898,11 +1898,12 @@ startSlideshow();
     cartCountElement.style.display = "none"; // Hide cart count notification initially
 
     viewCartBtns.forEach(function(viewCartBtn) {
-      const cartDetails = viewCartBtn.nextElementSibling;
+    const cartDetails = viewCartBtn.nextElementSibling;
 
-      const quantityValue = cartDetails.querySelector(".cart-item-quantity-value");
-      const incrementBtn = cartDetails.querySelector(".cart-item-quantity-btn:nth-of-type(2)");
-      const decrementBtn = cartDetails.querySelector(".cart-item-quantity-btn:nth-of-type(1)");
+    const quantityValue = cartDetails.querySelector(".cart-item-quantity-value");
+    const incrementBtn = cartDetails.querySelector(".cart-item-quantity-btn:nth-of-type(2)");
+    const decrementBtn = cartDetails.querySelector(".cart-item-quantity-btn:nth-of-type(1)");
+    const priceElement = cartDetails.querySelector(".cart-item-price");
 
       viewCartBtn.addEventListener("click", function() {
         cartDetails.style.display = "block";
@@ -1923,24 +1924,35 @@ startSlideshow();
         }
       }
 
+ 
       incrementBtn.addEventListener("click", function() {
-        let currentQuantity = parseInt(quantityValue.textContent);
-        currentQuantity++;
-        quantityValue.textContent = currentQuantity;
-        totalItems += 1; // Increment total items count
-        updateCartCount(); // Update cart count notification
-      });
+      let currentQuantity = parseInt(quantityValue.textContent);
+      currentQuantity++;
+      quantityValue.textContent = currentQuantity;
+      totalItems += 1; // Increment total items count
+      updateCartCount(); // Update cart count notification
 
-      decrementBtn.addEventListener("click", function() {
-        let currentQuantity = parseInt(quantityValue.textContent);
-        if (currentQuantity >= 1) {
-          currentQuantity--;
-          quantityValue.textContent = currentQuantity;
-          totalItems -= 1; // Decrement total items count
-          updateCartCount(); // Update cart count notification
-        }
-      });
+      // Update price based on the quantity
+      const price = parseFloat(priceElement.dataset.price);
+      const totalPrice = price * currentQuantity;
+      priceElement.textContent = totalPrice.toFixed(2);
     });
+
+    decrementBtn.addEventListener("click", function() {
+      let currentQuantity = parseInt(quantityValue.textContent);
+      if (currentQuantity >= 1) {
+        currentQuantity--;
+        quantityValue.textContent = currentQuantity;
+        totalItems -= 1; // Decrement total items count
+        updateCartCount(); // Update cart count notification
+
+        // Update price based on the quantity
+        const price = parseFloat(priceElement.dataset.price);
+        const totalPrice = price * currentQuantity;
+        priceElement.textContent = totalPrice.toFixed(2);
+      }
+    });
+  });
 
 function addToCart(cartId) {
   const cartDetails = document.querySelector(`[data-item-id="${cartId}"]`);
