@@ -475,27 +475,40 @@ app.post('/logout', (req, res) => {
         } else if (user) {
           // User exists, proceed with order deletion
           const orderFilePath = path.join(__dirname, 'orders', `${userId}.json`);
-          try {
-            fs.unlinkSync(orderFilePath);
-            console.log('User order deleted successfully');
-          } catch (error) {
-            console.error('Error deleting order file:', error);
-          }
+          fs.unlink(orderFilePath, (error) => {
+            if (error) {
+              console.error('Error deleting order file:', error);
+            } else {
+              console.log('User order deleted successfully');
+            }
+
+            // Delete the session from the sessions table
+            db.run('DELETE FROM sessions WHERE sessionId = ?', [sessionId], (err) => {
+              if (err) {
+                console.error('Error deleting session:', err.message);
+                return res.sendStatus(500);
+              }
+
+              // Clear session cookie and redirect to the index page
+              res.clearCookie('sessionId');
+              res.redirect('/index.html');
+            });
+          });
         } else {
           console.log('User not found:', userId);
+
+          // Delete the session from the sessions table even if the user is not found
+          db.run('DELETE FROM sessions WHERE sessionId = ?', [sessionId], (err) => {
+            if (err) {
+              console.error('Error deleting session:', err.message);
+              return res.sendStatus(500);
+            }
+
+            // Clear session cookie and redirect to the index page
+            res.clearCookie('sessionId');
+            res.redirect('/index.html');
+          });
         }
-
-        // Delete the session from the sessions table
-        db.run('DELETE FROM sessions WHERE sessionId = ?', [sessionId], (err) => {
-          if (err) {
-            console.error('Error deleting session:', err.message);
-            return res.sendStatus(500);
-          }
-
-          // Clear session cookie and redirect to the index page
-          res.clearCookie('sessionId');
-          res.redirect('/index.html');
-        });
       });
     } else {
       // Session or userId is not available
