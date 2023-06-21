@@ -90,6 +90,7 @@ const db = new sqlite3.Database('./database.db', (err) => {
                 userId TEXT,
                 email TEXT,
                 data TEXT NULL,
+                isNewUser INTEGER DEFAULT 0,
                 FOREIGN KEY (userId) REFERENCES users(userId)
               )
             `, (err) => {
@@ -107,14 +108,4 @@ const db = new sqlite3.Database('./database.db', (err) => {
 });
 
 module.exports = db;
-
-
-
-
-
-
-
-
-
-
 

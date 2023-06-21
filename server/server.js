@@ -15,10 +15,6 @@ const sqlite3 = require('sqlite3');
 const db = require('./database.js');
 const SQLiteStore = require('connect-sqlite3')(session);
 
-// const sqlite3 = require('sqlite3').verbose();
-// const db = new sqlite3.Database('./database.db');
-
-db.run('CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY, name TEXT, email TEXT, password TEXT)');
 
 const app = express();
 const port = 8080;
@@ -34,13 +30,9 @@ app.use(express.static(path.join(__dirname, 'client'), {
 
 app.get('/images/:filename', (req, res) => {
   const filePath = path.join(__dirname, '..', 'client', 'images', req.params.filename);
-  // console.log('filePath:', filePath);
   const contentType = getContentType(filePath);
   res.set('Content-Type', contentType);
   res.sendFile(filePath);
-  // const contentType = getContentType(filePath);
-  // res.set('Content-Type', contentType);
-  // res.sendFile(path.join(__dirname + '/../client/images'));
 });
 
 // Serve static files from the 'profile-images' folder
@@ -199,18 +191,14 @@ app.post('/signup', (req, res) => {
         console.log('Welcome email sent:', info.response);
       }
 
-      // Redirect the user to the sign-up success page
-      res.redirect('/signup-success.html');
-
-      // Redirect the user to the login page
-      res.redirect('/index.html');
+        // Redirect the user to the sign-up success page
+        res.redirect('/signup-success.html');
+      });
     });
-    
   });
 });
-});
 
-const sessions = {};
+// const sessions = {};
 
 app.get('/index.html', (req, res) => {
   res.setHeader('Content-Type', 'text/html');
@@ -220,169 +208,150 @@ app.get('/index.html', (req, res) => {
 app.post('/login', (req, res) => {
   const { email, password } = req.body;
 
-  // Find the user with the matching email in the SQLite database
   db.get('SELECT * FROM users WHERE email = ?', [email], (err, row) => {
     if (err) {
       console.error('Error querying database:', err.message);
-      res.sendStatus(500);
-      return;
+      return res.status(500).send('Error querying database');
     }
 
-    if (row) {
-      // Check if the user's credentials are correct
-      bcrypt.compare(password, row.password, (bcryptErr, result) => {
-        if (bcryptErr) {
-          console.error('Error comparing passwords:', bcryptErr);
-          res.sendStatus(500);
-          return;
-        }
-
-        if (result) {
-          // Generate a session ID and update the session data
-          const sessionId = uuidv4();
-          console.log('Generated session ID:', sessionId);
-
-          // Update the last login time for the user in the SQLite database
-          const loginTime = Date.now();
-          db.run('UPDATE users SET lastLoginTime = ? WHERE email = ?', [loginTime, email], (updateErr) => {
-            if (updateErr) {
-              console.error('Error updating last login time:', updateErr.message);
-              res.sendStatus(500);
-              return;
-            }
-
-            // Assign the userId value to the session
-            const userId = row.userId; // Update the column name if necessary
-
-            // Update the user's session entry in the sessions table
-// Save the session data to the sessions table
-db.run(
-  'INSERT INTO sessions (sessionId, userId, email, data) VALUES (?, ?, ?, ?)',
-  [sessionId, userId, email, JSON.stringify(session)],
-  (err) => {
-    if (err) {
-      console.error('Error saving session data:', err);
-    } else {
-      console.log('Session data saved successfully');
+    if (!row) {
+      return res.status(401).send('User not found');
     }
 
+    bcrypt.compare(password, row.password, (bcryptErr, result) => {
+      if (bcryptErr) {
+        console.error('Error comparing passwords:', bcryptErr);
+        return res.status(500).send('Error comparing passwords');
+      }
 
+      if (result) {
+        const sessionId = uuidv4();
+        const loginTime = Date.now();
 
+        db.run('UPDATE users SET lastLoginTime = ? WHERE email = ?', [loginTime, email], (updateErr) => {
+          if (updateErr) {
+            console.error('Error updating last login time:', updateErr.message);
+            return res.status(500).send('Error updating last login time');
+          }
 
-                // Create a session for the user
-                sessions[sessionId] = {
-                  userId: row.userId,
-                  name: row.name,
-                  email: row.email,
-                  isNewUser: !row.lastLoginTime,
-                };
+          const userId = row.userId;
 
-                console.log('Session from sessions object:', sessions[sessionId]);
-                console.log('Session ID from cookie:', req.cookies.sessionId);
-
-                // Set the sessionId cookie
-                res.cookie('sessionId', sessionId, {
-                  maxAge: 3600000, // Set the maximum age (in milliseconds) for the session cookie
-                  // Additional cookie options can be added here
-                });
-
-                // Redirect to the dashboard page
-                console.log('Redirecting to dashboard...');
-                res.redirect('/dashboard.html');
+          db.run(
+            'INSERT INTO sessions (sessionId, userId, email) VALUES (?, ?, ?)',
+            [sessionId, userId, email],
+            (sessionErr) => {
+              if (sessionErr) {
+                console.error('Error saving session data:', sessionErr);
+                return res.status(500).send('Error saving session data');
               }
-            );
-          });
-        } else {
-          // If the credentials are incorrect, show an error message
-          res.send('Invalid email or password');
-        }
-      });
-    } else {
-      // If the user is not found, show an error message
-      res.send('User not found');
-    }
+
+              res.cookie('sessionId', sessionId, {
+                maxAge: 3600000,
+              });
+
+              return res.redirect('/dashboard.html');
+            }
+          );
+        });
+      } else {
+        return res.status(401).send('Invalid email or password');
+      }
+    });
   });
 });
+
 
 app.get('/dashboard.html', (req, res) => {
   // Assuming you have a way to identify the currently logged-in user
   const sessionId = req.cookies.sessionId;
   console.log('Session ID from cookie:', sessionId);
 
-  const session = sessions[sessionId];
-  console.log('Session from sessions object:', session);
+  db.get('SELECT * FROM sessions WHERE sessionId = ?', [sessionId], (err, row) => {
+    if (err) {
+      console.error('Error querying database:', err.message);
+      return res.sendStatus(500);
+    }
 
-  if (session && session.userId) {
-    const userId = session.userId;
+    if (row) {
+      const userId = row.userId;
 
-    // Find the user with the matching ID in the SQLite database
-    db.get('SELECT * FROM users WHERE userId = ?', [userId], (err, row) => {
-      if (err) {
-        console.error('Error querying database:', err.message);
-        res.sendStatus(500);
-        return;
-      }
-
-      if (row) {
-        // Determine if the pop-up should be shown based on the session's isNewUser flag
-        const shouldShowPopup = session.isNewUser;
-
-        // Determine the notification message based on whether the user is a new user or an existing user
-        let notificationMessage;
-        if (shouldShowPopup) {
-          notificationMessage = `<p><strong>Welcome to Hami Confectionery, ${row.name}!</strong></p> This is your first login, go and complete your KYC in the Profile section. <p>We are here to serve you better.</p>`;
-        } else {
-          notificationMessage = `<p><strong>Welcome back, ${row.name}!</strong></p> Our services run from 08:00 - 18:00, Mondays - Saturdays. <p>You can reach us via Call/Chat 08145336427.</p>`;
+      // Find the user with the matching ID in the SQLite database
+      db.get('SELECT * FROM users WHERE userId = ?', [userId], (err, row) => {
+        if (err) {
+          console.error('Error querying database:', err.message);
+          return res.sendStatus(500);
         }
 
-        // Update the isNewUser flag to false for the current session
-        session.isNewUser = false;
+        if (row) {
+          // Determine if the pop-up should be shown based on the session's isNewUser flag
+          const shouldShowPopup = row.isNewUser;
 
-        // Render the dashboard page and pass the user, username, notificationMessage, and shouldShowPopup to the template
-        res.render('dashboard', { user: row, username: row.name, notificationMessage, shouldShowPopup });
-      } else {
-        console.error('User not found:', userId);
-        res.sendStatus(404);
-      }
-    });
-  } else {
-    // Clear the session cookie and redirect to the login page
-    res.clearCookie('sessionId');
-    res.redirect('/index.html');
-  }
+          // Determine the notification message based on whether the user is a new user or an existing user
+          let notificationMessage;
+          if (shouldShowPopup) {
+            notificationMessage = `<p><strong>Welcome to Hami Confectionery, ${row.name}!</strong></p> This is your first login, go and complete your KYC in the Profile section. <p>We are here to serve you better.</p>`;
+          } else {
+            notificationMessage = `<p><strong>Welcome back, ${row.name}!</strong></p> Our services run from 08:00 - 18:00, Mondays - Saturdays. <p>You can reach us via Call/Chat 08145336427.</p>`;
+          }
+
+          // Update the isNewUser flag to false for the current session
+          db.run('UPDATE sessions SET isNewUser = 0 WHERE sessionId = ?', [sessionId], (err) => {
+            if (err) {
+              console.error('Error updating session:', err.message);
+            }
+
+            // Render the dashboard page and pass the user, username, notificationMessage, and shouldShowPopup to the template
+            res.render('dashboard', { user: row, username: row.name, notificationMessage, shouldShowPopup });
+          });
+        } else {
+          console.error('User not found:', userId);
+          res.sendStatus(404);
+        }
+      });
+    } else {
+      // Clear the session cookie and redirect to the login page
+      res.clearCookie('sessionId');
+      res.redirect('/index.html');
+    }
+  });
 });
-
 
 app.get('/profile', (req, res) => {
   // Assuming you have a way to identify the currently logged-in user
   const sessionId = req.cookies.sessionId;
-  const session = sessions[sessionId];
 
-  if (session && session.userId) {
-    const userId = session.userId;
+  db.get('SELECT * FROM sessions WHERE sessionId = ?', [sessionId], (err, row) => {
+    if (err) {
+      console.error('Error querying database:', err.message);
+      return res.sendStatus(500);
+    }
 
-    // Find the user with the matching ID in the SQLite database
-    db.get('SELECT * FROM users WHERE userId = ?', [userId], (err, row) => {
-      if (err) {
-        console.error('Error querying database:', err.message);
-        res.sendStatus(500);
-        return;
-      }
+    if (row) {
+      const userId = row.userId;
 
-      if (row) {
-        // Render the profile page and pass the user data to the template
-        res.render('profile', { user: row });
-      } else {
-        console.error('User not found:', userId);
-        res.sendStatus(404);
-      }
-    });
-  } else {
-    // Clear the session cookie and redirect to the login page
-    res.clearCookie('sessionId');
-    res.redirect('/index.html');
-  }
+      // Find the user with the matching ID in the SQLite database
+      db.get('SELECT * FROM users WHERE userId = ?', [userId], (err, row) => {
+        if (err) {
+          console.error('Error querying database:', err.message);
+          return res.sendStatus(500);
+        }
+
+        if (row) {
+          // Render the profile page and pass the user data to the template
+          res.render('profile', { user: row });
+        } else {
+          console.error('User not found:', userId);
+          res.sendStatus(404);
+        }
+      });
+    } else {
+      // Clear the session cookie and redirect to the login page
+      res.clearCookie('sessionId');
+      res.redirect('/index.html');
+    }
+  });
 });
+
 
 
 app.get('/about', (req, res) => {
@@ -410,117 +379,135 @@ const upload = multer({ storage: storage });
 app.post('/update-profile', upload.single('profileImage'), (req, res) => {
   // Assuming you have a way to identify the currently logged-in user
   const sessionId = req.cookies.sessionId;
-  const session = sessions[sessionId];
 
-  if (session && session.userId) {
-    const userId = session.userId;
+  db.get('SELECT * FROM sessions WHERE sessionId = ?', [sessionId], (err, session) => {
+    if (err) {
+      console.error('Error querying database:', err.message);
+      return res.sendStatus(500);
+    }
 
-    // Get the updated profile information from the request body
-    const { name, email, phone } = req.body;
+    if (session && session.userId) {
+      const userId = session.userId;
 
-    // If a file was uploaded, update the profile image path
-    const profileImage = req.file ? req.file.filename : null;
+      // Get the updated profile information from the request body
+      const { name, email, phone } = req.body;
 
-    // Update the user profile in the SQLite database
-    db.run(
-      'UPDATE users SET name = ?, email = ?, phone = ?, profileImage = ? WHERE userId = ?',
-      [name, email, phone, profileImage, userId],
-      (err) => {
-        if (err) {
-          console.error('Error updating user profile:', err.message);
-          res.sendStatus(500);
-          return;
-        }
+      // If a file was uploaded, update the profile image path
+      const profileImage = req.file ? req.file.filename : null;
 
-        // Send a success response
-        res.redirect('/profile?success=true');
-
-        // Send an email to the user to confirm the profile update
-        const updateMailOptions = {
-          from: 'hamiconfectionery@gmail.com',
-          to: email,
-          subject: 'Profile Update Confirmation',
-          html: `
-            <html>
-              <head>
-                <style>
-                  /* CSS styles for the email */
-                  /* Add your custom CSS styles here */
-                </style>
-              </head>
-              <body>
-                <div class="container">
-                  <h1>Profile Update Confirmation</h1>
-                  <p>Your profile has been successfully updated.</p>
-                  <p>Here are your updated profile details:</p>
-                  <ul>
-                    <li><strong>Name:</strong> ${name}</li>
-                    <li><strong>Email:</strong> ${email}</li>
-                    <li><strong>Phone:</strong> ${phone}</li>
-                  </ul>
-                </div>
-              </body>
-            </html>
-          `
-        };
-
-        transporter.sendMail(updateMailOptions, (error, info) => {
-          if (error) {
-            console.error('Error sending profile update email:', error);
-          } else {
-            console.log('Profile update email sent:', info.response);
+      // Update the user profile in the SQLite database
+      db.run(
+        'UPDATE users SET name = ?, email = ?, phone = ?, profileImage = ? WHERE userId = ?',
+        [name, email, phone, profileImage, userId],
+        (err) => {
+          if (err) {
+            console.error('Error updating user profile:', err.message);
+            res.sendStatus(500);
+            return;
           }
-        });
-      }
-    );
-  } else {
-    res.sendStatus(401); // Unauthorized access
-  }
+
+          // Send a success response
+          res.redirect('/profile?success=true');
+
+          // Send an email to the user to confirm the profile update
+          const updateMailOptions = {
+            from: 'hamiconfectionery@gmail.com',
+            to: email,
+            subject: 'Profile Update Confirmation',
+            html: `
+              <html>
+                <head>
+                  <style>
+                    /* CSS styles for the email */
+                    /* Add your custom CSS styles here */
+                  </style>
+                </head>
+                <body>
+                  <div class="container">
+                    <h1>Profile Update Confirmation</h1>
+                    <p>Your profile has been successfully updated.</p>
+                    <p>Here are your updated profile details:</p>
+                    <ul>
+                      <li><strong>Name:</strong> ${name}</li>
+                      <li><strong>Email:</strong> ${email}</li>
+                      <li><strong>Phone:</strong> ${phone}</li>
+                    </ul>
+                  </div>
+                </body>
+              </html>
+            `
+          };
+
+          transporter.sendMail(updateMailOptions, (error, info) => {
+            if (error) {
+              console.error('Error sending profile update email:', error);
+            } else {
+              console.log('Profile update email sent:', info.response);
+            }
+          });
+        }
+      );
+    } else {
+      res.sendStatus(401); // Unauthorized access
+    }
+  });
 });
+
 
 
 app.post('/logout', (req, res) => {
   const sessionId = req.cookies.sessionId;
-  const session = sessions[sessionId];
 
-  if (session && session.userId) {
-    const userId = session.userId;
+  db.get('SELECT * FROM sessions WHERE sessionId = ?', [sessionId], (err, session) => {
+    if (err) {
+      console.error('Error querying database:', err.message);
+      return res.sendStatus(500);
+    }
 
-    // Check if the user exists in the database
-    db.get('SELECT * FROM users WHERE userId = ?', [userId], (err, user) => {
-      if (err) {
-        console.error('Error checking user existence:', err);
-        res.send('Error logging out');
-      } else if (user) {
-        // User exists, proceed with order deletion
-        const orderFilePath = path.join(__dirname, 'orders', `${userId}.json`);
-        try {
-          fs.unlinkSync(orderFilePath);
-          console.log('User order deleted successfully');
-        } catch (error) {
-          console.error('Error deleting order file:', error);
-        }
-      } else {
-        console.log('User not found:', userId);
-      }
+    if (session && session.userId) {
+      const userId = session.userId;
 
-      // Clear session and redirect to index page
-      req.session.destroy(err => {
+      // Check if the user exists in the database
+      db.get('SELECT * FROM users WHERE userId = ?', [userId], (err, user) => {
         if (err) {
-          console.log(err);
+          console.error('Error checking user existence:', err);
           res.send('Error logging out');
+        } else if (user) {
+          // User exists, proceed with order deletion
+          const orderFilePath = path.join(__dirname, 'orders', `${userId}.json`);
+          try {
+            fs.unlinkSync(orderFilePath);
+            console.log('User order deleted successfully');
+          } catch (error) {
+            console.error('Error deleting order file:', error);
+          }
         } else {
+          console.log('User not found:', userId);
+        }
+
+        // Delete the session from the sessions table
+        db.run('DELETE FROM sessions WHERE sessionId = ?', [sessionId], (err) => {
+          if (err) {
+            console.error('Error deleting session:', err.message);
+            return res.sendStatus(500);
+          }
+
+          // Clear session cookie and redirect to the index page
           res.clearCookie('sessionId');
           res.redirect('/index.html');
-        }
+        });
       });
-    });
-  } else {
-    // Session or userId is not available
-    console.log('Invalid session or user ID');
-    res.send('Error logging out');
-  }
+    } else {
+      // Session or userId is not available
+      console.log('Invalid session or user ID');
+      res.send('Error logging out');
+    }
+  });
 });
+
+
+
+
 
 
 app.get('/', (req, res) => {
@@ -1002,127 +989,155 @@ app.get('/', (req, res) => {
 
 
 
-// Parse JSON request bodies
-app.use(bodyParser.json());
 
+
+
+
+// Parse JSON request bodies
+app.use(express.json());
 
 app.post('/add-to-cart', (req, res) => {
   const cartItem = req.body;
   console.log('Received cart item:', cartItem);
 
   const sessionId = req.cookies.sessionId;
-  const session = sessions[sessionId];
-  if (!session || !session.userId) {
-    // Handle the case where the user is not logged in
-    return res.status(401).json({ status: 'error', message: 'User not authenticated' });
-  }
 
-  const userId = session.userId;
-
-  // Check if the user exists in the database
-  db.get('SELECT * FROM users WHERE userId = ?', [userId], (err, user) => {
+  db.get('SELECT * FROM sessions WHERE sessionId = ?', [sessionId], (err, session) => {
     if (err) {
-      console.error('Error checking user existence:', err);
+      console.error('Error querying database:', err.message);
       return res.status(500).json({ status: 'error', message: 'Internal Server Error' });
     }
 
-    if (!user) {
-      console.error('User not found:', userId);
-      return res.status(404).json({ status: 'error', message: 'User not found' });
+    if (!session || !session.userId) {
+      // Handle the case where the user is not logged in
+      return res.status(401).json({ status: 'error', message: 'User not authenticated' });
     }
 
-    // Check if the user's profile is complete
-    if (!user.phone || !user.profileImage) {
-      return res.status(403).json({ status: 'error', message: 'Please update your profile information before placing an order.' });
-    }
+    const userId = session.userId;
 
-    // Insert the cart item into the orders table
-    const query = 'INSERT INTO orders (userId, itemId, name, price, quantity, imageUrl, addedTime) VALUES (?, ?, ?, ?, ?, ?, ?)';
-    const values = [userId, cartItem.itemId, cartItem.name, cartItem.price, cartItem.quantity, cartItem.imageUrl, Date.now()];
-    db.run(query, values, function (err) {
+    // Check if the user exists in the database
+    db.get('SELECT * FROM users WHERE userId = ?', [userId], (err, user) => {
       if (err) {
-        console.error('Error adding item to cart:', err);
+        console.error('Error checking user existence:', err.message);
         return res.status(500).json({ status: 'error', message: 'Internal Server Error' });
       }
 
-      res.json({ status: 'success', message: 'Item added to cart', data: { itemId: cartItem.itemId } });
+      if (!user) {
+        console.error('User not found:', userId);
+        return res.status(404).json({ status: 'error', message: 'User not found' });
+      }
+
+      // Check if the user's profile is complete
+      if (!user.phone || !user.profileImage) {
+        return res.status(403).json({ status: 'error', message: 'Please update your profile information before placing an order.' });
+      }
+
+      // Insert the cart item into the orders table
+      const query = 'INSERT INTO orders (userId, itemId, name, price, quantity, imageUrl, addedTime) VALUES (?, ?, ?, ?, ?, ?, ?)';
+      const values = [userId, cartItem.itemId, cartItem.name, cartItem.price, cartItem.quantity, cartItem.imageUrl, Date.now()];
+      db.run(query, values, function (err) {
+        if (err) {
+          console.error('Error adding item to cart:', err.message);
+          return res.status(500).json({ status: 'error', message: 'Internal Server Error' });
+        }
+
+        res.json({ status: 'success', message: 'Item added to cart', data: { itemId: cartItem.itemId } });
+      });
     });
   });
 });
 
 
-
-
 app.get('/cart-count', (req, res) => {
   const sessionId = req.cookies.sessionId;
-  const session = sessions[sessionId];
 
-  if (session && session.userId) {
-    const userId = session.userId;
-    const query = 'SELECT COUNT(*) AS count FROM orders WHERE userId = ?';
-    db.get(query, [userId], (err, result) => {
-      if (err) {
-        console.error('Error retrieving cart count:', err);
-        res.sendStatus(500);
-      } else {
-        const cartCount = result.count || 0;
-        res.json({ count: cartCount });
-      }
-    });
-  } else {
-    res.json({ count: 0 }); // Return count as 0 if the user is not logged in or has no items in the cart
-  }
+  db.get('SELECT * FROM sessions WHERE sessionId = ?', [sessionId], (err, session) => {
+    if (err) {
+      console.error('Error querying database:', err.message);
+      return res.sendStatus(500);
+    }
+
+    if (session && session.userId) {
+      const userId = session.userId;
+      const query = 'SELECT COUNT(*) AS count FROM orders WHERE userId = ?';
+      db.get(query, [userId], (err, result) => {
+        if (err) {
+          console.error('Error retrieving cart count:', err.message);
+          res.sendStatus(500);
+        } else {
+          const cartCount = result.count || 0;
+          res.json({ count: cartCount });
+        }
+      });
+    } else {
+      res.json({ count: 0 }); // Return count as 0 if the user is not logged in or has no items in the cart
+    }
+  });
 });
 
 
 app.get('/order', (req, res) => {
   const sessionId = req.cookies.sessionId;
-  const session = sessions[sessionId];
-  
-  if (!session || !session.userId) {
-    return res.redirect('/index.html');
-  }
 
-  const userId = session.userId;
-  const currentTime = Date.now();
-  const query = 'SELECT * FROM orders WHERE userId = ? AND addedTime >= ?';
-  const timeThreshold = currentTime - (3 * 60 * 60 * 1000); // 3 hours in milliseconds
-
-  db.all(query, [userId, timeThreshold], (err, rows) => {
+  db.get('SELECT * FROM sessions WHERE sessionId = ?', [sessionId], (err, session) => {
     if (err) {
-      console.error('Error retrieving order data:', err);
+      console.error('Error querying database:', err.message);
       return res.sendStatus(500);
     }
 
-    res.render('order', { cartItems: rows });
+    if (!session || !session.userId) {
+      return res.redirect('/index.html');
+    }
+
+    const userId = session.userId;
+    const currentTime = Date.now();
+    const query = 'SELECT * FROM orders WHERE userId = ? AND addedTime >= ?';
+    const timeThreshold = currentTime - (3 * 60 * 60 * 1000); // 3 hours in milliseconds
+
+    db.all(query, [userId, timeThreshold], (err, rows) => {
+      if (err) {
+        console.error('Error retrieving order data:', err.message);
+        return res.sendStatus(500);
+      }
+
+      res.render('order', { cartItems: rows });
+    });
   });
 });
 
 
 app.post('/delete-from-cart', (req, res) => {
   const sessionId = req.cookies.sessionId;
-  const session = sessions[sessionId];
 
-  if (session && session.userId) {
-    const userId = session.userId;
-    const itemId = req.body.itemId;
+  db.get('SELECT * FROM sessions WHERE sessionId = ?', [sessionId], (err, session) => {
+    if (err) {
+      console.error('Error querying database:', err.message);
+      return res.sendStatus(500);
+    }
 
-    const query = 'DELETE FROM orders WHERE userId = ? AND itemId = ?';
-    const values = [userId, itemId];
-    db.run(query, values, function (err) {
-      if (err) {
-        console.error('Error deleting item from cart:', err);
-        res.sendStatus(500);
-      } else if (this.changes > 0) {
-        res.json({ success: true });
-      } else {
-        res.json({ success: false, message: 'Item not found in cart' });
-      }
-    });
-  } else {
-    res.json({ success: false, message: 'User not logged in' });
-  }
+    if (session && session.userId) {
+      const userId = session.userId;
+      const itemId = req.body.itemId;
+
+      const query = 'DELETE FROM orders WHERE userId = ? AND itemId = ?';
+      const values = [userId, itemId];
+      db.run(query, values, function (err) {
+        if (err) {
+          console.error('Error deleting item from cart:', err.message);
+          res.sendStatus(500);
+        } else if (this.changes > 0) {
+          res.json({ success: true });
+        } else {
+          res.json({ success: false, message: 'Item not found in cart' });
+        }
+      });
+    } else {
+      res.json({ success: false, message: 'User not logged in' });
+    }
+  });
 });
+
+
 
 
 app.get('/payment', (req, res) => {
@@ -1130,8 +1145,7 @@ app.get('/payment', (req, res) => {
 
   console.log('Session ID:', sessionId);
 
-  // Retrieve the session from the SQLite database using the session ID
-  db.get('SELECT * FROM sessions WHERE sessionId = ?', sessionId, (err, session) => {
+  db.get('SELECT * FROM sessions WHERE sessionId = ?', [sessionId], (err, session) => {
     if (err) {
       console.error('Error retrieving session from the database:', err);
       res.redirect('/index.html');
@@ -1139,15 +1153,13 @@ app.get('/payment', (req, res) => {
     }
 
     console.log('Session ID from cookie:', sessionId);
-    console.log('Session from sessions object:', session);
 
     if (session && session.userId && session.email) {
       const userId = session.userId;
 
       console.log('User ID:', userId);
 
-      // Retrieve the user data from the users table
-      db.get('SELECT * FROM users WHERE userId = ?', userId, (err, user) => {
+      db.get('SELECT * FROM users WHERE userId = ?', [userId], (err, user) => {
         if (err) {
           console.error('Error retrieving user data from the database:', err);
           res.redirect('/index.html');
@@ -1156,14 +1168,12 @@ app.get('/payment', (req, res) => {
 
         console.log('User:', user);
 
-        // Check if the session ID matches the one stored in the session cookie
         if (session.sessionId !== sessionId) {
           console.error('Session ID mismatch');
           res.redirect('/login');
           return;
         }
 
-        // Check if the user's email matches the one stored in the users table
         if (!user || user.email !== session.email) {
           console.error('User authentication failed');
           res.redirect('/login');
@@ -1173,10 +1183,7 @@ app.get('/payment', (req, res) => {
         console.log('Database connected:', db);
         console.log('User ID:', userId);
 
-        // User is authenticated, continue processing the payment
-
-        // Retrieve the order data for the user from the orders table
-        db.all('SELECT * FROM orders WHERE userId = ?', userId, (err, orderData) => {
+        db.all('SELECT * FROM orders WHERE userId = ?', [userId], (err, orderData) => {
           if (err) {
             console.error('Error retrieving order data from the database:', err);
             res.redirect('/index.html');
@@ -1185,38 +1192,32 @@ app.get('/payment', (req, res) => {
 
           console.log('Order Data:', orderData);
 
-          // Calculate the total price based on the order items
           const totalPrice = orderData.reduce((total, item) => total + item.price * item.quantity, 0);
 
           console.log('Total Price:', totalPrice);
 
-          res.render('payment', { cartItems: orderData, totalPrice }); // Pass order data and total price to the payment page
+          res.render('payment', { cartItems: orderData, totalPrice });
         });
       });
     } else {
-      // Session or user not found, redirect to the login page
       res.redirect('/index.html');
     }
   });
 });
 
 
-// Handle the POST request for processing the payment
 app.post('/process-payment', (req, res) => {
   const { cardNumber, cardHolder, expiryDate, cvv } = req.body;
   // Process the payment here
 
-  // Assuming the payment is successful, redirect the user to a success page
   res.redirect('/payment-success');
 });
 
 
-// Handle the POST request for submitting the payment proof
 app.post('/submit-payment-proof', upload.single('paymentProof'), (req, res) => {
   const sessionId = req.cookies.sessionId;
 
-  // Retrieve the session from the SQLite database using the session ID
-  db.get('SELECT * FROM sessions WHERE sessionId = ?', sessionId, (err, session) => {
+  db.get('SELECT * FROM sessions WHERE sessionId = ?', [sessionId], (err, session) => {
     if (err) {
       console.error('Error retrieving session from the database:', err);
       res.redirect('/index.html');
@@ -1227,8 +1228,7 @@ app.post('/submit-payment-proof', upload.single('paymentProof'), (req, res) => {
       const userId = session.userId;
       const userEmail = session.email;
 
-      // Retrieve the order data for the user from the orders table
-      db.all('SELECT * FROM orders WHERE userId = ?', userId, (err, orderData) => {
+      db.all('SELECT * FROM orders WHERE userId = ?', [userId], (err, orderData) => {
         if (err) {
           console.error('Error retrieving order data from the database:', err);
           res.redirect('/index.html');
@@ -1246,11 +1246,8 @@ app.post('/submit-payment-proof', upload.single('paymentProof'), (req, res) => {
         console.log('Total:', total);
         console.log('Delivery Time:', deliveryTime);
 
-        // Process the payment proof submission and perform necessary actions (e.g., save payment proof file)
-
         const baseUrl = 'https://hamcon.onrender.com';
 
-        // Send confirmation email to the user
         const userConfirmationMailOptions = {
           from: 'hamiconfectionery@gmail.com',
           to: userEmail,
@@ -1300,10 +1297,9 @@ app.post('/submit-payment-proof', upload.single('paymentProof'), (req, res) => {
           }
         });
 
-        // Send notification email to the admin
         const adminNotificationMailOptions = {
           from: 'hamiconfectionery@gmail.com',
-          to: 'michaelkolawole25@gmail.com', // Replace with the admin's email address
+          to: 'michaelkolawole25@gmail.com',
           subject: 'New Order Received',
           html: `
             <html>
@@ -1337,7 +1333,7 @@ app.post('/submit-payment-proof', upload.single('paymentProof'), (req, res) => {
                   <p>Delivery Time: ${deliveryTime}</p>
                   <p>Please process the order and contact the user for further details.</p>
                   <p>Payment Proof:</p>
-                  <img src="cid:paymentProof" alt="Payment Proof Image" /> <!-- Use 'cid' for embedding the image -->
+                  <img src="cid:paymentProof" alt="Payment Proof Image" />
                 </div>
               </body>
             </html>
@@ -1346,7 +1342,7 @@ app.post('/submit-payment-proof', upload.single('paymentProof'), (req, res) => {
             {
               filename: req.file.originalname,
               content: fs.createReadStream(req.file.path),
-              cid: 'paymentProof', // Use the same 'cid' as in the img src attribute
+              cid: 'paymentProof',
             },
           ],
         };
@@ -1397,9 +1393,9 @@ app.post('/submit-payment-proof', upload.single('paymentProof'), (req, res) => {
                   font-size: 16px;
                   text-decoration: none;
                   border-radius: 4px;
-                  display: block; /* Add this line to make the button a block-level element */
-                  width: 100px; /* Adjust the width as needed */
-                  margin: 0 auto; /* Add this line to center the button horizontally */
+                  display: block;
+                  width: 100px;
+                  margin: 0 auto;
                 }      
               </style>
             </head>
