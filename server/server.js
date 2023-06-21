@@ -688,8 +688,8 @@ app.get('/', (req, res) => {
       color: #666;
     }
 
-    .fas fa-birthday-cake service-card-icon {
-      padding-bottom: 2px;
+    i .fas fa-birthday-cake service-card-icon {
+      margin-bottom: 2px;
     }
   
     /* Testimonials Section Styles */
@@ -846,8 +846,8 @@ app.get('/', (req, res) => {
         <a class="navbar-link" href="/">Home</a>
         <a class="navbar-link" href="/about">About</a>
         <a class="navbar-link" href="/contact">Contact</a>
-        <a class="navbar-link" href="/login">Login</a>
-        <a class="navbar-link" href="/signup">Sign Up</a>
+        <a class="navbar-link" href="/index.html">Login</a>
+        <a class="navbar-link" href="/signup.html">Sign Up</a>
       </div>
       <div class="hamburger">
         <span></span>
@@ -873,17 +873,17 @@ app.get('/', (req, res) => {
   <div class="service-card">
     <i class="fas fa-birthday-cake service-card-icon"></i>
     <h3 class="service-card-title">Cakes</h3>
-    <p class="service-card-description">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+    <p class="service-card-description">Indulgent and beautifully crafted cakes for every occasion.</p>
   </div>
   <div class="service-card">
     <i class="fas fa-utensils service-card-icon"></i>
     <h3 class="service-card-title">Pastry</h3>
-    <p class="service-card-description">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+    <p class="service-card-description">Artisanal pastries that delight the senses with their delicate flavors and textures.</p>
   </div>
   <div class="service-card">
     <i class="fas fa-utensil-spoon service-card-icon"></i>
     <h3 class="service-card-title">Cuisines</h3>
-    <p class="service-card-description">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+    <p class="service-card-description">Explore a diverse range of culinary delights from around the world.</p>
   </div>
 </section>
   
