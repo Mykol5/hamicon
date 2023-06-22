@@ -464,13 +464,16 @@ app.post('/logout', (req, res) => {
 
     if (session && session.userId) {
       const userId = session.userId;
+      const email = session.email;
 
       // Check if the user exists in the database
-      db.get('SELECT * FROM users WHERE userId = ?', [userId], (err, user) => {
+      db.get('SELECT * FROM users WHERE userId = ? AND email = ?', [userId, email], (err, user) => {
         if (err) {
           console.error('Error checking user existence:', err);
-          res.send('Error logging out');
-        } else if (user) {
+          return res.send('Error logging out');
+        }
+
+        if (user) {
           // User exists, proceed with order deletion
           db.run('DELETE FROM orders WHERE userId = ?', [userId], (err) => {
             if (err) {
@@ -502,6 +505,57 @@ app.post('/logout', (req, res) => {
     }
   });
 });
+
+
+// app.post('/logout', (req, res) => {
+//   const sessionId = req.cookies.sessionId;
+
+//   db.get('SELECT * FROM sessions WHERE sessionId = ?', [sessionId], (err, session) => {
+//     if (err) {
+//       console.error('Error querying database:', err.message);
+//       return res.sendStatus(500);
+//     }
+
+//     if (session && session.userId) {
+//       const userId = session.userId;
+
+//       // Check if the user exists in the database
+//       db.get('SELECT * FROM users WHERE userId = ?', [userId], (err, user) => {
+//         if (err) {
+//           console.error('Error checking user existence:', err);
+//           res.send('Error logging out');
+//         } else if (user) {
+//           // User exists, proceed with order deletion
+//           db.run('DELETE FROM orders WHERE userId = ?', [userId], (err) => {
+//             if (err) {
+//               console.error('Error deleting order:', err.message);
+//             } else {
+//               console.log('User order deleted successfully');
+//             }
+//           });
+//         } else {
+//           console.log('User not found:', userId);
+//         }
+
+//         // Delete the session from the sessions table
+//         db.run('DELETE FROM sessions WHERE sessionId = ?', [sessionId], (err) => {
+//           if (err) {
+//             console.error('Error deleting session:', err.message);
+//             return res.sendStatus(500);
+//           }
+
+//           // Clear session cookie and redirect to the index page
+//           res.clearCookie('sessionId');
+//           res.redirect('/index.html');
+//         });
+//       });
+//     } else {
+//       // Session or userId is not available
+//       console.log('Invalid session or user ID');
+//       res.send('Error logging out');
+//     }
+//   });
+// });
 
 
 
