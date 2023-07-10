@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta http-equiv="Content-Type" content="application/javascript">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <base href="/" />
+    <title>Admin Log In - Pastry</title>
+
+    <style>
+        body {
+            font-family: system-ui, 'Open Sans';
+            font-size: 14px;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .logo {
+            width: 200px; /* Adjust the logo size as needed */
+            margin-bottom: 20px;
+        }
+
+        video {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -1;
+        }
+
+        .glass-panel {
+            background-color: rgba(255, 255, 255, 0.3); /* Adjust the alpha value (0.0 - 1.0) to change the transparency */
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .glass-panel a {
+            text-align: center;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        label {
+            margin-bottom: 10px;
+        }
+
+        input {
+            padding: 10px;
+            margin-bottom: 20px;
+            width: 100%;
+            box-sizing: border-box;
+            background-color: transparent;
+            border: none;
+            border-bottom: 1px solid #fff;
+            color: #fff;
+        }
+
+        input:focus {
+            outline: none;
+            border-bottom: 1px solid #4CAF50;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border-radius: 5px;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        a {
+            display: block;
+            margin-top: 20px;
+            color: #fff;
+            text-decoration: underline;
+        }
+
+        a #fgtp {
+            padding-bottom: 0px;
+        }
+
+        .button-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        .loading-animation {
+            position: relative;
+            width: 100px; /* Adjust the width as needed */
+            height: 40px; /* Adjust the height as needed */
+        }
+
+        .loading-dots {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            background-color: #086608; /* Adjust the dot color as needed */
+            border-radius: 50%;
+            animation: loadingDots 1s infinite linear;
+            margin-right: 5px; /* Adjust the spacing between dots as needed */
+        }
+
+        @keyframes loadingDots {
+            0% {
+                transform: translateX(0);
+            }
+            33% {
+                transform: translateX(10px); /* Adjust the distance between dots as needed */
+            }
+            66% {
+                transform: translateX(20px); /* Adjust the distance between dots as needed */
+            }
+            100% {
+                transform: translateX(0);
+            }
+        }
+
+        /* .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 10px;
+            background-color: #f5f5f5;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+            z-index: 9999;
+        }
+
+        .notification .close {
+            cursor: pointer;
+            float: right;
+            font-weight: bold;
+        } */
+
+
+        #loading-animation-container {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 9999;
+}
+
+.loading-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* Adjust the opacity as desired */
+  backdrop-filter: blur(5px); /* Adjust the blur effect as desired */
+}
+
+.show-loading {
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Add your custom styles for the loading animation here */
+
+
+/* Define the keyframe animation */
+@keyframes spinner {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Apply the spinner animation to a pseudo-element of the loading animation element */
+#loading-animation::after {
+  content: '';
+  display: block;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 4px solid #ccc;
+  border-top-color: #333;
+  animation: spinner 7.0s linear infinite;
+}
+    </style>
+</head>
+<body>
+    <video autoplay loop muted>
+        <source src="/images/potato.mp4" type="video/mp4"> <!-- Replace "path_to_your_video.mp4" with the actual path to your video file -->
+    </video>
+
+    <div class="container">
+        <h1><img src="/images/WhatsApp_Image_2023-05-18_at_4.45.03_PM-removebg-preview.png" alt="Logo" class="logo"></h1> <!-- Replace "path_to_your_logo.png" with the actual path to your logo image file -->
+
+      <div class="glass-panel">
+          <form action="/admin/login" method="POST" class="button-container">
+              <label for="email-input">Email:</label>
+              <input type="email" id="email-input" name="email" required>
+              <label for="password-input">Password:</label>
+              <input type="password" id="password-input" name="password" required>
+              <button type="submit-btn" id="login-button" class="" onclick="">Submit</button>
+          </form>
+          <a href="#">Forgot password?</a>
+          <a href="/signup.html">Don't have an account? Sign up</a>
+      </div>
+    </div>
+
+    <div id="loading-animation-container">
+        <div class="loading-overlay"></div>
+        <div id="loading-animation"></div>
+      </div>
+
+
+
+      <script>
+
+        const addToCartButton = document.getElementById('login-button');
+        const loadingAnimationContainer = document.getElementById('loading-animation-container');
+        
+        addToCartButton.addEventListener('click', () => {
+          // Show the loading animation
+          loadingAnimationContainer.classList.add('show-loading');
+        
+          // Simulate a delay for demonstration purposes
+          setTimeout(() => {
+            // Perform the add to cart operation here
+            console.log('Item added to cart');
+        
+            // Hide the loading animation after the task is completed
+            loadingAnimationContainer.classList.remove('show-loading');
+          }, 5000); // Simulate a 2-second delay
+        });
+        
+        
+      </script>
+    <!-- <script>
+      function showLoadingAnimation(button) {
+          const emailInput = document.getElementById('email-input');
+          const passwordInput = document.getElementById('password-input');
+
+          if (emailInput.value.trim() === '' || passwordInput.value.trim() === '') {
+              // If any of the input fields are empty, return without showing the animation
+              return;
+          }
+
+          const buttonContainer = button.parentElement;
+          const loadingAnimation = document.createElement('div');
+          loadingAnimation.className = 'loading-animation';
+          loadingAnimation.innerHTML = '<span class="loading-dots"></span><span class="loading-dots"></span><span class="loading-dots"></span>';
+
+          // Hide the button by setting its display property to 'none'
+          button.style.display = 'none';
+
+          // Append the loading animation element to the button container
+          buttonContainer.appendChild(loadingAnimation);
+      }
+  </script> -->
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const notification = document.getElementById('notification');
+            if (notification) {
+                const closeButton = notification.querySelector('.close');
+                closeButton.addEventListener('click', function () {
+                    notification.style.display = 'none';
+                });
+
+                // Close the notification when clicking anywhere outside the pop-up box
+                window.addEventListener('click', function (event) {
+                    if (event.target === notification) {
+                        notification.style.display = 'none';
+                    }
+                });
+            }
+        });
+    </script>
+
+    
+</body>
+</html>

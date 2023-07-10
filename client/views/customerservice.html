@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta http-equiv="Content-Type" content="application/javascript">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <title>Document</title>
+
+    <style>
+
+body {
+  font-family: system-ui, 'Open Sans';
+  font-size: 15px;
+}
+
+#chat-container {
+  width: 100%;
+  max-width: 400px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  margin: 0 auto;
+  position: relative;
+}
+
+#chat-header {
+  background-color: #0b945b;
+  color: #fff;
+  padding: 10px;
+  font-weight: bold;
+  margin-bottom: 25%;
+}
+
+/* Chat messages container */
+.chat-messages {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+/* Message containers */
+.message {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 8px;
+}
+
+.agent .message-content {
+  background-color: #e5e5ea;
+  color: black;
+  align-self: flex-start;
+  border-radius: 12px;
+  padding: 8px 12px;
+  max-width: 80%;
+  margin-left: 1%;
+}
+
+.user .message-content {
+  background-color: #dcf8c6;
+  color: black;
+  align-self: flex-end;
+  border-radius: 12px;
+  padding: 8px 12px;
+  max-width: 80%;
+  margin-right: 1%;
+}
+
+/* .message-input-container {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+} */
+
+#chat-input {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  background-color: #fff;
+}
+
+#message-input {
+  flex: 1;
+  border: none;
+  outline: none;
+  padding: 10px;
+  border-radius: 25px;
+  margin-right: 0px;
+  font-size: 14px;
+  width: 85%;
+}
+
+#send-button {
+  border: none;
+  background-color: transparent;
+  color: #075e54;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+        a {
+            margin-left: 0px;
+            font-size: smaller;
+           
+        }
+
+        #welcome-message {
+            font-size: 15px;
+            padding-bottom: 10px;
+            text-align: center;
+            margin-top: 25px;
+            margin-right: 15px;
+            position: absolute;
+            top: 20px; /* Adjust the top position as per your preference */
+            left: 20px; /* Adjust the left position as per your preference */
+            z-index: 9999; /* Ensure the welcome message appears on top of other elements */
+            background-color: rgb(224, 200, 121);
+            border-radius: 8px;
+            padding: 6px;
+        }
+        .customer-service-icon {
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            /* background-image: url("customer-service-icon.png"); Replace with your icon image URL */
+            background-size: cover;
+            vertical-align: middle;
+            margin-right: 5px;
+        }
+
+                /* Responsive styles */
+                @media (max-width: 439px) {
+                    #welcome-message {
+                position: absolute;
+                font-size: 14px; /* Adjust the font size for smaller screens */
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="chat-container">
+        <div id="chat-header">Customer Service</div>
+            <!-- Chat messages container -->
+        <div id="chat-messages" class="chat-messages"></div>
+
+        <div id="welcome-message" class="message">
+            <span class="customer-service-icon"><i class="fas fa-headset"></i>
+            </span>
+            <span><a>Welcome to Hami Confectionery! Our Customer Service Agents are available to attend to your inquiries.</a></span>
+           
+        </div>
+<br><br><br>
+        <!-- Chat input and send button -->
+        <div class="chat-input">
+            <input type="text" id="message-input" class="message-input" placeholder="Type your message...">
+            <button id="send-button" class="send-button"><i class="fa fa-paper-plane"></i></button>
+        </div>
+
+    </div> 
+      
+      <script>
+// Select the chat input and send button elements
+const messageInput = document.getElementById('message-input');
+const sendButton = document.getElementById('send-button');
+
+// Select the chat messages container
+const chatMessages = document.getElementById('chat-messages');
+
+// Function to send a message
+function sendMessage() {
+  // Get the user's input message
+  const message = messageInput.value.trim();
+
+  // If the message is not empty
+  if (message !== '') {
+    // Create a new message container for user message
+    const userMessageContainer = document.createElement('div');
+    userMessageContainer.classList.add('message', 'user');
+
+    // Create a new message content element for user message
+    const userMessageContent = document.createElement('div');
+    userMessageContent.classList.add('message-content');
+    userMessageContent.textContent = message;
+
+    // Append the user message content to the user message container
+    userMessageContainer.appendChild(userMessageContent);
+
+    // Append the user message container to the chat messages container
+    chatMessages.appendChild(userMessageContainer);
+
+    // Clear the input field
+    messageInput.value = '';
+
+    // Scroll to the bottom of the chat messages
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+
+    // Simulate agent response after a short delay
+    setTimeout(() => {
+      // Create a new message container for agent message
+      const agentMessageContainer = document.createElement('div');
+      agentMessageContainer.classList.add('message', 'agent');
+
+      // Create a new message content element for agent message
+      const agentMessageContent = document.createElement('div');
+      agentMessageContent.classList.add('message-content');
+      agentMessageContent.textContent = "Thank you for your message. Our customer service agent will be with you shortly.";
+
+      // Append the agent message content to the agent message container
+      agentMessageContainer.appendChild(agentMessageContent);
+
+      // Append the agent message container to the chat messages container
+      chatMessages.appendChild(agentMessageContainer);
+
+      // Scroll to the bottom of the chat messages
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    }, 500);
+  }
+}
+
+// Event listener for the send button click
+sendButton.addEventListener('click', sendMessage);
+
+// Event listener for the enter key press in the input field
+messageInput.addEventListener('keydown', (event) => {
+  if (event.key === 'Enter') {
+    sendMessage();
+    event.preventDefault();
+  }
+});
+
+      </script>
+</body>
+</html>

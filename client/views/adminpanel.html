@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- <link rel="stylesheet" href="admin.css"> -->
+    <title>Document</title>
+
+    <style>
+      body {
+        font-family: system-ui, 'Open Sans';
+        font-size: 15px;
+      }
+
+      /* CSS for the user list */
+      #user-list {
+        list-style: none;
+        padding: 0;
+      }
+
+      .user-details {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+
+      .user-name {
+        font-weight: bold;
+      }
+
+      .user-email,
+      .user-phone {
+        color: #777;
+        font-size: 14px;
+      }
+
+      .new-message {
+        font-weight: bold;
+        color: #ff0000;
+      }
+
+      /* CSS for the chat container */
+      .container {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+      }
+
+      aside {
+        flex: 1;
+        padding-right: 20px;
+      }
+
+      main {
+        flex: 2;
+      }
+
+      /* Additional styling for the admin panel */
+      header {
+        background-color: #f5f5f5;
+        padding: 20px;
+        text-align: center;
+      }
+
+      h1 {
+        margin: 0;
+        font-size: 24px;
+        color: #333;
+      }
+
+      .container {
+        margin: 20px;
+      }
+
+      h2 {
+        margin: 0;
+        font-size: 18px;
+        color: #333;
+        margin-bottom: 10px;
+      }
+
+      ul {
+        padding: 0;
+        margin: 0;
+      }
+
+      li {
+        padding: 10px;
+        border-bottom: 1px solid #ddd;
+        cursor: pointer;
+      }
+
+      li:hover {
+        background-color: #f9f9f9;
+      }
+
+      .chat-interface {
+        padding: 20px;
+        background-color: #f5f5f5;
+      }
+
+      .chat-messages {
+        min-height: 300px;
+        border: 1px solid #ddd;
+        margin-bottom: 10px;
+        padding: 10px;
+      }
+
+      .chat-input {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+      }
+
+      .chat-input input[type='text'] {
+        flex: 1;
+        padding: 8px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+      }
+
+      .chat-input button {
+        padding: 8px 16px;
+        background-color: #333;
+        color: #fff;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+
+      .chat-input button:hover {
+        background-color: #555;
+      }
+
+      /* Form styling */
+      .form-container {
+        max-width: 400px;
+        margin: 20px auto;
+        background-color: #f5f5f5;
+        padding: 20px;
+      }
+
+      .form-container h2 {
+        margin-top: 0;
+      }
+
+      .form-container label {
+        display: block;
+        margin-bottom: 10px;
+        font-weight: bold;
+      }
+
+      .form-container input[type='text'] {
+        width: 100%;
+        padding: 8px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        margin-bottom: 20px;
+      }
+
+      .form-container button {
+        padding: 8px 16px;
+        background-color: #333;
+        color: #fff;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+
+      .form-container button:hover {
+        background-color: #555;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>Welcome to Admin Panel</h1>
+    </header>
+    <div class="container">
+      <aside>
+        <h2>Users</h2>
+        <ul id="user-list"></ul>
+      </aside>
+      <main id="chat-container"></main>
+    </div>
+
+    <div class="form-container">
+      <h2>Update Welcome Messages</h2>
+      <form id="welcomeMessagesForm">
+        <label for="newUsersMessageInput">New Users Welcome Message:</label>
+        <input type="text" id="newUsersMessageInput" placeholder="Enter the welcome message for new users" required>
+        <label for="returningUsersMessageInput">Returning Users Welcome Message:</label>
+        <input type="text" id="returningUsersMessageInput" placeholder="Enter the welcome message for returning users" required>
+        <button type="submit">Update Messages</button>
+      </form>
+    </div>
+
+
+    <script>
+
+const form = document.getElementById('welcomeMessagesForm');
+
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+
+  // Get the new welcome messages from the form inputs
+  const newUsersMessage = document.getElementById('newUsersMessageInput').value;
+  const returningUsersMessage = document.getElementById('returningUsersMessageInput').value;
+
+  // Create the payload object
+  const payload = {
+    newUsersMessage,
+    returningUsersMessage
+  };
+
+  try {
+    // Send the AJAX request to update the welcome messages
+    const response = await fetch('/api/updateWelcomeMessages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(payload)
+    });
+
+    if (response.ok) {
+      // Display a success message to the admin
+      alert('Welcome messages updated successfully!');
+    } else {
+      // Handle the case when the update fails
+      alert('Failed to update welcome messages. Please try again.');
+    }
+  } catch (error) {
+    console.error('Error updating welcome messages:', error);
+    alert('An error occurred while updating welcome messages. Please try again.');
+  }
+});
+
+
+    </script>
+
+        
+        <script>
+          // Fetch user list from the server
+          async function fetchUserList() {
+            try {
+              const response = await fetch('/api/users');
+              const userList = await response.json();
+        
+              renderUserList(userList);
+            } catch (error) {
+              console.error('Error fetching user list:', error);
+            }
+          }
+        
+          // Render user list
+          function renderUserList(userList) {
+            const userListElement = document.getElementById('user-list');
+            userList.forEach(user => {
+              const li = document.createElement('li');
+              const nameElement = document.createElement('span');
+              nameElement.textContent = user.name;
+        
+              const emailElement = document.createElement('span');
+              emailElement.textContent = user.email;
+        
+              const phoneElement = document.createElement('span');
+              phoneElement.textContent = user.phone;
+        
+              if (user.newMessage) {
+                li.classList.add('new-message');
+              }
+        
+              li.addEventListener('click', () => {
+                renderChatInterface(user.id); // Pass the user.id to the function
+              });
+        
+              li.appendChild(nameElement);
+              li.appendChild(emailElement);
+              li.appendChild(phoneElement);
+        
+              userListElement.appendChild(li);
+            });
+          }
+        
+          // Call the fetchUserList function to initiate the request
+          fetchUserList();
+        </script>
+        
+        
+        <script>
+function renderChatInterface(userId) {
+  const chatContainer = document.getElementById('chat-container');
+  chatContainer.innerHTML = '';
+
+  const chatInterface = document.createElement('div');
+  chatInterface.classList.add('chat-interface');
+
+  const chatHeader = document.createElement('h2');
+  chatHeader.textContent = `Chat with User ID: ${userId}`;
+
+  const chatMessages = document.createElement('div');
+  chatMessages.classList.add('chat-messages');
+
+  const chatInput = document.createElement('div');
+  chatInput.classList.add('chat-input');
+  chatInput.innerHTML = `
+    <input type="text" placeholder="Type your message">
+    <button>Send</button>
+  `;
+
+  chatInterface.appendChild(chatHeader);
+  chatInterface.appendChild(chatMessages);
+  chatInterface.appendChild(chatInput);
+  chatContainer.appendChild(chatInterface);
+
+  function fetchChatHistory() {
+    fetch(`/api/chat/${userId}`)
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Failed to fetch chat history');
+        }
+        return response.json();
+      })
+      .then(chatHistory => {
+        console.log('Chat history:', chatHistory);
+        displayChatHistory(chatHistory);
+      })
+      .catch(error => {
+        console.error('Error fetching chat history:', error);
+      });
+  }
+
+  function displayChatHistory(chatHistory) {
+    chatMessages.innerHTML = '';
+
+    chatHistory.forEach(message => {
+      const messageElement = document.createElement('div');
+      messageElement.textContent = message.content;
+      chatMessages.appendChild(messageElement);
+    });
+  }
+
+  function addMessageToChatContainer(message) {
+    const messageElement = document.createElement('div');
+    messageElement.classList.add('message');
+    messageElement.textContent = message;
+    chatMessages.appendChild(messageElement);
+  }
+
+  chatInput.querySelector('button').addEventListener('click', () => {
+    const input = chatInput.querySelector('input');
+    const message = input.value.trim();
+
+    if (message) {
+      fetch(`/api/chat/${userId}/send`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ message })
+      })
+        .then(response => response.json())
+        .then(data => {
+          console.log('Sent message:', data.message);
+          addMessageToChatContainer(data.message);
+          input.value = '';
+        })
+        .catch(error => {
+          console.error('Error sending message:', error);
+        });
+    } else {
+      console.log('Message is empty');
+    }
+  });
+
+  // Fetch the chat history and display it
+  fetchChatHistory();
+}
+
+          
+        </script>
+        
+        
+        
+      </body>
+      </html>
+      
+    

@@ -138,6 +138,7 @@
 
   .submit-button {
     margin-top: 20px;
+    margin-left: 65px;
   }
 
 
@@ -207,6 +208,55 @@
     }
   }
 
+
+  .payment-input {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    margin-bottom: 10px;
+  }
+
+  .payment-input:focus {
+    outline: none;
+    border-color: #11e493;
+    box-shadow: 0 0 0 2px rgba(0, 255, 136, 0.25);
+  }
+
+  .payment-input.select-input {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23333' d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 12px;
+    padding-right: 30px;
+  }
+
+  .payment-input.select-input:focus {
+    background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23333' d='M7 10l5 5 5-5z'/%3E%3C/svg%3E"),
+      linear-gradient(#fff, #fff);
+    background-repeat: no-repeat, repeat;
+    background-position: right 10px center, 0 0;
+    background-size: 12px, auto;
+    border-color: #11e493;
+    box-shadow: 0 0 0 2px rgba(0, 255, 136, 0.25);
+  }
+
+  /* Mobile responsiveness */
+  @media (max-width: 768px) {
+    .payment-input {
+      font-size: 14px;
+    }
+
+    .payment-input.select-input {
+      background-position: right 8px center;
+      padding-right: 58px;
+    }
+  }
   </style>
 </head>
 
@@ -242,8 +292,19 @@
         <h1>Pay to Bank Account</h1>
         <p>Please make the payment to the following account:</p>
         <p>Account Number: 1234567890</p>
-    
+        <p id="totalPrice">Total Price: $<%= totalPrice %></p>
+    <br>
         <form action="/submit-payment-proof" method="post" enctype="multipart/form-data">
+
+                    <!-- Shipping address inputs -->
+          <select name="city" id="city" class="payment-input" required>
+            <option value="">Select City</option>
+            <option value="Abeokuta">Abeokuta</option>
+            <option value="Ibadan">Ibadan</option>
+            <option value="Lagos">Lagos</option>
+          </select>
+          <input type="text" name="shippingAddress" class="payment-input" placeholder="Shipping Address" required>
+
           <!-- File upload section -->
           <div class="file-upload-container">
             <input type="file" name="paymentProof" id="paymentProof" class="file-upload-input">
@@ -283,7 +344,7 @@
 
   <!-- Bottom Nav -->
   <div class="bottom-bar">
-    <a href="/dashboard.html" class="bottom-icon" id="home-icon">
+    <a href="/dashboard" class="bottom-icon" id="home-icon">
         <i class="fa fa-home"></i>
         Home
     </a>
@@ -323,12 +384,12 @@
       reader.readAsDataURL(file);
     });
 
-    // Submit button event handler
-    const submitButton = document.querySelector('.submit-button');
-    submitButton.addEventListener('click', () => {
-      // Perform the submission logic here
-      alert('Payment proof submitted!');
-    });
+    // // Submit button event handler
+    // const submitButton = document.querySelector('.submit-button');
+    // submitButton.addEventListener('click', () => {
+    //   // Perform the submission logic here
+    //   alert('Payment proof submitted!');
+    // });
   </script>
 
 <script>
@@ -355,7 +416,7 @@
 
 <script>
   // Add an event listener to the dashboard icon
-  const dashboardLink = document.querySelector('.bottom-bar a[href="/dashboard.html"]');
+  const dashboardLink = document.querySelector('.bottom-bar a[href="/dashboard"]');
   dashboardLink.addEventListener('click', handleDashboardClick);
 
   function handleDashboardClick(event) {
@@ -370,7 +431,7 @@
       dashboardLink.classList.remove('loading');
 
       // Navigate to the dashboard page
-      window.location.href = "/dashboard.html";
+      window.location.href = "/dashboard";
     }, 2000);
   }
 </script>
@@ -388,8 +449,60 @@
   });
 </script>
 
+<script>
+  // Get the necessary elements
+  const citySelect = document.getElementById('city');
+  const totalPriceElement = document.getElementById('totalPrice');
+  const originalTotalPrice = parseFloat(totalPriceElement.textContent.replace('Total Price: $', ''));
+
+  // Calculate and update the total price based on the selected city
+  if (totalPriceElement) {
+    citySelect.addEventListener('change', () => {
+      const selectedCity = citySelect.value;
+      let shippingFee = 0;
+
+      // Set the appropriate shipping fee for the selected city
+      if (selectedCity === 'Abeokuta') {
+        shippingFee = 10;
+      } else if (selectedCity === 'Ibadan') {
+        shippingFee = 15;
+      } else if (selectedCity === 'Lagos') {
+        shippingFee = 20;
+      }
+
+      // Calculate the new total price by adding the shipping fee
+      const newTotal = originalTotalPrice + shippingFee;
+      totalPriceElement.textContent = `Total Price: $${newTotal}`;
+    });
+  }
+</script>
+
+
+<script>
+
+  // Assuming you have a submit button with id "submit-btn"
+const submitBtn = document.getElementById('submit-btn');
+
+submitBtn.addEventListener('click', function(event) {
+  // Assuming you have an input field for the file with id "paymentProofFile"
+  const paymentProofFile = document.getElementById('paymentProofFile');
+
+  // Get the uploaded file name
+  const uploadedFileName = document.getElementById('uploadedFileName').textContent;
+
+  // Check if a file has been selected
+  if (uploadedFileName.trim().length === 0) {
+    // Display an alert indicating no payment proof has been submitted
+    window.alert('No payment proof submitted. Please submit payment proof to continue.');
+    
+    // Prevent form submission
+    event.preventDefault();
+  }
+});
+
+
+</script>
 
 </body>
 
 </html>
-

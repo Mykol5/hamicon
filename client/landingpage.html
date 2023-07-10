@@ -1,0 +1,916 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hami Confectionery</title>
+  <link href="https://fonts.googleapis.com/css?family=Roboto|Open+Sans:200,300,400,700,800,900&subset=latin"
+    rel="stylesheet">
+  <style>
+    /* Global Styles */
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Roboto', 'Open Sans', sans-serif;
+      overflow-x: hidden;
+    }
+
+  /* Navbar Styles */
+  /* Navbar Styles */
+  .navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    background-color: #535252;
+    color: #333;
+    z-index: 101;
+    margin-left: -30px;
+  }
+
+  .navbar-logo {
+    width: 50px;
+    margin-left: 25px;
+    margin-top: 5px;
+  }
+
+  .navbar-links {
+    display: flex;
+  }
+
+  .navbar-link {
+    text-decoration: none;
+    color: #fff;
+    margin-right: 10px;
+  }
+
+  .hamburger {
+    display: none;
+    flex-direction: column;
+    cursor: pointer;
+  }
+
+  /* .hamburger span {
+    display: block;
+    width: 25px;
+    height: 3px;
+    background-color: #fff;
+    margin-bottom: 5px;
+  } */
+
+  /* Welcome Section Styles */
+  .welcome-section {
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+    }
+
+  .welcome-video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .welcome-heading {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 2.5em;
+    text-align: center;
+    color: #fff;
+  }
+
+  /* Services Section Styles */
+  .services-section {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    padding: 50px 20px;
+    background-color: #f5f5f5;
+  }
+
+  .service-card {
+    flex-basis: 30%;
+    margin: 20px;
+    padding: 20px;
+    border-radius: 5px;
+    text-align: center;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  }
+
+  .service-card-icon {
+    width: 100px;
+    height: 100px;
+    margin-bottom: 10px;
+  }
+
+  .service-card-title {
+    font-size: 1.5em;
+    margin-bottom: 10px;
+  }
+
+  .service-card-description {
+    font-size: 1em;
+    color: #666;
+  }
+
+  /* Testimonials Section Styles */
+  .testimonials-section {
+    text-align: center;
+    padding: 50px 20px;
+    background-color: #189259;
+    color: #fff;
+  }
+
+  .testimonial-slide {
+    display: none;
+  }
+
+  .testimonial-slide.active {
+    display: block;
+  }
+
+  .testimonial-slide p {
+    font-size: 1.2em;
+    margin-bottom: 10px;
+  }
+
+  .testimonial-slide span {
+    font-weight: bold;
+  }
+
+  /* Footer Styles */
+  .footer {
+    text-align: center;
+    padding: 20px;
+    background-color: #333;
+    color: #fff;
+  }
+
+  .footer-link {
+    text-decoration: none;
+    color: #fff;
+    margin-right: 10px;
+  }
+
+  /* Navbar Styles */
+  .navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    background-color: #189259;
+    color: #333;
+    z-index: 100;
+  }
+
+  .navbar-logo {
+    width: 50px;
+  }
+
+  .navbar-links {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+  }
+
+  .navbar-link {
+    text-decoration: none;
+    color: #fafafa;
+    margin-right: 10px;
+    transition: color 0.9s ease-in;
+  }
+
+  .navbar-link:hover {
+    color: #c9d651;
+    text-decoration: bold;
+  }
+
+  .hamburger {
+    display: none;
+    position: relative;
+    cursor: pointer;
+    z-index: 101;
+  }
+
+  .hamburger span {
+    display: block;
+    width: 25px;
+    height: 3px;
+    background-color: #ffffff;
+    margin-bottom: 5px;
+    transition: background-color 0.7s ease-in;
+  }
+
+  .hamburger.active span:nth-child(1) {
+    transform: translateY(8px) rotate(45deg);
+    background-color: #bceec7;
+  }
+
+  .hamburger.active span:nth-child(2) {
+    opacity: 0;
+  }
+
+  .hamburger.active span:nth-child(3) {
+    transform: translateY(-8px) rotate(-45deg);
+    background-color: #bceec7;
+  }
+
+  /* Media Queries */
+  @media screen and (max-width: 768px) {
+    .navbar-links {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      background-color: #189259;
+      transform: translateX(100%);
+      transition: transform 0.3s ease-in;
+      z-index: 100;
+    }
+
+    .navbar-links.active {
+      transform: translateX(0%);
+    }
+
+    .navbar-link {
+      margin-bottom: 10px;
+    }
+
+    .navbar-link:hover {
+      color: #cdd651;
+      text-decoration: bold;
+    }
+
+    .hamburger {
+      display: flex;
+      margin-left: 10px;
+    }
+  }
+</style>
+
+</head>
+
+<body>
+  <nav class="navbar">
+    <img class="navbar-logo" src="/images/WhatsApp_Image_2023-05-18_at_4.45.03_PM-removebg-preview.png" alt="Hami Confectionery Logo">
+    <div class="navbar-links">
+      <a class="navbar-link" href="/">Home</a>
+      <a class="navbar-link" href="/about">About</a>
+      <a class="navbar-link" href="/contact">Contact</a>
+      <a class="navbar-link" href="/login">Login</a>
+      <a class="navbar-link" href="/signup">Sign Up</a>
+    </div>
+    <div class="hamburger">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+  </nav>
+
+  <section class="welcome-section">
+    <video class="welcome-video" src="/images/chopping.mp4" autoplay muted loop></video>
+    <h2 class="welcome-heading">Welcome to Hami Confectionery!</h2>
+  </section>
+
+  <section class="services-section">
+    <div class="service-card">
+      <img class="service-card-icon" src="/images/service-icon-1.png" alt="Service 1 Icon">
+      <h3 class="service-card-title">Service 1</h3>
+      <p class="service-card-description">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+    </div>
+    <div class="service-card">
+      <img class="service-card-icon" src="/images/service-icon-2.png" alt="Service 2 Icon">
+      <h3 class="service-card-title">Service 2</h3>
+      <p class="service-card-description">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+    </div>
+    <div class="service-card">
+      <img class="service-card-icon" src="/images/service-icon-3.png" alt="Service 3 Icon">
+      <h3 class="service-card-title">Service 3</h3>
+      <p class="service-card-description">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+    </div>
+  </section>
+
+  <section class="testimonials-section">
+    <div class="testimonial-slide active">
+      <p>"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis semper sapien a nisi laoreet congue. Nam non
+        hendrerit tellus."</p>
+      <span>- John Doe</span>
+    </div>
+    <div class="testimonial-slide">
+      <p>"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis semper sapien a nisi laoreet congue. Nam non
+        hendrerit tellus."</p>
+      <span>- Jane Smith</span>
+    </div>
+    <div class="testimonial-slide">
+      <p>"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis semper sapien a nisi laoreet congue. Nam non
+        hendrerit tellus."</p>
+      <span>- David Johnson</span>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="footer-icons">
+      <a class="footer-icon" href="https://www.whatsapp.com"><img src="/images/whatsapp-icon.png" alt="WhatsApp Icon"></a>
+      <a class="footer-icon" href="mailto:info@hamiconfectionery.com"><img src="/images/email-icon.png" alt="Email Icon"></a>
+      <a class="footer-icon" href="https://www.instagram.com/hamiconfectionery"><img src="/images/instagram-icon.png" alt="Instagram Icon"></a>
+      <a class="footer-icon" href="https://www.facebook.com/hamiconfectionery"><img src="/images/facebook-icon.png" alt="Facebook Icon"></a>
+    </div>
+    <div class="footer-links">
+      <a class="footer-link" href="/privacy-policy">Privacy Policy</a>
+      <a class="footer-link" href="/terms-of-service">Terms of Service</a>
+    </div>
+    <p>&copy; 2023 Hami Confectionery. All rights reserved.</p>
+    <p>123 Main Street, City, Country</p>
+  </footer>
+
+  <script>
+    const hamburger = document.querySelector('.hamburger');
+    const navbarLinks = document.querySelector('.navbar-links');
+  
+    hamburger.addEventListener('click', () => {
+      hamburger.classList.toggle('active');
+      navbarLinks.classList.toggle('active');
+    });
+  
+    window.addEventListener('resize', () => {
+      if (window.innerWidth > 768) {
+        navbarLinks.classList.remove('active');
+        hamburger.classList.remove('active');
+      }
+    });
+  
+    const testimonialSlides = document.querySelectorAll('.testimonial-slide');
+    let currentSlide = 0;
+  
+    function showSlide() {
+      testimonialSlides.forEach((slide) => slide.classList.remove('active'));
+      testimonialSlides[currentSlide].classList.add('active');
+      currentSlide = (currentSlide + 1) % testimonialSlides.length;
+    }
+  
+    setInterval(showSlide, 3000);
+  
+    window.addEventListener('scroll', () => {
+      const navbar = document.querySelector('.navbar');
+      navbar.classList.toggle('sticky', window.scrollY > 0);
+    });
+  </script>
+  
+  
+</body>
+
+</html>
+
+
+
+
+
+<!-- <!DOCTYPE html>
+<html>
+<head>
+  <title>Hami Confectionery</title>
+  <link href="https://fonts.googleapis.com/css?family=Roboto|Open+Sans:200,300,400,700,800,900&subset=latin" rel="stylesheet">
+  <style>
+    /* Global Styles */
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Open Sans', Arial, sans-serif;
+    }
+    /* Navbar Styles */
+    .navbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 20px;
+      background-color: #333;
+      color: white;
+    }
+    .navbar-logo {
+      width: 150px;
+      height: 50px;
+    }
+    .navbar-links {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      margin-right: 20px;
+    }
+    .navbar-link {
+      margin-right: 20px;
+      text-decoration: none;
+      color: white;
+      font-weight: bold;
+      transition: color 0.3s;
+    }
+    .navbar-link:hover {
+      color: #FFA500;
+    }
+    /* Welcome Section Styles */
+    .welcome-section {
+      position: relative;
+      height: 100vh;
+    }
+    .welcome-video {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .welcome-content {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100%;
+      padding: 0 20px;
+      text-align: center;
+      color: white;
+    }
+    .welcome-header {
+      font-size: 3em;
+      font-weight: bold;
+      margin-bottom: 30px;
+    }
+    .welcome-subheader {
+      font-size: 1.5em;
+      margin-bottom: 30px;
+    }
+    /* Services Section Styles */
+    .services-section {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 50px 20px;
+      background-color: #f8f8f8;
+    }
+    .service {
+      text-align: center;
+      flex: 1;
+      padding: 0 10px;
+    }
+    .service-icon {
+      width: 100px;
+      height: 100px;
+      margin-bottom: 20px;
+    }
+    .service-title {
+      font-size: 1.3em;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+    .service-description {
+      font-size: 1em;
+    }
+    /* Testimonials Section Styles */
+    .testimonials-section {
+      text-align: center;
+      padding: 50px 20px;
+      background-color: #333;
+      color: white;
+    }
+    .testimonial {
+      display: none;
+    }
+    .testimonial.active {
+      display: block;
+    }
+    /* Footer Styles */
+    .footer {
+      padding: 20px;
+      background-color: #333;
+      color: white;
+      text-align: center;
+    }
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-top: 10px;
+    }
+    .footer-link {
+      text-decoration: none;
+      color: white;
+      margin-right: 10px;
+      transition: color 0.3s;
+    }
+    .footer-link:hover {
+      color: #FFA500;
+    }
+    .footer-icons {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    .footer-icon {
+      display: inline-block;
+      width: 30px;
+      height: 30px;
+      background-color: #333;
+      color: white;
+      text-align: center;
+      line-height: 30px;
+      border-radius: 50%;
+      margin-right: 10px;
+      transition: background-color 0.3s;
+    }
+    .footer-icon:hover {
+      background-color: #FFA500;
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <img class="navbar-logo" src="/images/hami-confectionery-logo.png" alt="Hami Confectionery Logo">
+    <div class="navbar-links">
+      <a class="navbar-link" href="/">Home</a>
+      <a class="navbar-link" href="/about">About</a>
+      <a class="navbar-link" href="/contact">Contact</a>
+      <a class="navbar-link" href="/login">Login</a>
+      <a class="navbar-link" href="/signup">Signup</a>
+    </div>
+  </nav>
+
+  <section class="welcome-section">
+    <video class="welcome-video" src="/videos/welcome-video.mp4" autoplay loop muted></video>
+    <div class="welcome-content">
+      <h2 class="welcome-header">Welcome to Hami Confectionery!</h2>
+      <p class="welcome-subheader">Your best cuisines and pastry plug.</p>
+    </div>
+  </section>
+
+  <section class="services-section">
+    <div class="service">
+      <img class="service-icon" src="/images/service1-icon.png" alt="Service 1 Icon">
+      <h3 class="service-title">Service 1</h3>
+      <p class="service-description">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+    </div>
+    <div class="service">
+      <img class="service-icon" src="/images/service2-icon.png" alt="Service 2 Icon">
+      <h3 class="service-title">Service 2</h3>
+      <p class="service-description">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+    </div>
+    <div class="service">
+      <img class="service-icon" src="/images/service3-icon.png" alt="Service 3 Icon">
+      <h3 class="service-title">Service 3</h3>
+      <p class="service-description">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+    </div>
+  </section>
+
+  <section class="testimonials-section">
+    <div class="testimonial active">
+      <p>"Lorem ipsum dolor sit amet, consectetur adipiscing elit."</p>
+      <p>- John Doe</p>
+    </div>
+    <div class="testimonial">
+      <p>"Lorem ipsum dolor sit amet, consectetur adipiscing elit."</p>
+      <p>- Jane Smith</p>
+    </div>
+    <div class="testimonial">
+      <p>"Lorem ipsum dolor sit amet, consectetur adipiscing elit."</p>
+      <p>- Mike Johnson</p>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="footer-icons">
+      <a class="footer-icon" href="https://www.whatsapp.com"><img src="/images/whatsapp-icon.png" alt="WhatsApp Icon"></a>
+      <a class="footer-icon" href="mailto:info@hamiconfectionery.com"><img src="/images/email-icon.png" alt="Email Icon"></a>
+      <a class="footer-icon" href="https://www.instagram.com/hamiconfectionery"><img src="/images/instagram-icon.png" alt="Instagram Icon"></a>
+      <a class="footer-icon" href="https://www.facebook.com/hamiconfectionery"><img src="/images/facebook-icon.png" alt="Facebook Icon"></a>
+    </div>
+    <div class="footer-links">
+      <a class="footer-link" href="/privacy-policy">Privacy Policy</a>
+      <a class="footer-link" href="/terms-of-service">Terms of Service</a>
+    </div>
+    <p>&copy; 2023 Hami Confectionery. All rights reserved.</p>
+    <p>123 Main Street, City, Country</p>
+  </footer>
+
+  <script>
+    const testimonials = document.querySelectorAll('.testimonial');
+    let activeTestimonialIndex = 0;
+
+    setInterval(() => {
+      testimonials[activeTestimonialIndex].classList.remove('active');
+      activeTestimonialIndex = (activeTestimonialIndex + 1) % testimonials.length;
+      testimonials[activeTestimonialIndex].classList.add('active');
+    }, 3000);
+  </script>
+</body>
+</html>--->
+
+<!-- <!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hami Confectionery</title>
+  <link href="https://fonts.googleapis.com/css?family=Roboto|Open+Sans:200,300,400,700,800,900&subset=latin"
+    rel="stylesheet">
+  <style>
+    /* Global Styles */
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Roboto', 'Open Sans', sans-serif;
+      overflow-x: hidden;
+    }
+
+    /* Navbar Styles */
+    .navbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px;
+      background-color: #fff;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      position: fixed;
+      width: 100%;
+      z-index: 1000;
+    }
+
+    .navbar-logo {
+      width: 150px;
+      height: auto;
+    }
+
+    .navbar-links {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+    }
+
+    .navbar-link {
+      text-decoration: none;
+      color: #333;
+      font-weight: bold;
+      margin-right: 20px;
+    }
+
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      cursor: pointer;
+    }
+
+    .hamburger span {
+      height: 3px;
+      width: 25px;
+      background-color: #333;
+      margin-bottom: 5px;
+    }
+
+    /* Welcome Section Styles */
+    .welcome-section {
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+    }
+
+    .welcome-video {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: -1;
+    }
+
+    .welcome-heading {
+      color: #fff;
+      font-size: 3em;
+      font-weight: bold;
+      text-align: center;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    }
+
+    /* Services Section Styles */
+    .services-section {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 50px 20px;
+      background-color: #f7f7f7;
+    }
+
+    .service-card {
+      background-color: #fff;
+      padding: 20px;
+      text-align: center;
+      border-radius: 10px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      flex: 1;
+      margin: 0 10px;
+    }
+
+    .service-card-icon {
+      width: 100px;
+      height: 100px;
+      margin-bottom: 20px;
+    }
+
+    .service-card-title {
+      font-size: 1.3em;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    .service-card-description {
+      font-size: 1em;
+      color: #888;
+    }
+
+    /* Testimonials Section Styles */
+    .testimonials-section {
+      text-align: center;
+      padding: 50px 20px;
+      background-color: #333;
+      color: #fff;
+    }
+
+    .testimonial-slide {
+      display: none;
+    }
+
+    .testimonial-slide.active {
+      display: block;
+    }
+
+    .testimonial-slide p {
+      font-size: 1.2em;
+      margin-bottom: 10px;
+    }
+
+    .testimonial-slide span {
+      font-weight: bold;
+    }
+
+    /* Footer Styles */
+    .footer {
+      text-align: center;
+      padding: 20px;
+      background-color: #333;
+      color: #fff;
+    }
+
+    .footer-link {
+      text-decoration: none;
+      color: #fff;
+      margin-right: 10px;
+    }
+
+    /* Media Queries */
+    @media (max-width: 768px) {
+      .navbar-links {
+        display: none;
+      }
+
+      .navbar.active .navbar-links {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: center;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100%;
+        background-color: #fff;
+        padding: 20px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        z-index: 999;
+      }
+
+      .navbar.active .navbar-link {
+        margin-bottom: 10px;
+      }
+
+      .hamburger {
+        display: flex;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <nav class="navbar">
+    <img class="navbar-logo" src="/images/WhatsApp_Image_2023-05-18_at_4.45.03_PM-removebg-preview.png" alt="Hami Confectionery Logo">
+    <div class="navbar-links">
+      <a class="navbar-link" href="/">Home</a>
+      <a class="navbar-link" href="/about">About</a>
+      <a class="navbar-link" href="/contact">Contact</a>
+      <a class="navbar-link" href="/login">Login</a>
+      <a class="navbar-link" href="/signup">Sign Up</a>
+    </div>
+    <div class="hamburger">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+  </nav>
+
+  <section class="welcome-section">
+    <video class="welcome-video" src="/images/chopping.mp4" autoplay muted loop></video>
+    <h2 class="welcome-heading">Welcome to Hami Confectionery!</h2>
+  </section>
+
+  <section class="services-section">
+    <div class="service-card">
+      <img class="service-card-icon" src="/images/service-icon-1.png" alt="Service 1 Icon">
+      <h3 class="service-card-title">Service 1</h3>
+      <p class="service-card-description">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+    </div>
+    <div class="service-card">
+      <img class="service-card-icon" src="/images/service-icon-2.png" alt="Service 2 Icon">
+      <h3 class="service-card-title">Service 2</h3>
+      <p class="service-card-description">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+    </div>
+    <div class="service-card">
+      <img class="service-card-icon" src="/images/service-icon-3.png" alt="Service 3 Icon">
+      <h3 class="service-card-title">Service 3</h3>
+      <p class="service-card-description">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+    </div>
+  </section>
+
+  <section class="testimonials-section">
+    <div class="testimonial-slide active">
+      <p>"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis semper sapien a nisi laoreet congue. Nam non
+        hendrerit tellus."</p>
+      <span>- John Doe</span>
+    </div>
+    <div class="testimonial-slide">
+      <p>"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis semper sapien a nisi laoreet congue. Nam non
+        hendrerit tellus."</p>
+      <span>- Jane Smith</span>
+    </div>
+    <div class="testimonial-slide">
+      <p>"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis semper sapien a nisi laoreet congue. Nam non
+        hendrerit tellus."</p>
+      <span>- David Johnson</span>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <a class="footer-link" href="/terms">Terms</a>
+    <a class="footer-link" href="/privacy">Privacy</a>
+    <a class="footer-link" href="/contact">Contact</a>
+  </footer>
+
+  <script>
+    const hamburger = document.querySelector('.hamburger');
+    const navbarLinks = document.querySelector('.navbar-links');
+
+    hamburger.addEventListener('click', () => {
+      hamburger.classList.toggle('active');
+      navbarLinks.classList.toggle('active');
+    });
+
+    const testimonialSlides = document.querySelectorAll('.testimonial-slide');
+    let currentSlide = 0;
+
+    function showSlide() {
+      testimonialSlides.forEach(slide => slide.classList.remove('active'));
+      testimonialSlides[currentSlide].classList.add('active');
+      currentSlide = (currentSlide + 1) % testimonialSlides.length;
+    }
+
+    setInterval(showSlide, 3000);
+  </script>
+</body>
+
+</html> -->

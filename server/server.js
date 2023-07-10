@@ -7,17 +7,17 @@ const cors = require('cors');
 const path = require('path');
 const ejs = require('ejs');
 const session = require('express-session');
-// const FileStore = require('session-file-store')(session);
 const { v4: uuidv4 } = require('uuid');
-const ordersDirectory = path.join(__dirname, 'orders');
+const { v4: uuid } = require('uuid');
 const nodemailer = require('nodemailer');
-const sqlite3 = require('sqlite3');
-const db = require('./database.js');
-const SQLiteStore = require('connect-sqlite3')(session);
+// const { Pool } = require('pg'); // Import the PostgreSQL package
+const pool = require('./database.js');
+
+let newUsersWelcomeMessage = `<p><strong>Welcome to Hami Confectionery, {user.name}!</strong></p> This is your first login, go and complete your KYC in the Profile section. <p>We are here to serve you better.</p>`;
+let returningUsersWelcomeMessage = `<p><strong>Welcome back, {user.name}!</strong></p> Our services run from 08:00 - 18:00, Mondays - Saturdays. <p>You can reach us via Call/Chat 08145336427.</p>`;
 
 
 const app = express();
-
 
 app.use(express.static(path.join(__dirname, 'client'), {
   etag: false,
@@ -34,8 +34,8 @@ app.get('/images/:filename', (req, res) => {
   res.sendFile(filePath);
 });
 
-// Serve static files from the 'profile-images' folder
-app.use('/profile-images', express.static('profile-images'));
+// // Serve static files from the 'profile-images' folder
+// app.use('/profile-images', express.static('profile-images'));
 
 app.use('/images', express.static('client/images'));
 
@@ -60,7 +60,6 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(cors()); // Allow cross-origin requests
 
-
 // Configure express-session middleware
 app.use(
   session({
@@ -68,26 +67,17 @@ app.use(
     resave: false,
     saveUninitialized: true,
     cookie: {
-      maxAge: 3600000, // Set the maximum age (in milliseconds) for the session cookie
-      // Additional cookie options can be added here
+      maxAge: 3600000,
     },
-    unset: 'destroy', // Clear the session data on expiration
-    rolling: true, // Extend the session expiration on each request
-    store: new SQLiteStore({
-      db: './database.db', // Path to your SQLite database file
-      table: 'session_store', // Change the table name to 'session_store'
-      // Additional options can be added here
-    }),
   })
 );
-
 
 const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
     user: 'hamiconfectionery@gmail.com',
-    pass: 'avlcrmsamttomubt'
-  }
+    pass: 'avlcrmsamttomubt',
+  },
 });
 
 app.get('/signup.html', (req, res) => {
@@ -103,101 +93,67 @@ app.get('/signup-success.html', (req, res) => {
 app.post('/signup', (req, res) => {
   const { name, email, password } = req.body;
 
-  // Generate a unique userId
   const userId = uuidv4();
 
-  // Hash the password
   bcrypt.hash(password, 10, (err, hash) => {
     if (err) {
       console.error('Error hashing password:', err);
       return res.status(500).send('Internal Server Error');
     }
 
-    // Insert the user into the database with the generated userId
-    db.run('INSERT INTO users (userId, name, email, password) VALUES (?, ?, ?, ?)', [userId, name, email, hash], (err) => {
-      if (err) {
-        console.error('Error inserting user:', err);
-        return res.status(500).send('Internal Server Error');
+    pool.query(
+      'INSERT INTO users (userId, name, email, password) VALUES ($1, $2, $3, $4)',
+      [userId, name, email, hash],
+      (err) => {
+        if (err) {
+          console.error('Error inserting user:', err);
+          return res.status(500).send('Internal Server Error');
+        }
+
+        const welcomeMailOptions = {
+          from: 'hamiconfectionery@gmail.com',
+          to: email,
+          subject: 'Welcome to Hami Confectionery!',
+          html: `
+            <html>
+              <head>
+                <style>
+                  /* CSS styles for the email */
+                </style>
+              </head>
+              <body>
+                <div class="container">
+                  <h1>Welcome to Hami Confectionery!</h1>
+                  <p>We provide the best services in pastries and cuisines.</p>
+                  <p>Thank you for signing up. Your login details are:</p>
+                  <ul>
+                    <li><strong>Email:</strong> ${email}</li>
+                    <li><strong>Password:</strong> ${password}</li>
+                  </ul>
+                </div>
+              </body>
+            </html>
+          `,
+        };
+
+        transporter.sendMail(welcomeMailOptions, (error, info) => {
+          if (error) {
+            console.error('Error sending welcome email:', error);
+          } else {
+            console.log('Welcome email sent:', info.response);
+          }
+
+          // Log the user details for debugging
+          console.log('User inserted:', { userId, name, email });
+
+          res.redirect('/signup-success.html');
+        });
       }
-
-    // Send the welcome email to the user
-    const welcomeMailOptions = {
-      from: 'hamiconfectionery@gmail.com',
-      to: email,
-      subject: 'Welcome to Hami Confectionery!',
-      html: `
-      <html>
-        <head>
-          <style>
-            /* CSS styles for the email */
-            body {
-              font-family: 'Arial', sans-serif;
-              background-color: #f5f5f5;
-              margin: 0;
-              padding: 0;
-            }
-            .container {
-              max-width: 600px;
-              margin: 0 auto;
-              padding: 20px;
-              background-color: #ffffff;
-              border-radius: 5px;
-              box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            }
-            h1 {
-              color: #333333;
-              font-size: 24px;
-              margin: 0 0 20px;
-            }
-            p {
-              color: #666666;
-              font-size: 16px;
-              line-height: 1.5;
-              margin: 0 0 10px;
-            }
-            ul {
-              list-style: none;
-              padding: 0;
-              margin: 0;
-            }
-            li {
-              margin-bottom: 5px;
-            }
-            strong {
-              font-weight: bold;
-            }
-          </style>
-        </head>
-        <body>
-          <div class="container">
-            <h1>Welcome to Hami Confectionery!</h1>
-            <p>We provide the best services in pastries and cuisines.</p>
-            <p>Thank you for signing up. Your login details are:</p>
-            <ul>
-              <li><strong>Email:</strong> ${email}</li>
-              <li><strong>Password:</strong> ${password}</li>
-            </ul>
-          </div>
-        </body>
-      </html>
-    `
-    };
-
-    transporter.sendMail(welcomeMailOptions, (error, info) => {
-      if (error) {
-        console.error('Error sending welcome email:', error);
-      } else {
-        console.log('Welcome email sent:', info.response);
-      }
-
-        // Redirect the user to the sign-up success page
-        res.redirect('/signup-success.html');
-      });
-    });
+    );
   });
 });
 
-// const sessions = {};
+
 
 app.get('/index.html', (req, res) => {
   res.setHeader('Content-Type', 'text/html');
@@ -207,100 +163,359 @@ app.get('/index.html', (req, res) => {
 app.post('/login', (req, res) => {
   const { email, password } = req.body;
 
-  db.get('SELECT * FROM users WHERE email = ?', [email], (err, row) => {
+  pool.query('SELECT * FROM users WHERE email = $1', [email], (err, result) => {
     if (err) {
       console.error('Error querying database:', err.message);
       return res.status(500).send('Error querying database');
     }
 
-    if (!row) {
-      return res.status(401).send('User not found');
-    }
+    console.log('Result rows:', result.rows);
 
-    bcrypt.compare(password, row.password, (bcryptErr, result) => {
-      if (bcryptErr) {
-        console.error('Error comparing passwords:', bcryptErr);
-        return res.status(500).send('Error comparing passwords');
-      }
+    const user = result.rows[0];
 
-      if (result) {
-        const sessionId = uuidv4();
-        const loginTime = Date.now();
+    if (user) {
+      bcrypt.compare(password, user.password, (bcryptErr, match) => {
+        if (bcryptErr) {
+          console.error('Error comparing passwords:', bcryptErr.message);
+          return res.status(500).send('Error comparing passwords');
+        }
 
-        db.run('UPDATE users SET lastLoginTime = ? WHERE email = ?', [loginTime, email], (updateErr) => {
-          if (updateErr) {
-            console.error('Error updating last login time:', updateErr.message);
-            return res.status(500).send('Error updating last login time');
-          }
+        console.log('User:', user);
 
-          const userId = row.userId;
+        if (match) {
+          const sessionId = uuidv4();
+          const loginTime = Date.now();
 
-          db.run(
-            'INSERT INTO sessions (sessionId, userId, email) VALUES (?, ?, ?)',
-            [sessionId, userId, email],
-            (sessionErr) => {
-              if (sessionErr) {
-                console.error('Error saving session data:', sessionErr);
-                return res.status(500).send('Error saving session data');
+          pool.query(
+            'UPDATE users SET lastLoginTime = $1 WHERE email = $2',
+            [loginTime, email],
+            (updateErr) => {
+              if (updateErr) {
+                console.error('Error updating last login time:', updateErr.message);
+                return res.status(500).send('Error updating last login time');
               }
 
-              res.cookie('sessionId', sessionId, {
-                maxAge: 3600000,
-              });
+              const userId = user.userid;
 
-              return res.redirect('/dashboard.html');
+              pool.query(
+                'INSERT INTO sessions (sessionId, userId, email) VALUES ($1, $2, $3)',
+                [sessionId, userId, email],
+                (sessionErr) => {
+                  if (sessionErr) {
+                    console.error('Error saving session data:', sessionErr);
+                    return res.status(500).send('Error saving session data');
+                  }
+
+                  res.cookie('sessionId', sessionId, {
+                    maxAge: 3600000,
+                  });
+
+                  return res.redirect('/dashboard');
+                }
+              );
             }
           );
-        });
-      } else {
-        return res.status(401).send('Invalid email or password');
-      }
-    });
+        } else {
+          console.log('Invalid email or password:', email);
+          return res.status(401).send('Invalid email or password');
+        }
+      });
+    } else {
+      console.log('User not found:', email);
+      return res.status(401).send('Invalid email or password');
+    }
   });
 });
 
 
-app.get('/dashboard.html', (req, res) => {
-  // Assuming you have a way to identify the currently logged-in user
+
+
+app.get('/adminindex.html', (req, res) => {
+  res.setHeader('Content-Type', 'text/html');
+  res.sendFile(path.join(__dirname + '/../client/adminindex.html'));
+});
+
+// Admin credentials
+const adminEmail = 'admin@example.com';
+const adminPassword = 'adminPassword';
+
+// Admin login route
+app.post('/admin/login', (req, res) => {
+  const { email, password } = req.body;
+
+  // Check if the provided email and password match the admin credentials
+  if (email === adminEmail && password === adminPassword) {
+    // Admin login successful
+    req.session.isAdmin = true; // Store admin session
+    res.redirect('/adminpanel'); // Redirect to the admin panel
+  } else {
+    // Admin login failed
+    res.status(401).send('Invalid credentials');
+  }
+});
+
+// Protected admin panel route
+app.get('/adminpanel', (req, res) => {
+  // Check if admin is logged in
+  if (req.session.isAdmin) {
+    // Admin is logged in, serve the adminindex.html file
+    // return res.redirect('/adminpanel.html');
+    res.sendFile(path.join(__dirname, '/../client/views/adminpanel.html'));
+  } else {
+    // Admin is not logged in, redirect to login page
+    res.redirect('/adminindex.html');
+  }
+});
+
+// API endpoint for fetching the user list
+app.get('/api/users', async (req, res) => {
+  try {
+    // Query the database to fetch the user data
+    const result = await pool.query('SELECT * FROM users');
+    const users = result.rows;
+
+    // Format the user list to include the id property
+    const formattedUserList = users.map(user => ({
+      id: user.userid,
+      name: user.name,
+      email: user.email,
+      phone: user.phone
+    }));
+
+    // Send the formatted user list as a JSON response
+    res.json(formattedUserList);
+  } catch (error) {
+    // Handle any errors that occur during the database query
+    console.error('Error fetching user list:', error);
+    res.status(500).json({ error: 'An error occurred while fetching the user list' });
+  }
+});
+
+
+// API endpoint to fetch chat history for a specific user
+app.get('/api/chat/:userId', async (req, res) => {
+  try {
+    // Retrieve the userId from the request parameters
+    const { userId } = req.params;
+    // console.log(userId); // Add this line to log the userId value
+
+    // Connect to the database
+    const client = await pool.connect();
+
+    // Query the chat history table for the given userId
+    const query = 'SELECT * FROM chat_history WHERE user_id = $1';
+    const values = [userId]; // Use the userId directly without parsing
+
+    const result = await client.query(query, values);
+    // console.log(result); // Add this line to log the result object
+
+    // Release the database connection
+    client.release();
+
+    // Get the chat history rows from the result
+    const chatHistory = result.rows;
+
+    // Return the chat history as a response
+    res.json(chatHistory);
+  } catch (error) {
+    console.error('Error fetching chat history:', error);
+    res.status(500).json({ error: 'Failed to fetch chat history' });
+  }
+});
+
+
+// API endpoint to send a message to a user
+app.post('/api/chat/:userId/send', (req, res) => {
+  // Retrieve the userId from the request parameters
+  const { userId } = req.params;
+  // Retrieve the message content from the request body
+  const { message } = req.body;
+
+    // Check if the message is empty or null
+    if (!message) {
+      return res.status(400).json({ error: 'Message cannot be empty' });
+    }
+  
+
+  // Create a SQL query to insert the message into the database
+  const insertMessageQuery = `
+    INSERT INTO messages (user_id, content, sent_at)
+    VALUES ($1, $2, NOW())
+    RETURNING *
+  `;
+
+  // Execute the query using the PostgreSQL pool
+  pool.query(insertMessageQuery, [userId, message], (err, result) => {
+    if (err) {
+      console.error('Error sending message:', err);
+      res.sendStatus(500);
+    } else {
+      // Message sent successfully
+      res.sendStatus(200);
+    }
+  });
+});
+
+
+
+
+// Endpoint to handle user's messages and generate response
+app.post('/api/chat/send', (req, res) => {
+  const { message } = req.body;
+
+  // Process the user's message and generate a response
+  // You can add your custom logic here to generate the agent's response based on the user's message
+
+  const agentResponse = "Hi! Thank you for your message. Our customer service agent will be with you shortly.";
+
+  // Send the agent's response back to the frontend
+  res.json({ response: agentResponse });
+});
+
+app.post('/api/updateWelcomeMessages', (req, res) => {
+  const { newUsersMessage, returningUsersMessage } = req.body;
+
+  // Update the welcome messages with the new values
+  newUsersWelcomeMessage = newUsersMessage;
+  returningUsersWelcomeMessage = returningUsersMessage;
+
+  // Send a success response
+  res.json({ success: true });
+});
+
+
+
+
+
+
+
+
+
+
+
+
+// Assign the pool to the db variable
+const db = pool;
+
+app.get('/dashboard', (req, res) => {
   const sessionId = req.cookies.sessionId;
   console.log('Session ID from cookie:', sessionId);
 
-  db.get('SELECT * FROM sessions WHERE sessionId = ?', [sessionId], (err, row) => {
+  pool.query('SELECT * FROM sessions WHERE sessionid = $1', [sessionId], (err, sessionResult) => {
     if (err) {
-      console.error('Error querying database:', err.message);
+      console.error('Error querying sessions table:', err.message);
+      return res.status(500).send('Error querying database');
+    }
+
+    const session = sessionResult.rows[0];
+
+    if (session) {
+      const userId = session.userid;
+      console.log('Retrieved User ID:', userId);
+
+      pool.query('SELECT * FROM users WHERE userid = $1', [userId], (err, userResult) => {
+        if (err) {
+          console.error('Error querying users table:', err.message);
+          return res.status(500).send('Error querying database');
+        }
+
+        const user = userResult.rows[0];
+
+        if (user) {
+          // Retrieve the profile image for the user
+          pool.query('SELECT image_data FROM profile_images WHERE user_id = $1', [userId], (err, imageResult) => {
+            if (err) {
+              console.error('Error querying profile images:', err.message);
+              return res.status(500).send('Error querying database');
+            }
+
+            const profileImage = imageResult.rows.length > 0 ? imageResult.rows[0].image_data : null;
+
+            const shouldShowPopup = user.isnewuser === 1 || session.isnewuser === 1;
+
+            // Retrieve the welcome messages from the database or any other data source
+            // and assign them to the respective variables
+            const newUsersWelcomeMessage = `<p><strong>Welcome to Hami Confectionery, {user.name}!</strong></p> This is your first login, go and complete your KYC in the Profile section. <p>We are here to serve you better.</p>`;
+            const returningUsersWelcomeMessage = `<p><strong>Welcome back, {user.name}!</strong></p> Our services run from 08:00 - 18:00, Mondays - Saturdays. <p>You can reach us via Call/Chat 08145336427.</p>`;
+
+            let notificationMessage;
+            if (shouldShowPopup) {
+              notificationMessage = newUsersWelcomeMessage.replace('{user.name}', user.name);
+            } else {
+              notificationMessage = returningUsersWelcomeMessage.replace('{user.name}', user.name);
+            }
+
+            pool.query('UPDATE sessions SET isnewuser = 0 WHERE sessionid = $1', [sessionId], (err) => {
+              if (err) {
+                console.error('Error updating session:', err.message);
+              }
+
+              console.log('User found:', user.userid);
+              res.render('dashboard', { user, username: user.name, notificationMessage, shouldShowPopup, profileImage });
+            });
+          });
+        } else {
+          console.error('User not found:', userId);
+          res.status(404).send('User not found');
+        }
+      });
+    } else {
+      res.clearCookie('sessionId');
+      res.redirect('/index.html');
+    }
+  });
+});
+
+
+
+
+app.get('/about', (_req, res) => {
+  res.sendFile(path.join(__dirname, '/../client/views/about-us.html'));
+});
+
+app.get('/customerservice', (_req, res) => {
+  res.sendFile(path.join(__dirname, '/../client/views/customerservice.html'));
+});
+
+
+app.get('/profile', (req, res) => {
+  const sessionId = req.cookies.sessionId;
+
+  pool.query('SELECT * FROM sessions WHERE sessionid = $1', [sessionId], (err, sessionResult) => {
+    if (err) {
+      console.error('Error querying sessions:', err.message);
       return res.sendStatus(500);
     }
 
-    if (row) {
-      const userId = row.userId;
+    const session = sessionResult.rows[0];
 
-      // Find the user with the matching ID in the SQLite database
-      db.get('SELECT * FROM users WHERE userId = ?', [userId], (err, row) => {
+    if (session) {
+      const userId = session.userid;
+
+      const query = {
+        text: 'SELECT * FROM users WHERE userid = $1',
+        values: [userId],
+      };
+
+      pool.query(query, (err, userResult) => {
         if (err) {
-          console.error('Error querying database:', err.message);
+          console.error('Error querying users:', err.message);
           return res.sendStatus(500);
         }
 
-        if (row) {
-          // Determine if the pop-up should be shown based on the session's isNewUser flag
-          const shouldShowPopup = row.isNewUser;
+        const user = userResult.rows[0];
 
-          // Determine the notification message based on whether the user is a new user or an existing user
-          let notificationMessage;
-          if (shouldShowPopup) {
-            notificationMessage = `<p><strong>Welcome to Hami Confectionery, ${row.name}!</strong></p> This is your first login, go and complete your KYC in the Profile section. <p>We are here to serve you better.</p>`;
-          } else {
-            notificationMessage = `<p><strong>Welcome back, ${row.name}!</strong></p> Our services run from 08:00 - 18:00, Mondays - Saturdays. <p>You can reach us via Call/Chat 08145336427.</p>`;
-          }
-
-          // Update the isNewUser flag to false for the current session
-          db.run('UPDATE sessions SET isNewUser = 0 WHERE sessionId = ?', [sessionId], (err) => {
+        if (user) {
+          // Fetch profile image from profile_images table
+          pool.query('SELECT image_data FROM profile_images WHERE user_id = $1', [userId], (err, imageResult) => {
             if (err) {
-              console.error('Error updating session:', err.message);
+              console.error('Error querying profile images:', err.message);
+              return res.sendStatus(500);
             }
 
-            // Render the dashboard page and pass the user, username, notificationMessage, and shouldShowPopup to the template
-            res.render('dashboard', { user: row, username: row.name, notificationMessage, shouldShowPopup });
+            const profileImage = imageResult.rows[0] ? imageResult.rows[0].image_data : null;
+
+            res.render('profile', { user, profileImage });
           });
         } else {
           console.error('User not found:', userId);
@@ -308,146 +523,87 @@ app.get('/dashboard.html', (req, res) => {
         }
       });
     } else {
-      // Clear the session cookie and redirect to the login page
       res.clearCookie('sessionId');
       res.redirect('/index.html');
     }
   });
 });
 
-app.get('/profile', (req, res) => {
-  // Assuming you have a way to identify the currently logged-in user
-  const sessionId = req.cookies.sessionId;
-
-  db.get('SELECT * FROM sessions WHERE sessionId = ?', [sessionId], (err, row) => {
-    if (err) {
-      console.error('Error querying database:', err.message);
-      return res.sendStatus(500);
-    }
-
-    if (row) {
-      const userId = row.userId;
-
-      // Find the user with the matching ID in the SQLite database
-      db.get('SELECT * FROM users WHERE userId = ?', [userId], (err, row) => {
-        if (err) {
-          console.error('Error querying database:', err.message);
-          return res.sendStatus(500);
-        }
-
-        if (row) {
-          // Render the profile page and pass the user data to the template
-          res.render('profile', { user: row });
-        } else {
-          console.error('User not found:', userId);
-          res.sendStatus(404);
-        }
-      });
-    } else {
-      // Clear the session cookie and redirect to the login page
-      res.clearCookie('sessionId');
-      res.redirect('/index.html');
-    }
-  });
-});
-
-
-
-app.get('/about', (req, res) => {
-  res.sendFile(path.join(__dirname, '/../client/views/about-us.html'));
-});
 
 
 const multer = require('multer');
 
 // Set up the Multer storage configuration
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, 'profile-images'); // Specify the directory to save the uploaded images
-  },
-  filename: (req, file, cb) => {
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
-    const fileExtension = file.originalname.split('.').pop();
-    cb(null, 'profile-' + uniqueSuffix + '.' + fileExtension); // Generate a unique filename for the uploaded image
-  }
-});
+const storage = multer.memoryStorage();
 
 // Create a Multer instance with the storage configuration
 const upload = multer({ storage: storage });
 
 app.post('/update-profile', upload.single('profileImage'), (req, res) => {
-  // Assuming you have a way to identify the currently logged-in user
+  console.log('Multer middleware executed');
   const sessionId = req.cookies.sessionId;
 
-  db.get('SELECT * FROM sessions WHERE sessionId = ?', [sessionId], (err, session) => {
+  pool.query('SELECT * FROM sessions WHERE sessionid = $1', [sessionId], (err, sessionResult) => {
     if (err) {
       console.error('Error querying database:', err.message);
       return res.sendStatus(500);
     }
 
-    if (session && session.userId) {
-      const userId = session.userId;
+    const session = sessionResult.rows[0];
 
-      // Get the updated profile information from the request body
+    if (session && session.userid) {
+      const userId = session.userid;
+
       const { name, email, phone } = req.body;
+      const profileImage = req.file ? req.file.buffer : null;
 
-      // If a file was uploaded, update the profile image path
-      const profileImage = req.file ? req.file.filename : null;
+      // Check if a profile image exists for the user
+      pool.query('SELECT * FROM profile_images WHERE user_id = $1', [userId], (err, imageResult) => {
+        if (err) {
+          console.error('Error querying profile images:', err.message);
+          return res.sendStatus(500);
+        }
 
-      // Update the user profile in the SQLite database
-      db.run(
-        'UPDATE users SET name = ?, email = ?, phone = ?, profileImage = ? WHERE userId = ?',
-        [name, email, phone, profileImage, userId],
-        (err) => {
-          if (err) {
-            console.error('Error updating user profile:', err.message);
-            res.sendStatus(500);
-            return;
-          }
-
-          // Send a success response
-          res.redirect('/profile?success=true');
-
-          // Send an email to the user to confirm the profile update
-          const updateMailOptions = {
-            from: 'hamiconfectionery@gmail.com',
-            to: email,
-            subject: 'Profile Update Confirmation',
-            html: `
-              <html>
-                <head>
-                  <style>
-                    /* CSS styles for the email */
-                    /* Add your custom CSS styles here */
-                  </style>
-                </head>
-                <body>
-                  <div class="container">
-                    <h1>Profile Update Confirmation</h1>
-                    <p>Your profile has been successfully updated.</p>
-                    <p>Here are your updated profile details:</p>
-                    <ul>
-                      <li><strong>Name:</strong> ${name}</li>
-                      <li><strong>Email:</strong> ${email}</li>
-                      <li><strong>Phone:</strong> ${phone}</li>
-                    </ul>
-                  </div>
-                </body>
-              </html>
-            `
-          };
-
-          transporter.sendMail(updateMailOptions, (error, info) => {
-            if (error) {
-              console.error('Error sending profile update email:', error);
-            } else {
-              console.log('Profile update email sent:', info.response);
+        if (imageResult.rows.length > 0) {
+          // Update the existing profile image
+          pool.query('UPDATE profile_images SET image_data = $1 WHERE user_id = $2', [profileImage, userId], (err) => {
+            if (err) {
+              console.error('Error updating profile image:', err.message);
+              return res.sendStatus(500);
             }
+
+            // Update the user profile details
+            pool.query('UPDATE users SET name = $1, email = $2, phone = $3 WHERE userid = $4', [name, email, phone, userId], (err) => {
+              if (err) {
+                console.error('Error updating user profile:', err.message);
+                return res.sendStatus(500);
+              }
+
+              res.redirect('/profile?success=true');
+            });
+          });
+        } else {
+          // Insert a new profile image
+          pool.query('INSERT INTO profile_images (user_id, image_data) VALUES ($1, $2)', [userId, profileImage], (err) => {
+            if (err) {
+              console.error('Error inserting profile image:', err.message);
+              return res.sendStatus(500);
+            }
+
+            // Update the user profile details
+            pool.query('UPDATE users SET name = $1, email = $2, phone = $3 WHERE userid = $4', [name, email, phone, userId], (err) => {
+              if (err) {
+                console.error('Error updating user profile:', err.message);
+                return res.sendStatus(500);
+              }
+
+              res.redirect('/profile?success=true');
+            });
           });
         }
-      );
+      });
     } else {
-      res.sendStatus(401); // Unauthorized access
+      res.sendStatus(401);
     }
   });
 });
@@ -455,122 +611,35 @@ app.post('/update-profile', upload.single('profileImage'), (req, res) => {
 
 
 
+app.post('/logout', (req, res) => {
+  const sessionId = req.cookies.sessionId;
 
-// app.post('/logout', (req, res) => {
-//   const sessionId = req.cookies.sessionId;
+  pool.query('SELECT * FROM sessions WHERE sessionId = $1', [sessionId], (err, sessionResult) => {
+    if (err) {
+      console.error('Error querying session:', err.message);
+      return res.sendStatus(500);
+    }
 
-//   db.get('SELECT * FROM sessions WHERE sessionId = ?', [sessionId], (err, session) => {
-//     if (err) {
-//       console.error('Error querying database:', err.message);
-//       return res.sendStatus(500);
-//     }
+    const session = sessionResult.rows[0];
 
-//     if (session && session.userId) {
-//       const userId = session.userId;
+    if (session) {
+      const userId = session.userId;
 
-//       // Check if the user exists in the database
-//       db.get('SELECT * FROM users WHERE userId = ?', [userId], (err, user) => {
-//         if (err) {
-//           console.error('Error checking user existence:', err);
-//           res.send('Error logging out');
-//         } else if (user) {
-//           // User exists, proceed with order deletion
-//           db.run('DELETE FROM orders WHERE userId = ?', [userId], (err) => {
-//             if (err) {
-//               console.error('Error deleting order:', err.message);
-//             } else {
-//               console.log('User order deleted successfully');
-//             }
-//           });
-//         } else {
-//           console.log('User not found:', userId);
-//         }
+      pool.query('DELETE FROM sessions WHERE userId = $1', [userId], (err, deleteResult) => {
+        if (err) {
+          console.error('Error deleting session:', err.message);
+          return res.sendStatus(500);
+        }
 
-//         // Delete the session from the sessions table
-//         db.run('DELETE FROM sessions WHERE sessionId = ?', [sessionId], (err) => {
-//           if (err) {
-//             console.error('Error deleting session:', err.message);
-//             return res.sendStatus(500);
-//           }
-
-//           // Clear session cookie and redirect to the index page
-//           res.clearCookie('sessionId');
-//           res.redirect('/index.html');
-//         });
-//       });
-//     } else {
-//       // Session or userId is not available
-//       console.log('Invalid session or user ID');
-//       res.send('Error logging out');
-//     }
-//   });
-// });
-
-
-
-// app.post('/logout', (req, res) => {
-//   const sessionId = req.cookies.sessionId;
-
-//   db.get('SELECT * FROM sessions WHERE sessionId = ?', [sessionId], (err, session) => {
-//     if (err) {
-//       console.error('Error querying database:', err.message);
-//       return res.sendStatus(500);
-//     }
-
-//     if (session && session.userId) {
-//       const userId = session.userId;
-
-//       // Check if the user exists in the database
-//       db.get('SELECT * FROM users WHERE userId = ?', [userId], (err, user) => {
-//         if (err) {
-//           console.error('Error checking user existence:', err);
-//           res.send('Error logging out');
-//         } else if (user) {
-//           // User exists, proceed with order deletion
-//           const orderFilePath = path.join(__dirname, 'orders', `${userId}.json`);
-//           fs.unlink(orderFilePath, (error) => {
-//             if (error) {
-//               console.error('Error deleting order file:', error);
-//             } else {
-//               console.log('User order deleted successfully');
-//             }
-
-//             // Delete the session from the sessions table
-//             db.run('DELETE FROM sessions WHERE sessionId = ?', [sessionId], (err) => {
-//               if (err) {
-//                 console.error('Error deleting session:', err.message);
-//                 return res.sendStatus(500);
-//               }
-
-//               // Clear session cookie and redirect to the index page
-//               res.clearCookie('sessionId');
-//               res.redirect('/index.html');
-//             });
-//           });
-//         } else {
-//           console.log('User not found:', userId);
-
-//           // Delete the session from the sessions table even if the user is not found
-//           db.run('DELETE FROM sessions WHERE sessionId = ?', [sessionId], (err) => {
-//             if (err) {
-//               console.error('Error deleting session:', err.message);
-//               return res.sendStatus(500);
-//             }
-
-//             // Clear session cookie and redirect to the index page
-//             res.clearCookie('sessionId');
-//             res.redirect('/index.html');
-//           });
-//         }
-//       });
-//     } else {
-//       // Session or userId is not available
-//       console.log('Invalid session or user ID');
-//       res.send('Error logging out');
-//     }
-//   });
-// });
-
+        res.clearCookie('sessionId');
+        res.redirect('/index.html');
+      });
+    } else {
+      console.error('Invalid session or userId');
+      res.sendStatus(400);
+    }
+  });
+});
 
 
 
@@ -1062,136 +1131,172 @@ app.get('/', (req, res) => {
 // Parse JSON request bodies
 app.use(express.json());
 
+
 app.post('/add-to-cart', (req, res) => {
   const cartItem = req.body;
   console.log('Received cart item:', cartItem);
 
   const sessionId = req.cookies.sessionId;
 
-  db.get('SELECT * FROM sessions WHERE sessionId = ?', [sessionId], (err, session) => {
+  pool.query('SELECT * FROM sessions WHERE sessionId = $1', [sessionId], (err, sessionResult) => {
     if (err) {
       console.error('Error querying database:', err.message);
       return res.status(500).json({ status: 'error', message: 'Internal Server Error' });
     }
 
-    if (!session || !session.userId) {
-      // Handle the case where the user is not logged in
+    const session = sessionResult.rows[0];
+
+    if (!session || !session.userid) {
       return res.status(401).json({ status: 'error', message: 'User not authenticated' });
     }
 
-    const userId = session.userId;
+    const userId = session.userid;
 
-    // Check if the user exists in the database
-    db.get('SELECT * FROM users WHERE userId = ?', [userId], (err, user) => {
+    pool.query('SELECT * FROM users WHERE userid = $1', [userId], (err, userResult) => {
       if (err) {
         console.error('Error checking user existence:', err.message);
         return res.status(500).json({ status: 'error', message: 'Internal Server Error' });
       }
+
+      const user = userResult.rows[0];
 
       if (!user) {
         console.error('User not found:', userId);
         return res.status(404).json({ status: 'error', message: 'User not found' });
       }
 
-      // Check if the user's profile is complete
-      if (!user.phone || !user.profileImage) {
+      if (!user.phone || !user.profileimage) {
         return res.status(403).json({ status: 'error', message: 'Please update your profile information before placing an order.' });
       }
 
-      // Insert the cart item into the orders table
-      const query = 'INSERT INTO orders (userId, itemId, name, price, quantity, imageUrl, addedTime) VALUES (?, ?, ?, ?, ?, ?, ?)';
-      const values = [userId, cartItem.itemId, cartItem.name, cartItem.price, cartItem.quantity, cartItem.imageUrl, Date.now()];
-      db.run(query, values, function (err) {
+      const itemId = uuidv4(); // Generate a new UUID for the itemId
+
+      // Proceed with inserting the item into the items table
+      const query = 'INSERT INTO items (itemId, name, price, quantity, imageUrl) VALUES ($1, $2, $3, $4, $5)';
+      const values = [itemId, cartItem.name, cartItem.price, cartItem.quantity, cartItem.imageUrl];
+      pool.query(query, values, (err) => {
         if (err) {
-          console.error('Error adding item to cart:', err.message);
+          console.error('Error adding item to items table:', err.message);
           return res.status(500).json({ status: 'error', message: 'Internal Server Error' });
         }
 
-        res.json({ status: 'success', message: 'Item added to cart', data: { itemId: cartItem.itemId } });
+        // Proceed with inserting the item into the orders table
+        const query = 'INSERT INTO orders (userid, itemid, name, price, quantity, imageurl, addedtime) VALUES ($1, $2, $3, $4, $5, $6, $7)';
+        const values = [userId, itemId, cartItem.name, cartItem.price, cartItem.quantity, cartItem.imageUrl, Date.now()];
+        pool.query(query, values, (err) => {
+          if (err) {
+            console.error('Error adding item to cart:', err.message);
+            return res.status(500).json({ status: 'error', message: 'Internal Server Error' });
+          }
+
+          // Pass the item ID and image URL to the order page
+          const orderId = itemId;
+          const imageUrl = cartItem.imageUrl;
+
+          res.json({ status: 'success', message: 'Item added to cart', data: { orderId, imageUrl } });
+        });
       });
     });
   });
 });
+
 
 
 app.get('/cart-count', (req, res) => {
   const sessionId = req.cookies.sessionId;
 
-  db.get('SELECT * FROM sessions WHERE sessionId = ?', [sessionId], (err, session) => {
+  pool.query('SELECT * FROM sessions WHERE sessionId = $1', [sessionId], (err, sessionResult) => {
     if (err) {
       console.error('Error querying database:', err.message);
       return res.sendStatus(500);
     }
 
-    if (session && session.userId) {
-      const userId = session.userId;
-      const query = 'SELECT COUNT(*) AS count FROM orders WHERE userId = ?';
-      db.get(query, [userId], (err, result) => {
+    const session = sessionResult.rows[0];
+
+    if (session && session.userid) {
+      const userId = session.userid;
+      const query = 'SELECT COUNT(*) AS count FROM orders WHERE userid = $1';
+      pool.query(query, [userId], (err, result) => {
         if (err) {
           console.error('Error retrieving cart count:', err.message);
-          res.sendStatus(500);
+          return res.sendStatus(500);
         } else {
-          const cartCount = result.count || 0;
+          const cartCount = result.rows[0].count || 0;
           res.json({ count: cartCount });
         }
       });
     } else {
-      res.json({ count: 0 }); // Return count as 0 if the user is not logged in or has no items in the cart
+      res.json({ count: 0 });
     }
   });
 });
 
-
 app.get('/order', (req, res) => {
   const sessionId = req.cookies.sessionId;
 
-  db.get('SELECT * FROM sessions WHERE sessionId = ?', [sessionId], (err, session) => {
+  pool.query('SELECT * FROM sessions WHERE sessionId = $1', [sessionId], (err, sessionResult) => {
     if (err) {
       console.error('Error querying database:', err.message);
       return res.sendStatus(500);
     }
 
-    if (!session || !session.userId) {
+    const session = sessionResult.rows[0];
+
+    if (!session || !session.userid) {
       return res.redirect('/index.html');
     }
 
-    const userId = session.userId;
+    const userId = session.userid;
     const currentTime = Date.now();
-    const query = 'SELECT * FROM orders WHERE userId = ? AND addedTime >= ?';
+    const query = 'SELECT * FROM orders WHERE userid = $1 AND addedtime >= $2';
     const timeThreshold = currentTime - (3 * 60 * 60 * 1000); // 3 hours in milliseconds
 
-    db.all(query, [userId, timeThreshold], (err, rows) => {
+    pool.query(query, [userId, timeThreshold], (err, result) => {
       if (err) {
         console.error('Error retrieving order data:', err.message);
         return res.sendStatus(500);
       }
 
-      res.render('order', { cartItems: rows });
+      const rows = result.rows;
+      console.log('Retrieved cart items:', rows); // Moved logging statement here
+      res.render('order', { cartItems: rows, itemId: 'itemId', imageUrl: 'imageUrl' });
     });
   });
 });
 
-
 app.post('/delete-from-cart', (req, res) => {
   const sessionId = req.cookies.sessionId;
-
-  db.get('SELECT * FROM sessions WHERE sessionId = ?', [sessionId], (err, session) => {
+  
+  console.log('Session ID:', sessionId);
+  
+  if (!sessionId) {
+    return res.json({ success: false, message: 'Invalid session ID' });
+  }
+  
+  pool.query('SELECT * FROM sessions WHERE sessionId = $1', [sessionId], (err, sessionResult) => {
     if (err) {
       console.error('Error querying database:', err.message);
       return res.sendStatus(500);
     }
-
-    if (session && session.userId) {
-      const userId = session.userId;
+  
+    const session = sessionResult.rows[0];
+  
+    console.log('Session:', session);
+  
+    if (session && session.userid) {
+      const userId = session.userid;
       const itemId = req.body.itemId;
-
-      const query = 'DELETE FROM orders WHERE userId = ? AND itemId = ?';
+  
+      console.log('User ID:', userId);
+      console.log('Item ID:', itemId);
+  
+      const query = 'DELETE FROM orders WHERE userid = $1 AND itemid = $2';
       const values = [userId, itemId];
-      db.run(query, values, function (err) {
+      pool.query(query, values, (err, result) => {
         if (err) {
           console.error('Error deleting item from cart:', err.message);
-          res.sendStatus(500);
-        } else if (this.changes > 0) {
+          return res.sendStatus(500);
+        } else if (result.rowCount > 0) {
           res.json({ success: true });
         } else {
           res.json({ success: false, message: 'Item not found in cart' });
@@ -1204,37 +1309,39 @@ app.post('/delete-from-cart', (req, res) => {
 });
 
 
-
-
 app.get('/payment', (req, res) => {
   const sessionId = req.cookies.sessionId;
 
   console.log('Session ID:', sessionId);
 
-  db.get('SELECT * FROM sessions WHERE sessionId = ?', [sessionId], (err, session) => {
+  pool.query('SELECT * FROM sessions WHERE sessionId = $1', [sessionId], (err, sessionResult) => {
     if (err) {
       console.error('Error retrieving session from the database:', err);
       res.redirect('/index.html');
       return;
     }
 
+    const session = sessionResult.rows[0];
+
     console.log('Session ID from cookie:', sessionId);
 
-    if (session && session.userId && session.email) {
-      const userId = session.userId;
+    if (session && session.userid && session.email) {
+      const userId = session.userid;
 
       console.log('User ID:', userId);
 
-      db.get('SELECT * FROM users WHERE userId = ?', [userId], (err, user) => {
+      pool.query('SELECT * FROM users WHERE userid = $1', [userId], (err, userResult) => {
         if (err) {
           console.error('Error retrieving user data from the database:', err);
           res.redirect('/index.html');
           return;
         }
 
+        const user = userResult.rows[0];
+
         console.log('User:', user);
 
-        if (session.sessionId !== sessionId) {
+        if (session.sessionid !== sessionId) {
           console.error('Session ID mismatch');
           res.redirect('/login');
           return;
@@ -1246,15 +1353,17 @@ app.get('/payment', (req, res) => {
           return;
         }
 
-        console.log('Database connected:', db);
+        console.log('Database connected:', pool);
         console.log('User ID:', userId);
 
-        db.all('SELECT * FROM orders WHERE userId = ?', [userId], (err, orderData) => {
+        pool.query('SELECT * FROM orders WHERE userid = $1', [userId], (err, orderResult) => {
           if (err) {
             console.error('Error retrieving order data from the database:', err);
             res.redirect('/index.html');
             return;
           }
+
+          const orderData = orderResult.rows;
 
           console.log('Order Data:', orderData);
 
@@ -1280,37 +1389,89 @@ app.post('/process-payment', (req, res) => {
 });
 
 
+// Set up the Multer storage configuration for payment proof upload
+const paymentProofStorage = multer.diskStorage({
+  destination: path.join(__dirname, 'paymentProof'),
+  filename: (req, file, cb) => {
+    const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1e9)}`;
+    const extension = path.extname(file.originalname);
+    const filename = `payment-proof-${uniqueSuffix}${extension}`;
+    cb(null, filename);
+  },
+});
+const paymentProofUpload = multer({ storage: paymentProofStorage });
+
+
 app.post('/submit-payment-proof', upload.single('paymentProof'), (req, res) => {
   const sessionId = req.cookies.sessionId;
 
-  db.get('SELECT * FROM sessions WHERE sessionId = ?', [sessionId], (err, session) => {
+
+
+  pool.query('SELECT * FROM sessions WHERE sessionId = $1', [sessionId], (err, sessionResult) => {
     if (err) {
       console.error('Error retrieving session from the database:', err);
       res.redirect('/index.html');
       return;
     }
 
-    if (session && session.userId) {
-      const userId = session.userId;
+    const session = sessionResult.rows[0];
+
+    if (session && session.userid) {
+      const userId = session.userid;
       const userEmail = session.email;
 
-      db.all('SELECT * FROM orders WHERE userId = ?', [userId], (err, orderData) => {
+        // Retrieve the payment proof file path
+      const paymentProofPath = req.file.path;
+
+      // Retrieve the shipping address and other data from the request body
+      const city = req.body.city;
+      const shippingAddress = req.body.shippingAddress;
+      
+      // Calculate shipping fee based on the selected city
+      let shippingFee = 0;
+      if (city === 'Abeokuta') {
+        shippingFee = 10; // Set the appropriate shipping fee for Abeokuta
+      } else if (city === 'Ibadan') {
+        shippingFee = 15; // Set the appropriate shipping fee for Ibadan
+      } else if (city === 'Lagos') {
+        shippingFee = 20; // Set the appropriate shipping fee for Lagos
+      }
+
+      // Retrieve other data from the request body
+      const paymentProof = req.file;
+      const total = parseFloat(req.body.total);
+
+      // Calculate the new total price with the shipping fee added
+      const newTotal = total + shippingFee;
+
+      pool.query('SELECT * FROM orders WHERE userid = $1', [userId], (err, orderResult) => {
         if (err) {
           console.error('Error retrieving order data from the database:', err);
           res.redirect('/index.html');
           return;
         }
 
-        const { items, quantity, itemId, itemImage, total, deliveryTime } = req.body;
+        const orderData = orderResult.rows;
+
+        console.log('Order Data:', orderData);
+
+        // Extract item IDs and images from orderData
+        const items = orderData.map((item) => item.name);
+        const quantity = orderData.map((item) => item.quantity);
+        const itemId = orderData.map((item) => item.itemid);
+        const itemImages = orderData.map((item) => item.imageurl);
+        const total = orderData.reduce((sum, item) => sum + item.price * item.quantity, 0);
+        const deliverytime = 'In some minutes.'; // Replace with the actual delivery time
+
 
         console.log('Payment proof submitted:', req.file);
         console.log('User Email:', userEmail);
         console.log('Order Items:', items);
         console.log('Quantity:', quantity);
         console.log('Item IDs:', itemId);
-        console.log('Item Images:', itemImage);
-        console.log('Total:', total);
-        console.log('Delivery Time:', deliveryTime);
+        console.log('Item Images:', itemImages);
+        console.log('Total Price:', total);
+        console.log('Delivery Time:', deliverytime);
 
         const baseUrl = 'https://hamcon.onrender.com';
 
@@ -1335,20 +1496,24 @@ app.post('/submit-payment-proof', upload.single('paymentProof'), (req, res) => {
                   <ul>
                     ${items
                       .map(
-                        (item, index) => `
+                        (items, index) => `
                           <li>
-                            <h3>${item}</h3>
+                            <h3>${items}</h3>
                             <p>Quantity: ${quantity[index]}</p>
                             <p>ItemId: ${itemId[index]}</p>
-                            <img src="${baseUrl}${item.imageUrl}" alt="Item Image" />
+                            <img src="${baseUrl}${itemImages[index]}" alt="Item Image" />
                           </li>
                         `
                       )
                       .join('')}
                   </ul>
-                  <p>Total: $${total}</p>
-                  <p>Delivery Time: ${deliveryTime}</p>
-                  <p>We will deliver your order as soon as possible. If you have any questions, please contact us.</p>
+                  <p>Shipping Address: ${shippingAddress}</p>
+                  <p>City: ${city}</p>
+                  <p>Shipping Fee: $${shippingFee}</p>
+                  <p>Item Total: $${total}</p>
+                  <p>Total: $${newTotal}</p> <!-- Update the total price display with the new total -->
+                  <p>Delivery Time: ${deliverytime}</p>
+                  <p>We will deliver your order as soon as possible. If you have any questions, please contact us on 08145336427.</p>
                 </div>
               </body>
             </html>
@@ -1362,6 +1527,10 @@ app.post('/submit-payment-proof', upload.single('paymentProof'), (req, res) => {
             console.log('Order confirmation email sent to user:', info.response);
           }
         });
+
+
+        const paymentProofData = req.file.buffer;
+        const paymentProofDataUrl = `data:image/png;base64,${paymentProofData.toString('base64')}`;
 
         const adminNotificationMailOptions = {
           from: 'hamiconfectionery@gmail.com',
@@ -1384,19 +1553,23 @@ app.post('/submit-payment-proof', upload.single('paymentProof'), (req, res) => {
                   <ul>
                     ${items
                       .map(
-                        (item, index) => `
+                        (items, index) => `
                           <li>
-                            <h3>${item}</h3>
+                            <h3>${items}</h3>
                             <p>Quantity: ${quantity[index]}</p>
                             <p>ItemId: ${itemId[index]}</p>
-                            <img src="${baseUrl}${item.imageUrl}" alt="Item Image" />
+                            <img src="${baseUrl}${itemImages[index]}" alt="Item Image" />
                           </li>
                         `
                       )
                       .join('')}
                   </ul>
-                  <p>Total: $${total}</p>
-                  <p>Delivery Time: ${deliveryTime}</p>
+                  <p>Shipping Address: ${shippingAddress}</p>
+                  <p>City: ${city}</p>
+                  <p>Shipping Fee: $${shippingFee}</p>
+                  <p>Item Total: $${total}</p>
+                  <p>Total: $${newTotal}</p> <!-- Update the total price display with the new total -->
+                  <p>Delivery Time: ${deliverytime}</p>
                   <p>Please process the order and contact the user for further details.</p>
                   <p>Payment Proof:</p>
                   <img src="cid:paymentProof" alt="Payment Proof Image" />
@@ -1407,10 +1580,10 @@ app.post('/submit-payment-proof', upload.single('paymentProof'), (req, res) => {
           attachments: [
             {
               filename: req.file.originalname,
-              content: fs.createReadStream(req.file.path),
+              content: paymentProofData,
               cid: 'paymentProof',
             },
-          ],
+          ],          
         };
 
         transporter.sendMail(adminNotificationMailOptions, (error, info) => {
@@ -1470,7 +1643,7 @@ app.post('/submit-payment-proof', upload.single('paymentProof'), (req, res) => {
                 <div class="icon">&#10004;</div>
                 <div class="message">Payment proof submitted successfully</div>
                 <br>
-                <a class="button" href="/dashboard.html">Continue</a>
+                <a class="button" href="/dashboard">Continue</a>
               </div>
             </body>
           </html>
@@ -1483,9 +1656,17 @@ app.post('/submit-payment-proof', upload.single('paymentProof'), (req, res) => {
 });
 
 
+
+
 // Use the environment variable assigned by render.com for the port
 const port = process.env.PORT || 3000;
 
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
 });
+
+
+
+
+
+

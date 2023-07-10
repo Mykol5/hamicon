@@ -265,7 +265,7 @@ header {
     }
   }
 
-  .social-icons {
+ .social-icons {
     width: 100px;
     height: 20px;
  }
@@ -312,7 +312,7 @@ header {
   <aside class="sidebar">
     <nav>
       <ul>
-        <li><a id="home" href="/dashboard.html"><i class="fas fa-home"></i> Home</i></a></li>
+        <li><a id="home" href="/dashboard"><i class="fas fa-home"></i> Home</i></a></li>
         <li id="dashboard"><a href="/profile"><i class="fas fa-chart-line fa-fw"></i> Dashboard</a></li>
         <li><a href="/order"><i class="fas fa-shopping-cart fa-fw"></i> My Cart</a></li>
 
@@ -342,16 +342,16 @@ header {
       <!-- Social media icons -->
   <div class="social-icons">
         <!-- WhatsApp Icon -->
-        <a href="https://wa.me/+2348145336427" target="_blank"><i class="fab fa-whatsapp whatsapp-icon"></i></a>
+        <a href="https://whatsapp.com" target="_blank"><i class="fab fa-whatsapp whatsapp-icon"></i></a>
 
         <!-- Email Icon -->
-        <a href="mailto:hamiconfectionery@gmail.com"><i class="fas fa-envelope email-icon"></i></a>
+        <a href="mailto:example@example.com"><i class="fas fa-envelope email-icon"></i></a>
 
         <!-- Facebook Icon -->
         <a href="https://facebook.com" target="_blank"><i class="fab fa-facebook facebook-icon"></i></a>
 
         <!-- Instagram Icon -->
-        <a href="https://instagram.com" target="_blank"><i class="fab fa-instagram instagram-icon"></i></a> 
+        <a href="https://instagram.com" target="_blank"><i class="fab fa-instagram instagram-icon"></i></a>   
   </div>
   
   </div>
@@ -359,7 +359,7 @@ header {
   <br><br>
 
   <div class="bottom-bar">
-    <a href="/dashboard.html" class="bottom-icon" id="home-icon">
+    <a href="/dashboard" class="bottom-icon" id="home-icon">
       <i class="fa fa-home"></i>
       Home
     </a>
@@ -413,7 +413,7 @@ header {
 
 <script>
   // Add an event listener to the dashboard icon
-  const dashboardLink = document.querySelector('.bottom-bar a[href="/dashboard.html"]');
+  const dashboardLink = document.querySelector('.bottom-bar a[href="/dashboard"]');
   dashboardLink.addEventListener('click', handleDashboardClick);
 
   function handleDashboardClick(event) {
@@ -428,7 +428,7 @@ header {
       dashboardLink.classList.remove('loading');
 
       // Navigate to the dashboard page
-      window.location.href = "/dashboard.html";
+      window.location.href = "/dashboard";
     }, 2000);
   }
 </script>

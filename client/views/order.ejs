@@ -442,7 +442,7 @@ header {
   <aside class="sidebar">
     <nav>
       <ul>
-        <li><a id="home" href="/dashboard.html"><i class="fas fa-home"></i> Home</i></a></li>
+        <li><a id="home" href="/dashboard"><i class="fas fa-home"></i> Home</i></a></li>
         <li id="dashboard"><a href="/profile"><i class="fas fa-chart-line fa-fw"></i> Dashboard</a></li>
         <li><a href="/order"><i class="fas fa-shopping-cart fa-fw"></i> My Cart</a></li>
 
@@ -467,11 +467,11 @@ header {
     <h1>Your Cart Items:</h1>
     <!-- Render order items -->
     <% cartItems.forEach(item => { %>
-      <div class="item-container" data-item-id="<%= item.itemId %>" data-quantity="<%= item.quantity %>" data-image-url="<%= item.imageUrl %>">
+      <div class="item-container" data-item-id="<%= item.itemid %>" data-quantity="<%= item.quantity %>" data-image-url="<%= item.imageurl %>">
         <!-- Item details -->
-        <img src="<%= item.imageUrl %>" alt="<%= item.name %>" class="item-image">
+        <img src="<%= item.imageurl %>" alt="<%= item.name %>" class="item-image">
         <div>
-          <p>Item ID: <%= item.itemId %></p>
+          <p>Item ID: <%= item.itemid %></p>
           <p>Name: <%= item.name %></p>
           <p>Price: <%= item.price %></p>
           <p>Quantity: <%= item.quantity %></p>
@@ -496,7 +496,7 @@ header {
   </div>
   
   <div class="bottom-bar">
-    <a href="/dashboard.html" class="bottom-icon" id="home-icon">
+    <a href="/dashboard" class="bottom-icon" id="home-icon">
       <i class="fa fa-home"></i>
       Home
     </a>
@@ -588,7 +588,7 @@ header {
   
   <script>
     // Add an event listener to the dashboard icon
-    const dashboardLink = document.querySelector('.bottom-bar a[href="/dashboard.html"]');
+    const dashboardLink = document.querySelector('.bottom-bar a[href="/dashboard"]');
     dashboardLink.addEventListener('click', handleDashboardClick);
   
     function handleDashboardClick(event) {
@@ -603,7 +603,7 @@ header {
         dashboardLink.classList.remove('loading');
   
         // Navigate to the dashboard page
-        window.location.href = "/dashboard.html";
+        window.location.href = "/dashboard";
       }, 2000);
     }
   </script>

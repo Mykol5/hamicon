@@ -365,7 +365,7 @@ header {
 <script>
 document.addEventListener('DOMContentLoaded', () => {
   loadUserDetails();
-});
+ });
 
 function loadUserDetails() {
   fetch('/profile')
@@ -415,7 +415,7 @@ function loadUserDetails() {
   <aside class="sidebar">
     <nav>
       <ul>
-        <li><a id="home" href="/dashboard.html"><i class="fas fa-home"></i> Home</i></a></li>
+        <li><a id="home" href="/dashboard"><i class="fas fa-home"></i> Home</i></a></li>
         <li id="dashboard"><a href="/profile"><i class="fas fa-chart-line fa-fw"></i> Dashboard</a></li>
         <li><a href="/order"><i class="fas fa-shopping-cart fa-fw"></i> My Cart</a></li>
 
@@ -437,9 +437,13 @@ function loadUserDetails() {
 
           <div class="container">
             <div class="profile">
-                <div class="profile-image">
-                    <img src="/profile-images/<%= user.profileImage %>" class="user-icon">
-                </div>
+              <div class="profile-image">
+                <% if (profileImage) { %>
+                  <img src="data:image/jpeg;base64,<%= profileImage.toString('base64') %>" class="user-icon">
+                <% } else { %>
+                  <img src="/default-profile-image.jpg" class="user-icon">
+                <% } %>
+              </div>
               <div class="profile-info">
                 <!-- <h4 class="profile-name">ID: <%= user.userId %></h4> -->
                 <h4 class="profile-name"><i class="fas fa-user"></i> <%= user.name %></h4>
@@ -536,7 +540,7 @@ function loadUserDetails() {
 
 
 <div class="bottom-bar">
-  <a href="/dashboard.html" class="bottom-icon" id="home-icon">
+  <a href="/dashboard" class="bottom-icon" id="home-icon">
       <i class="fa fa-home"></i>
       Home
   </a>
@@ -558,7 +562,7 @@ function loadUserDetails() {
 
         <script>
           // Add an event listener to the dashboard icon
-          const dashboardLink = document.querySelector('.bottom-bar a[href="/dashboard.html"]');
+          const dashboardLink = document.querySelector('.bottom-bar a[href="/dashboard"]');
           dashboardLink.addEventListener('click', handleDashboardClick);
         
           function handleDashboardClick(event) {
@@ -573,7 +577,7 @@ function loadUserDetails() {
               dashboardLink.classList.remove('loading');
         
               // Navigate to the dashboard page
-              window.location.href = "/dashboard.html";
+              window.location.href = "/dashboard";
             }, 2000);
           }
         </script>

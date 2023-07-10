@@ -6,6 +6,7 @@
   <meta http-equiv="Content-Type" content="application/javascript">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/uuid@8.3.2/dist/umd/uuidv4.min.js"></script>
   <!-- <link rel="stylesheet" href="css/dashboard.css"> -->
   <title>Dashboard</title>
   <!-- <base href="/" /> -->
@@ -178,7 +179,7 @@ ul {
 
 li img {
   max-width: 100%;
-  height: auto;
+  height: 40%;
   margin-bottom: 5px;
   object-fit: cover;
 }
@@ -362,6 +363,7 @@ button {
 .reviews {
   overflow: hidden;
   position: relative;
+  margin: 30px 0;
 }
 
 .review-container {
@@ -372,9 +374,16 @@ button {
 
 .review {
   flex: 0 0 auto;
-  padding: 10px;
+  padding: 20px;
   background-color: #f2f2f2;
-  margin-right: 10px;
+  margin-right: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+}
+
+.review:hover {
+  transform: translateY(-5px);
 }
 
 @keyframes moveReviews {
@@ -387,8 +396,26 @@ button {
 }
 
 .reviews h2 {
-  font-size: 21px;
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 15px;
 }
+
+.review h3 {
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+.review p {
+  font-size: 14px;
+  color: #555;
+}
+
+.author {
+  font-size: 12px;
+  color: #777;
+}
+
 
 
 /* Logo */
@@ -583,7 +610,7 @@ header {
   padding-top: 100px;
 }
 
-#cart-details2 {
+#cart-details2, #cart-details3, #cart-details4, #cart-details5, #cart-details6, #cart-details7, #cart-details16, #cart-details17, #cart-details18, #cart-details19, #cart-details20, #cart-details21, #cart-details22, #cart-details23, #cart-details24, #cart-details25, #cart-details26, #cart-details27, #cart-details28, #cart-details29, #cart-details30, #cart-details31 {
   display: none;
   position: fixed;
   top: 0;
@@ -1025,81 +1052,183 @@ header {
 
 
 
+.blog-section {
+  margin: 20px;
+}
+
+.blog-posts {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+}
+
+.blog-post {
+  flex: 0 0 auto;
+  width: 400px;
+  scroll-snap-align: start;
+  padding: 20px;
+  background-color: #fff;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  margin-right: 20px;
+}
+
+.blog-post img {
+  width: 100%;
+  height: 40%;
+  margin-bottom: 10px;
+}
+
+.blog-post h3 {
+  font-size: 20px;
+  margin-bottom: 10px;
+}
+
+.blog-meta {
+  font-size: 14px;
+  color: #777;
+  margin-bottom: 10px;
+}
+
+.blog-excerpt {
+  font-size: 15px;
+  color: #444;
+  margin-bottom: 20px;
+}
+
+.read-more {
+  display: inline-block;
+  padding: 10px 16px;
+  background-color: #333;
+  color: #fff;
+  text-decoration: none;
+  border-radius: 4px;
+}
+
+.read-more:hover {
+  background-color: #555;
+}
+
+@media screen and (max-width: 768px) {
+  .blog-posts {
+    flex-wrap: nowrap;
+  }
+  
+  .blog-post {
+    width: calc(100% - 40px);
+    margin-right: 20px;
+  }
+}
+
+
+/* Optional: Add styles for blog post images, titles, authors, dates, excerpts, and "Read More" links as needed */
+
+
+.response-message {
+  display: none;
+  font-size: 14px;
+  color: #777;
+  margin-top: 10px;
+}
+
+.response-message.show {
+  display: block;
+}
+
+
+.rating {
+  color: #ffd700; /* Gold color for filled stars */
+}
+
+.star {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  color: #ddd; /* Empty star color */
+  cursor: pointer;
+  background-color: transparent; /* Remove the background color */
+  transition: color 0.3s ease-in-out; /* Add transition for smooth color change */
+}
+
+.star.active {
+  color: #ffd700; /* Filled star color */
+  border: none;
+}
+
 
    </style>
 
 
-      <script>
-function addToCart(itemId) {
-  // Get the email value from the 'email' cookie
-  const email = getCookie('email');
+<script>
+  function addToCart(itemId) {
+    // Get the sessionId value from the 'sessionId' cookie
+    const sessionId = getCookie('sessionId');
 
-  console.log('addToCart function called with itemId:', itemId);
-  // Get the item details from the DOM
-  const itemEl = document.getElementById(itemId);
-  const itemIdValue = itemEl.getAttribute('data-item-id');
-  console.log('Item ID:', itemIdValue);
-  const name = itemEl.querySelector('.cart-item-name').textContent;
-  console.log('Item name:', name);
-  const price = parseFloat(itemEl.querySelector('.cart-item-price').getAttribute('data-price'));
-  console.log('Item price:', price);
-  const quantity = parseInt(itemEl.querySelector('.cart-item-quantity-value').textContent);
-  console.log('Item quantity:', quantity);
-  const imageUrl = itemEl.querySelector('.cart-item img').getAttribute('src');
-  console.log('Item image URL:', imageUrl);
+    console.log('addToCart function called with itemId:', itemId);
+    // Get the item details from the DOM
+    const itemEl = document.getElementById(itemId);
+    const itemIdValue = itemEl.getAttribute('data-item-id');
+    console.log('Item ID:', itemIdValue);
+    const name = itemEl.querySelector('.cart-item-name').textContent;
+    console.log('Item name:', name);
+    const price = parseFloat(itemEl.querySelector('.cart-item-price').getAttribute('data-price'));
+    console.log('Item price:', price);
+    const quantity = parseInt(itemEl.querySelector('.cart-item-quantity-value').textContent);
+    console.log('Item quantity:', quantity);
+    const imageUrl = itemEl.querySelector('.cart-item img').getAttribute('src');
+    console.log('Item image URL:', imageUrl);
 
-  // Add the item to the cart only if the quantity is greater than 0
-  if (quantity > 0) {
-    // Create the cart item object
-    const cartItem = { itemId: itemIdValue, name, price, quantity, imageUrl, addedTime: Date.now() };
-    // Send the cart item data to the server
-    fetch('/add-to-cart', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(cartItem),
-    })
-      .then(response => response.json())
-      .then(data => {
-        console.log('Item added to cart:', data);
-        // Handle the server response if needed
+    // Add the item to the cart only if the quantity is greater than 0
+    console.log(quantity)
+    if (quantity > 0) {
+      // Create the cart item object
+      const cartItem = { itemId: itemIdValue, name, price, quantity, imageUrl };
+
+      // Send the cart item data to the server
+      fetch('/add-to-cart', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(cartItem),
+        credentials: 'same-origin', // Include cookies in the request
       })
-      .catch(error => {
-        console.error('Error adding item to cart:', error);
-        // Handle the error if needed
-      });
-  } else {
-    console.log('No items added');
-  }
-}
-
-// Helper function to get the value of a cookie by name
-function getCookie(name) {
-  const cookieString = document.cookie;
-  const cookies = cookieString.split(';');
-
-  for (let i = 0; i < cookies.length; i++) {
-    const cookie = cookies[i].trim();
-
-    // Check if the cookie name matches the provided name
-    if (cookie.startsWith(name + '=')) {
-      // Extract and return the cookie value
-      return cookie.substring(name.length + 1);
+        .then(response => response.json())
+        .then(data => {
+          console.log('Item added to cart:', data);
+          // Handle the server response if needed
+        })
+        .catch(error => {
+          console.error('Error adding item to cart:', error);
+          // Handle the error if needed
+        });
+    } else {
+      console.log('No items added');
     }
   }
 
-  // Return null if the cookie is not found
-  return null;
-}
+  // Helper function to get the value of a cookie by name
+  function getCookie(name) {
+    const cookieString = document.cookie;
+    const cookies = cookieString.split(';');
 
-document.addEventListener('DOMContentLoaded', () => {
-  // Your code here
-});
+    for (let i = 0; i < cookies.length; i++) {
+      const cookie = cookies[i].trim();
 
+      // Check if the cookie name matches the provided name
+      if (cookie.startsWith(name + '=')) {
+        // Extract and return the cookie value
+        return cookie.substring(name.length + 1);
+      }
+    }
 
-      </script>
+    // Return null if the cookie is not found
+    return null;
+  }
 
+  document.addEventListener('DOMContentLoaded', () => {
+    // Your code here
+  });
+</script>
 
 
 </head>
@@ -1126,7 +1255,11 @@ document.addEventListener('DOMContentLoaded', () => {
     <div class="user-icon">
       <!-- <img src="/images/usericon.png" alt="User Icon"> -->
       <!-- Assuming 'user' is passed as a template variable -->
-      <img src="/profile-images/<%= user.profileImage %>">
+      <% if (profileImage) { %>
+        <img src="data:image/jpeg;base64,<%= profileImage.toString('base64') %>">
+      <% } else { %>
+        <img src="/default-profile-image.jpg" class="user-icon">
+      <% } %>
     </div>
     <div class="hamburger">
       <div class="bar"></div>
@@ -1137,9 +1270,10 @@ document.addEventListener('DOMContentLoaded', () => {
   <aside class="sidebar">
     <nav>
       <ul>
-        <li><a id="home" href="/dashboard.html"><i class="fas fa-home"></i> Home</i></a></li>
+        <li><a id="home" href="/dashboard"><i class="fas fa-home"></i> Home</i></a></li>
         <li id="dashboard"><a href="/profile"><i class="fas fa-chart-line fa-fw"></i> Dashboard</a></li>
         <li><a href="/order"><i class="fas fa-shopping-cart fa-fw"></i> My Cart</a></li>
+        <li><a href="/customerservice"><i class="fas fa-headset fa-fw"></i> Customer Service</a></li>
 
       </ul>
       
@@ -1200,22 +1334,33 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
       <div class="cart">
-        <h2>Cart</h2>
+        <h2>Cart - Pastry</h2>
         <div class="cart-items">
           <ul>
             <li>
-              <img src="/images/friedrice.jpg" alt="Food 1">
-              <h3>Food 1</h3>
-              <p>Description of Food 1</p>
+              <img src="/images/doughnut.jpeg" alt="Food 1">
+
+            <div class="order-item">
+              <div class="rating">
+                <span class="star" data-value="1"><i class="fas fa-star"></i></span>
+                <span class="star" data-value="2"><i class="fas fa-star"></i></span>
+                <span class="star" data-value="3"><i class="fas fa-star"></i></span>
+                <span class="star" data-value="4"><i class="fas fa-star"></i></span>
+                <span class="star" data-value="5"><i class="fas fa-star"></i></span>
+              </div>
+            </div>
+
+              <h3>Doughnut</h3>
+              <p>Delicious ring-shaped pastries with sweet toppings.</p>
               <button id="view-cart-btn1">View Cart</button>
 
-              <div id="cart-details1" data-item-id="cart-details1" class="no-items-added">
+              <div id="cart-details1" data-item-id="" class="no-items-added">
                 <div class="cart-item">
                   <button class="close-cart-btn">&times;</button>
-                  <img src="/images/friedrice.jpg">
+                  <img src="/images/doughnut.jpeg">
                   <div class="cart-item-details">
-                    <p class="cart-item-name">Item 1</p>
-                    <p class="cart-item-price" data-price="10.00">$0.00</p>
+                    <p class="cart-item-name">Doughnut</p>
+                    <p class="cart-item-price" data-price="200.00">₦200.00</p>
                     <div class="cart-item-quantity">
                       <button class="cart-item-quantity-btn">-</button>
                       <span class="cart-item-quantity-value">0</span>
@@ -1236,81 +1381,1159 @@ document.addEventListener('DOMContentLoaded', () => {
               <button>Add to Cart</button>
             </li>
             <li>
-              <img src="/images/friedrice.jpg" alt="Food 2">
-              <h3>Food 2</h3>
-              <p>Description of Food 2</p>
+              <img src="/images/eggroll.jpeg" alt="Food 2">
+
+            <div class="order-item">
+              <div class="rating">
+                <span class="star" data-value="1"><i class="fas fa-star"></i></span>
+                <span class="star" data-value="2"><i class="fas fa-star"></i></span>
+                <span class="star" data-value="3"><i class="fas fa-star"></i></span>
+                <span class="star" data-value="4"><i class="fas fa-star"></i></span>
+                <span class="star" data-value="5"><i class="fas fa-star"></i></span>
+              </div>
+            </div>
+
+              <h3>Egg Roll</h3>
+              <p>Crispy, golden-brown, flavorful and savory rolled delicacy.</p>
               <button id="view-cart-btn2">View Cart</button>
 
-              <div id="cart-details2">
+              <div id="cart-details2" data-item-id="" class="no-items-added">
                 <div class="cart-item">
                   <button class="close-cart-btn">&times;</button>
-                  <img src="/images/friedrice.jpg">
+                  <img src="/images/eggroll.jpeg">
                   <div class="cart-item-details">
-                    <p class="cart-item-name">Item 2</p>
+                    <p class="cart-item-name">Egg Roll</p>
                     <p class="cart-item-price" data-price="20.00">$0.00</p>
                     <div class="cart-item-quantity">
                       <button class="cart-item-quantity-btn">-</button>
                       <span class="cart-item-quantity-value">0</span>
                       <button class="cart-item-quantity-btn">+</button>
                     </div>
-                    <button class="cart-item-add-btn">Add to Cart</button>
+                    <button onclick="addToCart('cart-details2')" class="cart-item-add-btn" id="cart-button2">Add to Cart</button>
                   </div>
                 </div>
+                <p id="no-items-added-message" class="no-items-added-message">No items added!</p>
               </div>
-
+              
+              <div id="loading-animation-container">
+                <div class="loading-overlay"></div>
+                <div id="loading-animation" class="custom-loader">
+                  <div class="loader-circle"></div>
+                </div>
+              </div>
               <button>Add to Cart</button>
             </li>
             <!-- Add more food items here -->
           <!-- </ul>
           <ul> -->
             <li>
-              <img src="/images/friedrice.jpg" alt="Food 8">
-              <h3>Food 8</h3>
-              <p>Description of Food 8</p>
-              <button id="view-cart-btn8">View Cart</button>
+              <img src="/images/puff.jpeg" alt="Food 3">
 
-              <div id="cart-details8">
+              <div class="order-item">
+                <div class="rating">
+                  <span class="star" data-value="1"><i class="fas fa-star"></i></span>
+                  <span class="star" data-value="2"><i class="fas fa-star"></i></span>
+                  <span class="star" data-value="3"><i class="fas fa-star"></i></span>
+                  <span class="star" data-value="4"><i class="fas fa-star"></i></span>
+                  <span class="star" data-value="5"><i class="fas fa-star"></i></span>
+                </div>
+              </div>
+
+              <h3>Puff Puff</h3>
+              <p>Fluffy, deep-fried dough balls with a hint of sweetness.</p>
+              <button id="view-cart-btn3">View Cart</button>
+
+              <div id="cart-details3" data-item-id="" class="no-items-added">
                 <div class="cart-item">
                   <button class="close-cart-btn">&times;</button>
-                  <img src="/images/friedrice.jpg">
+                  <img src="/images/puff.jpeg">
                   <div class="cart-item-details">
-                    <p class="cart-item-name">Item 8</p>
+                    <p class="cart-item-name">Puff Puff</p>
                     <p class="cart-item-price" data-price="10.00">$0.00</p>
                     <div class="cart-item-quantity">
                       <button class="cart-item-quantity-btn">-</button>
                       <span class="cart-item-quantity-value">0</span>
                       <button class="cart-item-quantity-btn">+</button>
                     </div>
-                    <button class="cart-item-add-btn">Add to Cart</button>
+                    <button onclick="addToCart('cart-details3')" class="cart-item-add-btn" id="cart-button3">Add to Cart</button>
                   </div>
+                </div>
+                <p id="no-items-added-message" class="no-items-added-message">No items added!</p>
+              </div>
+              
+              <div id="loading-animation-container">
+                <div class="loading-overlay"></div>
+                <div id="loading-animation" class="custom-loader">
+                  <div class="loader-circle"></div>
+                </div>
+              </div>
+              <button>Add to Cart</button>
+            </li>
+
+            <li>
+              <img src="/images/smallchops.jpeg" alt="Food 4">
+
+              <div class="order-item">
+                <div class="rating">
+                  <span class="star" data-value="1"><i class="fas fa-star"></i></span>
+                  <span class="star" data-value="2"><i class="fas fa-star"></i></span>
+                  <span class="star" data-value="3"><i class="fas fa-star"></i></span>
+                  <span class="star" data-value="4"><i class="fas fa-star"></i></span>
+                  <span class="star" data-value="5"><i class="fas fa-star"></i></span>
                 </div>
               </div>
 
-              <button>Add to Cart</button>
-            </li>
-            <li>
-              <img src="/images/friedrice.jpg" alt="Food 9">
-              <h3>Food 9</h3>
-              <p>Description of Food 9</p>
-              <button id="view-cart-btn9">View Cart</button>
+              <h3>Small Chops</h3>
+              <p>Irresistible and diverse assortment of bite-sized party snacks.</p>
+              <button id="view-cart-btn4">View Cart</button>
 
-              <div id="cart-details9">
+              <div id="cart-details4" data-item-id="" class="no-items-added">
                 <div class="cart-item">
                   <button class="close-cart-btn">&times;</button>
-                  <img src="/images/friedrice.jpg">
+                  <img src="/images/smallchops.jpeg">
                   <div class="cart-item-details">
-                    <p class="cart-item-name">Item 9</p>
+                    <p class="cart-item-name">Small Chops</p>
                     <p class="cart-item-price" data-price="30.00">$0.00</p>
                     <div class="cart-item-quantity">
                       <button class="cart-item-quantity-btn">-</button>
                       <span class="cart-item-quantity-value">0</span>
                       <button class="cart-item-quantity-btn">+</button>
                     </div>
-                    <button class="cart-item-add-btn">Add to Cart</button>
+                    <button onclick="addToCart('cart-details4')" class="cart-item-add-btn" id="cart-button4">Add to Cart</button>
                   </div>
+                </div>
+                <p id="no-items-added-message" class="no-items-added-message">No items added!</p>
+              </div>
+              
+              <div id="loading-animation-container">
+                <div class="loading-overlay"></div>
+                <div id="loading-animation" class="custom-loader">
+                  <div class="loader-circle"></div>
+                </div>
+              </div>
+              <button>Add to Cart</button>
+            </li>
+            <!-- Add more food items here -->
+            <li>
+              <img src="/images/meatpie.jpeg" alt="Food 5">
+
+              <div class="order-item">
+                <div class="rating">
+                  <span class="star" data-value="1"><i class="fas fa-star"></i></span>
+                  <span class="star" data-value="2"><i class="fas fa-star"></i></span>
+                  <span class="star" data-value="3"><i class="fas fa-star"></i></span>
+                  <span class="star" data-value="4"><i class="fas fa-star"></i></span>
+                  <span class="star" data-value="5"><i class="fas fa-star"></i></span>
                 </div>
               </div>
 
+              <h3>Meat Pie</h3>
+              <p>Delicious, Tasty and Satisfying savory meat-filled pastry.</p>
+              <button id="view-cart-btn5">View Cart</button>
+
+              <div id="cart-details5" data-item-id="" class="no-items-added">
+                <div class="cart-item">
+                  <button class="close-cart-btn">&times;</button>
+                  <img src="/images/meatpie.jpeg">
+                  <div class="cart-item-details">
+                    <p class="cart-item-name">Meat Pie</p>
+                    <p class="cart-item-price" data-price="30.00">$0.00</p>
+                    <div class="cart-item-quantity">
+                      <button class="cart-item-quantity-btn">-</button>
+                      <span class="cart-item-quantity-value">0</span>
+                      <button class="cart-item-quantity-btn">+</button>
+                    </div>
+                    <button onclick="addToCart('cart-details5')" class="cart-item-add-btn" id="cart-button5">Add to Cart</button>
+                  </div>
+                </div>
+                <p id="no-items-added-message" class="no-items-added-message">No items added!</p>
+              </div>
+              
+              <div id="loading-animation-container">
+                <div class="loading-overlay"></div>
+                <div id="loading-animation" class="custom-loader">
+                  <div class="loader-circle"></div>
+                </div>
+              </div>
+              <button>Add to Cart</button>
+            </li>
+
+            <li>
+              <img src="/images/sausageroll.jpeg" alt="Food 6">
+
+
+              <div class="order-item">
+                <div class="rating">
+                  <span class="star" data-value="1"><i class="fas fa-star"></i></span>
+                  <span class="star" data-value="2"><i class="fas fa-star"></i></span>
+                  <span class="star" data-value="3"><i class="fas fa-star"></i></span>
+                  <span class="star" data-value="4"><i class="fas fa-star"></i></span>
+                  <span class="star" data-value="5"><i class="fas fa-star"></i></span>
+                </div>
+              </div>
+
+              <h3>Sausage Roll</h3>
+              <p>Delectable combination of seasoned sausage encased in a flaky pastry shell.</p>
+              <button id="view-cart-btn6">View Cart</button>
+
+              <div id="cart-details6" data-item-id="" class="no-items-added">
+                <div class="cart-item">
+                  <button class="close-cart-btn">&times;</button>
+                  <img src="/images/sausageroll.jpeg">
+                  <div class="cart-item-details">
+                    <p class="cart-item-name">Sausage Roll</p>
+                    <p class="cart-item-price" data-price="30.00">$0.00</p>
+                    <div class="cart-item-quantity">
+                      <button class="cart-item-quantity-btn">-</button>
+                      <span class="cart-item-quantity-value">0</span>
+                      <button class="cart-item-quantity-btn">+</button>
+                    </div>
+                    <button onclick="addToCart('cart-details6')" class="cart-item-add-btn" id="cart-button6">Add to Cart</button>
+                  </div>
+                </div>
+                <p id="no-items-added-message" class="no-items-added-message">No items added!</p>
+              </div>
+              
+              <div id="loading-animation-container">
+                <div class="loading-overlay"></div>
+                <div id="loading-animation" class="custom-loader">
+                  <div class="loader-circle"></div>
+                </div>
+              </div>
+              <button>Add to Cart</button>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+
+      <div class="cart">
+        <h2>Cart - Cakes</h2>
+        <div class="cart-items">
+          <ul>
+            <li>
+              <img src="/images/redvelvet.jpeg" alt="Food 7">
+
+              <div class="order-item">
+                <div class="rating">
+                  <span class="star" data-value="1"><i class="fas fa-star"></i></span>
+                  <span class="star" data-value="2"><i class="fas fa-star"></i></span>
+                  <span class="star" data-value="3"><i class="fas fa-star"></i></span>
+                  <span class="star" data-value="4"><i class="fas fa-star"></i></span>
+                  <span class="star" data-value="5"><i class="fas fa-star"></i></span>
+                </div>
+              </div>
+
+              <h3>Red Velvet 6"</h3>
+              <p>Rich, cocoa-flavored cake with luscious cream cheese frosting.</p>
+              <button id="view-cart-btn7">View Cart</button>
+
+              <div id="cart-details7" data-item-id="" class="no-items-added">
+                <div class="cart-item">
+                  <button class="close-cart-btn">&times;</button>
+                  <img src="/images/redvelvet.jpeg">
+                  <div class="cart-item-details">
+                    <p class="cart-item-name">Red Velvet 6"</p>
+                    <p class="cart-item-price" data-price="10.00">$0.00</p>
+                    <div class="cart-item-quantity">
+                      <button class="cart-item-quantity-btn">-</button>
+                      <span class="cart-item-quantity-value">0</span>
+                      <button class="cart-item-quantity-btn">+</button>
+                    </div>
+                    <button onclick="addToCart('cart-details7')" class="cart-item-add-btn" id="cart-button7">Add to Cart</button>
+                  </div>
+                </div>
+                <p id="no-items-added-message" class="no-items-added-message">No items added!</p>
+              </div>
+              
+              <div id="loading-animation-container">
+                <div class="loading-overlay"></div>
+                <div id="loading-animation" class="custom-loader">
+                  <div class="loader-circle"></div>
+                </div>
+              </div>
+              <button>Add to Cart</button>
+            </li>
+
+            <li>
+              <img src="/images/chocolate.jpeg" alt="Food 8">
+
+              <div class="order-item">
+                <div class="rating">
+                  <span class="star" data-value="1"><i class="fas fa-star"></i></span>
+                  <span class="star" data-value="2"><i class="fas fa-star"></i></span>
+                  <span class="star" data-value="3"><i class="fas fa-star"></i></span>
+                  <span class="star" data-value="4"><i class="fas fa-star"></i></span>
+                  <span class="star" data-value="5"><i class="fas fa-star"></i></span>
+                </div>
+              </div>
+
+
+              <h3>Chocolate 6"</h3>
+              <p>Irresistibly moist and rich chocolate cake, perfect for indulgence.</p>
+              <button id="view-cart-btn8">View Cart</button>
+
+              <div id="cart-details8" data-item-id="" class="no-items-added">
+                <div class="cart-item">
+                  <button class="close-cart-btn">&times;</button>
+                  <img src="/images/chocolate.jpeg">
+                  <div class="cart-item-details">
+                    <p class="cart-item-name">Chocolate 6"</p>
+                    <p class="cart-item-price" data-price="20.00">$0.00</p>
+                    <div class="cart-item-quantity">
+                      <button class="cart-item-quantity-btn">-</button>
+                      <span class="cart-item-quantity-value">0</span>
+                      <button class="cart-item-quantity-btn">+</button>
+                    </div>
+                    <button onclick="addToCart('cart-details8')" class="cart-item-add-btn" id="cart-button8">Add to Cart</button>
+                  </div>
+                </div>
+                <p id="no-items-added-message" class="no-items-added-message">No items added!</p>
+              </div>
+              
+              <div id="loading-animation-container">
+                <div class="loading-overlay"></div>
+                <div id="loading-animation" class="custom-loader">
+                  <div class="loader-circle"></div>
+                </div>
+              </div>
+              <button>Add to Cart</button>
+            </li>
+            <!-- Add more food items here -->
+          <!-- </ul>
+          <ul> -->
+            <li>
+              <img src="/images/vanillacream.jpeg" alt="Food 9">
+
+              <div class="order-item">
+                <div class="rating">
+                  <span class="star" data-value="1"><i class="fas fa-star"></i></span>
+                  <span class="star" data-value="2"><i class="fas fa-star"></i></span>
+                  <span class="star" data-value="3"><i class="fas fa-star"></i></span>
+                  <span class="star" data-value="4"><i class="fas fa-star"></i></span>
+                  <span class="star" data-value="5"><i class="fas fa-star"></i></span>
+                </div>
+              </div>
+
+
+              <h3>Vanilla Ice cream 6"</h3>
+              <p>Indulgent layers of creamy vanilla ice cream cake with a luscious finish.</p>
+              <button id="view-cart-btn9">View Cart</button>
+
+              <div id="cart-details9" data-item-id="" class="no-items-added">
+                <div class="cart-item">
+                  <button class="close-cart-btn">&times;</button>
+                  <img src="/images/vanillacream.jpeg">
+                  <div class="cart-item-details">
+                    <p class="cart-item-name">Vanilla Ice cream 6"</p>
+                    <p class="cart-item-price" data-price="10.00">$0.00</p>
+                    <div class="cart-item-quantity">
+                      <button class="cart-item-quantity-btn">-</button>
+                      <span class="cart-item-quantity-value">0</span>
+                      <button class="cart-item-quantity-btn">+</button>
+                    </div>
+                    <button onclick="addToCart('cart-details9')" class="cart-item-add-btn" id="cart-button9">Add to Cart</button>
+                  </div>
+                </div>
+                <p id="no-items-added-message" class="no-items-added-message">No items added!</p>
+              </div>
+              
+              <div id="loading-animation-container">
+                <div class="loading-overlay"></div>
+                <div id="loading-animation" class="custom-loader">
+                  <div class="loader-circle"></div>
+                </div>
+              </div>
+              <button>Add to Cart</button>
+            </li>
+
+            <li>
+              <img src="/images/desert.jpeg" alt="Food 10">
+
+              <div class="order-item">
+                <div class="rating">
+                  <span class="star" data-value="1"><i class="fas fa-star"></i></span>
+                  <span class="star" data-value="2"><i class="fas fa-star"></i></span>
+                  <span class="star" data-value="3"><i class="fas fa-star"></i></span>
+                  <span class="star" data-value="4"><i class="fas fa-star"></i></span>
+                  <span class="star" data-value="5"><i class="fas fa-star"></i></span>
+                </div>
+              </div>
+
+
+              <h3>Desert 6"</h3>
+              <p>Delightfully decadent desert cake, perfect for sweet indulgence.</p>
+              <button id="view-cart-btn10">View Cart</button>
+
+              <div id="cart-details10" data-item-id="" class="no-items-added">
+                <div class="cart-item">
+                  <button class="close-cart-btn">&times;</button>
+                  <img src="/images/desert.jpeg">
+                  <div class="cart-item-details">
+                    <p class="cart-item-name">Desert 6"</p>
+                    <p class="cart-item-price" data-price="30.00">$0.00</p>
+                    <div class="cart-item-quantity">
+                      <button class="cart-item-quantity-btn">-</button>
+                      <span class="cart-item-quantity-value">0</span>
+                      <button class="cart-item-quantity-btn">+</button>
+                    </div>
+                    <button onclick="addToCart('cart-details10')" class="cart-item-add-btn" id="cart-button10">Add to Cart</button>
+                  </div>
+                </div>
+                <p id="no-items-added-message" class="no-items-added-message">No items added!</p>
+              </div>
+              
+              <div id="loading-animation-container">
+                <div class="loading-overlay"></div>
+                <div id="loading-animation" class="custom-loader">
+                  <div class="loader-circle"></div>
+                </div>
+              </div>
+              <button>Add to Cart</button>
+            </li>
+            <!-- Add more food items here -->
+            <li>
+                <img src="/images/redvelvet.jpeg" alt="Food 11">
+
+                            <div class="order-item">
+                              <div class="rating">
+                                <span class="star" data-value="1"><i class="fas fa-star"></i></span>
+                                <span class="star" data-value="2"><i class="fas fa-star"></i></span>
+                                <span class="star" data-value="3"><i class="fas fa-star"></i></span>
+                                <span class="star" data-value="4"><i class="fas fa-star"></i></span>
+                                <span class="star" data-value="5"><i class="fas fa-star"></i></span>
+                              </div>
+                            </div>
+
+              <h3>Red Velvet 8"</h3>
+              <p>Rich, cocoa-flavored cake with luscious cream cheese frosting.</p>
+              <button id="view-cart-btn11">View Cart</button>
+
+              <div id="cart-details11" data-item-id="" class="no-items-added">
+                <div class="cart-item">
+                  <button class="close-cart-btn">&times;</button>
+                  <img src="/images/redvelvet.jpeg">
+                  <div class="cart-item-details">
+                    <p class="cart-item-name">Red Velvet 8"</p>
+                    <p class="cart-item-price" data-price="10.00">$0.00</p>
+                    <div class="cart-item-quantity">
+                      <button class="cart-item-quantity-btn">-</button>
+                      <span class="cart-item-quantity-value">0</span>
+                      <button class="cart-item-quantity-btn">+</button>
+                    </div>
+                    <button onclick="addToCart('cart-details11')" class="cart-item-add-btn" id="cart-button11">Add to Cart</button>
+                  </div>
+                </div>
+                <p id="no-items-added-message" class="no-items-added-message">No items added!</p>
+              </div>
+              
+              <div id="loading-animation-container">
+                <div class="loading-overlay"></div>
+                <div id="loading-animation" class="custom-loader">
+                  <div class="loader-circle"></div>
+                </div>
+              </div>
+              <button>Add to Cart</button>
+            </li>
+
+            <li>
+              <img src="/images/chocolate.jpeg" alt="Food 12">
+
+              <div class="order-item">
+                <div class="rating">
+                  <span class="star" data-value="1"><i class="fas fa-star"></i></span>
+                  <span class="star" data-value="2"><i class="fas fa-star"></i></span>
+                  <span class="star" data-value="3"><i class="fas fa-star"></i></span>
+                  <span class="star" data-value="4"><i class="fas fa-star"></i></span>
+                  <span class="star" data-value="5"><i class="fas fa-star"></i></span>
+                </div>
+              </div>
+
+
+
+              <h3>Chocolate 8"</h3>
+              <p>Irresistibly moist and rich chocolate cake, perfect for indulgence.</p>
+              <button id="view-cart-btn12">View Cart</button>
+
+              <div id="cart-details12" data-item-id="" class="no-items-added">
+                <div class="cart-item">
+                  <button class="close-cart-btn">&times;</button>
+                  <img src="/images/chocolate.jpeg">
+                  <div class="cart-item-details">
+                    <p class="cart-item-name">Chocolate 8"</p>
+                    <p class="cart-item-price" data-price="20.00">$0.00</p>
+                    <div class="cart-item-quantity">
+                      <button class="cart-item-quantity-btn">-</button>
+                      <span class="cart-item-quantity-value">0</span>
+                      <button class="cart-item-quantity-btn">+</button>
+                    </div>
+                    <button onclick="addToCart('cart-details12')" class="cart-item-add-btn" id="cart-button12">Add to Cart</button>
+                  </div>
+                </div>
+                <p id="no-items-added-message" class="no-items-added-message">No items added!</p>
+              </div>
+              
+              <div id="loading-animation-container">
+                <div class="loading-overlay"></div>
+                <div id="loading-animation" class="custom-loader">
+                  <div class="loader-circle"></div>
+                </div>
+              </div>
+              <button>Add to Cart</button>
+            </li>
+            <!-- Add more food items here -->
+          <!-- </ul>
+          <ul> -->
+            <li>
+              <img src="/images/vanillacream.jpeg" alt="Food 13">
+
+              <div class="order-item">
+                <div class="rating">
+                  <span class="star" data-value="1"><i class="fas fa-star"></i></span>
+                  <span class="star" data-value="2"><i class="fas fa-star"></i></span>
+                  <span class="star" data-value="3"><i class="fas fa-star"></i></span>
+                  <span class="star" data-value="4"><i class="fas fa-star"></i></span>
+                  <span class="star" data-value="5"><i class="fas fa-star"></i></span>
+                </div>
+              </div>
+
+
+              <h3>Vanilla Ice cream 8"</h3>
+              <p>Indulgent layers of creamy vanilla ice cream cake with a luscious finish.</p>
+              <button id="view-cart-btn13">View Cart</button>
+
+              <div id="cart-details13" data-item-id="" class="no-items-added">
+                <div class="cart-item">
+                  <button class="close-cart-btn">&times;</button>
+                  <img src="/images/vanillacream.jpeg">
+                  <div class="cart-item-details">
+                    <p class="cart-item-name">Vanilla Ice cream 8"</p>
+                    <p class="cart-item-price" data-price="10.00">$0.00</p>
+                    <div class="cart-item-quantity">
+                      <button class="cart-item-quantity-btn">-</button>
+                      <span class="cart-item-quantity-value">0</span>
+                      <button class="cart-item-quantity-btn">+</button>
+                    </div>
+                    <button onclick="addToCart('cart-details13')" class="cart-item-add-btn" id="cart-button13">Add to Cart</button>
+                  </div>
+                </div>
+                <p id="no-items-added-message" class="no-items-added-message">No items added!</p>
+              </div>
+              
+              <div id="loading-animation-container">
+                <div class="loading-overlay"></div>
+                <div id="loading-animation" class="custom-loader">
+                  <div class="loader-circle"></div>
+                </div>
+              </div>
+              <button>Add to Cart</button>
+            </li>
+
+            <li>
+              <img src="/images/desert.jpeg" alt="Food 14">
+
+              <div class="order-item">
+                <div class="rating">
+                  <span class="star" data-value="1"><i class="fas fa-star"></i></span>
+                  <span class="star" data-value="2"><i class="fas fa-star"></i></span>
+                  <span class="star" data-value="3"><i class="fas fa-star"></i></span>
+                  <span class="star" data-value="4"><i class="fas fa-star"></i></span>
+                  <span class="star" data-value="5"><i class="fas fa-star"></i></span>
+                </div>
+              </div>
+
+
+              <h3>Desert 8"</h3>
+              <p>Delightfully decadent desert cake, perfect for sweet indulgence.</p>
+              <button id="view-cart-btn14">View Cart</button>
+
+              <div id="cart-details14" data-item-id="" class="no-items-added">
+                <div class="cart-item">
+                  <button class="close-cart-btn">&times;</button>
+                  <img src="/images/desert.jpeg">
+                  <div class="cart-item-details">
+                    <p class="cart-item-name">Desert</p>
+                    <p class="cart-item-price" data-price="30.00">$0.00</p>
+                    <div class="cart-item-quantity">
+                      <button class="cart-item-quantity-btn">-</button>
+                      <span class="cart-item-quantity-value">0</span>
+                      <button class="cart-item-quantity-btn">+</button>
+                    </div>
+                    <button onclick="addToCart('cart-details14')" class="cart-item-add-btn" id="cart-button14">Add to Cart</button>
+                  </div>
+                </div>
+                <p id="no-items-added-message" class="no-items-added-message">No items added!</p>
+              </div>
+              
+              <div id="loading-animation-container">
+                <div class="loading-overlay"></div>
+                <div id="loading-animation" class="custom-loader">
+                  <div class="loader-circle"></div>
+                </div>
+              </div>
+              <button>Add to Cart</button>
+            </li>
+            <!-- Add more food items here -->
+          </ul>
+        </div>
+
+
+
+        <div class="cart-items">
+          <ul>
+            <li>
+              <img src="/images/redvelvet.jpeg" alt="Food 15">
+
+              <div class="order-item">
+                <div class="rating">
+                  <span class="star" data-value="1"><i class="fas fa-star"></i></span>
+                  <span class="star" data-value="2"><i class="fas fa-star"></i></span>
+                  <span class="star" data-value="3"><i class="fas fa-star"></i></span>
+                  <span class="star" data-value="4"><i class="fas fa-star"></i></span>
+                  <span class="star" data-value="5"><i class="fas fa-star"></i></span>
+                </div>
+              </div>
+
+
+              <h3>Red Velvet 10"</h3>
+              <p>Rich, cocoa-flavored cake with luscious cream cheese frosting.</p>
+              <button id="view-cart-btn15">View Cart</button>
+
+              <div id="cart-details15" data-item-id="" class="no-items-added">
+                <div class="cart-item">
+                  <button class="close-cart-btn">&times;</button>
+                  <img src="/images/redvelvet.jpeg">
+                  <div class="cart-item-details">
+                    <p class="cart-item-name">Red Velvet 10"</p>
+                    <p class="cart-item-price" data-price="10.00">$0.00</p>
+                    <div class="cart-item-quantity">
+                      <button class="cart-item-quantity-btn">-</button>
+                      <span class="cart-item-quantity-value">0</span>
+                      <button class="cart-item-quantity-btn">+</button>
+                    </div>
+                    <button onclick="addToCart('cart-details15')" class="cart-item-add-btn" id="cart-button15">Add to Cart</button>
+                  </div>
+                </div>
+                <p id="no-items-added-message" class="no-items-added-message">No items added!</p>
+              </div>
+              
+              <div id="loading-animation-container">
+                <div class="loading-overlay"></div>
+                <div id="loading-animation" class="custom-loader">
+                  <div class="loader-circle"></div>
+                </div>
+              </div>
+              <button>Add to Cart</button>
+            </li>
+
+            <li>
+              <img src="/images/chocolate.jpeg" alt="Food 16">
+
+
+              <div class="order-item">
+                <div class="rating">
+                  <span class="star" data-value="1"><i class="fas fa-star"></i></span>
+                  <span class="star" data-value="2"><i class="fas fa-star"></i></span>
+                  <span class="star" data-value="3"><i class="fas fa-star"></i></span>
+                  <span class="star" data-value="4"><i class="fas fa-star"></i></span>
+                  <span class="star" data-value="5"><i class="fas fa-star"></i></span>
+                </div>
+              </div>
+
+              <h3>Chocolate 10"</h3>
+              <p>Irresistibly moist and rich chocolate cake, perfect for indulgence.</p>
+              <button id="view-cart-btn16">View Cart</button>
+
+              <div id="cart-details16" data-item-id="" class="no-items-added">
+                <div class="cart-item">
+                  <button class="close-cart-btn">&times;</button>
+                  <img src="/images/chocolate.jpeg">
+                  <div class="cart-item-details">
+                    <p class="cart-item-name">Chocolate 10"</p>
+                    <p class="cart-item-price" data-price="20.00">$0.00</p>
+                    <div class="cart-item-quantity">
+                      <button class="cart-item-quantity-btn">-</button>
+                      <span class="cart-item-quantity-value">0</span>
+                      <button class="cart-item-quantity-btn">+</button>
+                    </div>
+                    <button onclick="addToCart('cart-details16')" class="cart-item-add-btn" id="cart-button16">Add to Cart</button>
+                  </div>
+                </div>
+                <p id="no-items-added-message" class="no-items-added-message">No items added!</p>
+              </div>
+              
+              <div id="loading-animation-container">
+                <div class="loading-overlay"></div>
+                <div id="loading-animation" class="custom-loader">
+                  <div class="loader-circle"></div>
+                </div>
+              </div>
+              <button>Add to Cart</button>
+            </li>
+
+            <!-- Add more food items here -->
+          <!-- </ul>
+          <ul> -->
+            <li>
+              <img src="/images/vanillacream.jpeg" alt="Food 17">
+
+              <div class="order-item">
+                <div class="rating">
+                  <span class="star" data-value="1"><i class="fas fa-star"></i></span>
+                  <span class="star" data-value="2"><i class="fas fa-star"></i></span>
+                  <span class="star" data-value="3"><i class="fas fa-star"></i></span>
+                  <span class="star" data-value="4"><i class="fas fa-star"></i></span>
+                  <span class="star" data-value="5"><i class="fas fa-star"></i></span>
+                </div>
+              </div>
+
+
+              <h3>Vanilla Ice cream 10"</h3>
+              <p>Indulgent layers of creamy vanilla ice cream cake with a luscious finish.</p>
+              <button id="view-cart-btn17">View Cart</button>
+
+              <div id="cart-details17" data-item-id="" class="no-items-added">
+                <div class="cart-item">
+                  <button class="close-cart-btn">&times;</button>
+                  <img src="/images/vanillacream.jpeg">
+                  <div class="cart-item-details">
+                    <p class="cart-item-name">Vanilla Ice cream 10"</p>
+                    <p class="cart-item-price" data-price="10.00">$0.00</p>
+                    <div class="cart-item-quantity">
+                      <button class="cart-item-quantity-btn">-</button>
+                      <span class="cart-item-quantity-value">0</span>
+                      <button class="cart-item-quantity-btn">+</button>
+                    </div>
+                    <button onclick="addToCart('cart-details17')" class="cart-item-add-btn" id="cart-button17">Add to Cart</button>
+                  </div>
+                </div>
+                <p id="no-items-added-message" class="no-items-added-message">No items added!</p>
+              </div>
+              
+              <div id="loading-animation-container">
+                <div class="loading-overlay"></div>
+                <div id="loading-animation" class="custom-loader">
+                  <div class="loader-circle"></div>
+                </div>
+              </div>
+              <button>Add to Cart</button>
+            </li>
+
+
+            <li>
+              <img src="/images/desert.jpeg" alt="Food 18">
+
+              <div class="order-item">
+                <div class="rating">
+                  <span class="star" data-value="1"><i class="fas fa-star"></i></span>
+                  <span class="star" data-value="2"><i class="fas fa-star"></i></span>
+                  <span class="star" data-value="3"><i class="fas fa-star"></i></span>
+                  <span class="star" data-value="4"><i class="fas fa-star"></i></span>
+                  <span class="star" data-value="5"><i class="fas fa-star"></i></span>
+                </div>
+              </div>
+
+
+              <h3>Desert 10"</h3>
+              <p>Delightfully decadent desert cake, perfect for sweet indulgence.</p>
+              <button id="view-cart-btn18">View Cart</button>
+
+              <div id="cart-details18" data-item-id="" class="no-items-added">
+                <div class="cart-item">
+                  <button class="close-cart-btn">&times;</button>
+                  <img src="/images/desert.jpeg">
+                  <div class="cart-item-details">
+                    <p class="cart-item-name">Desert 10"</p>
+                    <p class="cart-item-price" data-price="30.00">$0.00</p>
+                    <div class="cart-item-quantity">
+                      <button class="cart-item-quantity-btn">-</button>
+                      <span class="cart-item-quantity-value">0</span>
+                      <button class="cart-item-quantity-btn">+</button>
+                    </div>
+                    <button onclick="addToCart('cart-details18')" class="cart-item-add-btn" id="cart-button18">Add to Cart</button>
+                  </div>
+                </div>
+                <p id="no-items-added-message" class="no-items-added-message">No items added!</p>
+              </div>
+              
+              <div id="loading-animation-container">
+                <div class="loading-overlay"></div>
+                <div id="loading-animation" class="custom-loader">
+                  <div class="loader-circle"></div>
+                </div>
+              </div>
+              <button>Add to Cart</button>
+            </li>
+            <!-- Add more food items here -->
+            <li>
+              <img src="/images/redvelvet.jpeg" alt="Food 19">
+
+              <div class="order-item">
+                <div class="rating">
+                  <span class="star" data-value="1"><i class="fas fa-star"></i></span>
+                  <span class="star" data-value="2"><i class="fas fa-star"></i></span>
+                  <span class="star" data-value="3"><i class="fas fa-star"></i></span>
+                  <span class="star" data-value="4"><i class="fas fa-star"></i></span>
+                  <span class="star" data-value="5"><i class="fas fa-star"></i></span>
+                </div>
+              </div>
+
+
+              <h3>Red Velvet 12"</h3>
+              <p>Rich, cocoa-flavored cake with luscious cream cheese frosting.</p>
+              <button id="view-cart-btn19">View Cart</button>
+
+              <div id="cart-details19" data-item-id="" class="no-items-added">
+                <div class="cart-item">
+                  <button class="close-cart-btn">&times;</button>
+                  <img src="/images/redvelvet.jpeg">
+                  <div class="cart-item-details">
+                    <p class="cart-item-name">Red Velvet 12"</p>
+                    <p class="cart-item-price" data-price="10.00">$0.00</p>
+                    <div class="cart-item-quantity">
+                      <button class="cart-item-quantity-btn">-</button>
+                      <span class="cart-item-quantity-value">0</span>
+                      <button class="cart-item-quantity-btn">+</button>
+                    </div>
+                    <button onclick="addToCart('cart-details19')" class="cart-item-add-btn" id="cart-button19">Add to Cart</button>
+                  </div>
+                </div>
+                <p id="no-items-added-message" class="no-items-added-message">No items added!</p>
+              </div>
+              
+              <div id="loading-animation-container">
+                <div class="loading-overlay"></div>
+                <div id="loading-animation" class="custom-loader">
+                  <div class="loader-circle"></div>
+                </div>
+              </div>
+              <button>Add to Cart</button>
+            </li>
+
+            <li>
+              <img src="/images/chocolate.jpeg" alt="Food 20">
+
+
+              <div class="order-item">
+                <div class="rating">
+                  <span class="star" data-value="1"><i class="fas fa-star"></i></span>
+                  <span class="star" data-value="2"><i class="fas fa-star"></i></span>
+                  <span class="star" data-value="3"><i class="fas fa-star"></i></span>
+                  <span class="star" data-value="4"><i class="fas fa-star"></i></span>
+                  <span class="star" data-value="5"><i class="fas fa-star"></i></span>
+                </div>
+              </div>
+
+
+              <h3>Chocolate 12"</h3>
+              <p>Irresistibly moist and rich chocolate cake, perfect for indulgence.</p>
+              <button id="view-cart-btn20">View Cart</button>
+
+              <div id="cart-details20" data-item-id="" class="no-items-added">
+                <div class="cart-item">
+                  <button class="close-cart-btn">&times;</button>
+                  <img src="/images/chocolate.jpeg">
+                  <div class="cart-item-details">
+                    <p class="cart-item-name">Chocolate 12"</p>
+                    <p class="cart-item-price" data-price="20.00">$0.00</p>
+                    <div class="cart-item-quantity">
+                      <button class="cart-item-quantity-btn">-</button>
+                      <span class="cart-item-quantity-value">0</span>
+                      <button class="cart-item-quantity-btn">+</button>
+                    </div>
+                    <button onclick="addToCart('cart-details20')" class="cart-item-add-btn" id="cart-button20">Add to Cart</button>
+                  </div>
+                </div>
+                <p id="no-items-added-message" class="no-items-added-message">No items added!</p>
+              </div>
+              
+              <div id="loading-animation-container">
+                <div class="loading-overlay"></div>
+                <div id="loading-animation" class="custom-loader">
+                  <div class="loader-circle"></div>
+                </div>
+              </div>
+              <button>Add to Cart</button>
+            </li>
+            <!-- Add more food items here -->
+          <!-- </ul>
+          <ul> -->
+            <li>
+              <img src="/images/vanillacream.jpeg" alt="Food 21">
+
+
+              <div class="order-item">
+                <div class="rating">
+                  <span class="star" data-value="1"><i class="fas fa-star"></i></span>
+                  <span class="star" data-value="2"><i class="fas fa-star"></i></span>
+                  <span class="star" data-value="3"><i class="fas fa-star"></i></span>
+                  <span class="star" data-value="4"><i class="fas fa-star"></i></span>
+                  <span class="star" data-value="5"><i class="fas fa-star"></i></span>
+                </div>
+              </div>
+
+              <h3>Vanilla Ice cream 12"</h3>
+              <p>Indulgent layers of creamy vanilla ice cream cake with a luscious finish.</p>
+              <button id="view-cart-btn21">View Cart</button>
+
+              <div id="cart-details21" data-item-id="" class="no-items-added">
+                <div class="cart-item">
+                  <button class="close-cart-btn">&times;</button>
+                  <img src="/images/vanillacream.jpeg">
+                  <div class="cart-item-details">
+                    <p class="cart-item-name">Vanilla Ice cream 12"</p>
+                    <p class="cart-item-price" data-price="10.00">$0.00</p>
+                    <div class="cart-item-quantity">
+                      <button class="cart-item-quantity-btn">-</button>
+                      <span class="cart-item-quantity-value">0</span>
+                      <button class="cart-item-quantity-btn">+</button>
+                    </div>
+                    <button onclick="addToCart('cart-details21')" class="cart-item-add-btn" id="cart-button21">Add to Cart</button>
+                  </div>
+                </div>
+                <p id="no-items-added-message" class="no-items-added-message">No items added!</p>
+              </div>
+              
+              <div id="loading-animation-container">
+                <div class="loading-overlay"></div>
+                <div id="loading-animation" class="custom-loader">
+                  <div class="loader-circle"></div>
+                </div>
+              </div>
+              <button>Add to Cart</button>
+            </li>
+
+            <li>
+              <img src="/images/desert.jpeg" alt="Food 22">
+
+              <div class="order-item">
+                <div class="rating">
+                  <span class="star" data-value="1"><i class="fas fa-star"></i></span>
+                  <span class="star" data-value="2"><i class="fas fa-star"></i></span>
+                  <span class="star" data-value="3"><i class="fas fa-star"></i></span>
+                  <span class="star" data-value="4"><i class="fas fa-star"></i></span>
+                  <span class="star" data-value="5"><i class="fas fa-star"></i></span>
+                </div>
+              </div>
+
+
+              <h3>Desert 12"</h3>
+              <p>Delightfully decadent desert cake, perfect for sweet indulgence.</p>
+              <button id="view-cart-btn22">View Cart</button>
+
+              <div id="cart-details22" data-item-id="" class="no-items-added">
+                <div class="cart-item">
+                  <button class="close-cart-btn">&times;</button>
+                  <img src="/images/desert.jpeg">
+                  <div class="cart-item-details">
+                    <p class="cart-item-name">Desert 12"</p>
+                    <p class="cart-item-price" data-price="30.00">$0.00</p>
+                    <div class="cart-item-quantity">
+                      <button class="cart-item-quantity-btn">-</button>
+                      <span class="cart-item-quantity-value">0</span>
+                      <button class="cart-item-quantity-btn">+</button>
+                    </div>
+                    <button onclick="addToCart('cart-details22')" class="cart-item-add-btn" id="cart-button22">Add to Cart</button>
+                  </div>
+                </div>
+                <p id="no-items-added-message" class="no-items-added-message">No items added!</p>
+              </div>
+              
+              <div id="loading-animation-container">
+                <div class="loading-overlay"></div>
+                <div id="loading-animation" class="custom-loader">
+                  <div class="loader-circle"></div>
+                </div>
+              </div>
+              <button>Add to Cart</button>
+            </li>
+            <!-- Add more food items here -->
+          </ul>
+        </div>
+
+
+
+        <div class="cart-items">
+          <ul>
+            <li>
+              <img src="/images/redvelvet.jpeg" alt="Food 23">
+
+              <div class="order-item">
+                <div class="rating">
+                  <span class="star" data-value="1"><i class="fas fa-star"></i></span>
+                  <span class="star" data-value="2"><i class="fas fa-star"></i></span>
+                  <span class="star" data-value="3"><i class="fas fa-star"></i></span>
+                  <span class="star" data-value="4"><i class="fas fa-star"></i></span>
+                  <span class="star" data-value="5"><i class="fas fa-star"></i></span>
+                </div>
+              </div>
+
+
+              <h3>Red Velvet 14"</h3>
+              <p>Rich, cocoa-flavored cake with luscious cream cheese frosting.</p>
+              <button id="view-cart-btn23">View Cart</button>
+
+              <div id="cart-details23" data-item-id="" class="no-items-added">
+                <div class="cart-item">
+                  <button class="close-cart-btn">&times;</button>
+                  <img src="/images/redvelvet.jpeg">
+                  <div class="cart-item-details">
+                    <p class="cart-item-name">Red Velvet 14"</p>
+                    <p class="cart-item-price" data-price="10.00">$0.00</p>
+                    <div class="cart-item-quantity">
+                      <button class="cart-item-quantity-btn">-</button>
+                      <span class="cart-item-quantity-value">0</span>
+                      <button class="cart-item-quantity-btn">+</button>
+                    </div>
+                    <button onclick="addToCart('cart-details23')" class="cart-item-add-btn" id="cart-button23">Add to Cart</button>
+                  </div>
+                </div>
+                <p id="no-items-added-message" class="no-items-added-message">No items added!</p>
+              </div>
+              
+              <div id="loading-animation-container">
+                <div class="loading-overlay"></div>
+                <div id="loading-animation" class="custom-loader">
+                  <div class="loader-circle"></div>
+                </div>
+              </div>
+              <button>Add to Cart</button>
+            </li>
+
+            <li>
+              <img src="/images/chocolate.jpeg" alt="Food 24">
+
+              <div class="order-item">
+                <div class="rating">
+                  <span class="star" data-value="1"><i class="fas fa-star"></i></span>
+                  <span class="star" data-value="2"><i class="fas fa-star"></i></span>
+                  <span class="star" data-value="3"><i class="fas fa-star"></i></span>
+                  <span class="star" data-value="4"><i class="fas fa-star"></i></span>
+                  <span class="star" data-value="5"><i class="fas fa-star"></i></span>
+                </div>
+              </div>
+
+
+              <h3>Chocolate 14"</h3>
+              <p>Irresistibly moist and rich chocolate cake, perfect for indulgence.</p>
+              <button id="view-cart-btn24">View Cart</button>
+
+              <div id="cart-details24" data-item-id="" class="no-items-added">
+                <div class="cart-item">
+                  <button class="close-cart-btn">&times;</button>
+                  <img src="/images/chocolate.jpeg">
+                  <div class="cart-item-details">
+                    <p class="cart-item-name">Chocolate 14"</p>
+                    <p class="cart-item-price" data-price="20.00">$0.00</p>
+                    <div class="cart-item-quantity">
+                      <button class="cart-item-quantity-btn">-</button>
+                      <span class="cart-item-quantity-value">0</span>
+                      <button class="cart-item-quantity-btn">+</button>
+                    </div>
+                    <button onclick="addToCart('cart-details24')" class="cart-item-add-btn" id="cart-button24">Add to Cart</button>
+                  </div>
+                </div>
+                <p id="no-items-added-message" class="no-items-added-message">No items added!</p>
+              </div>
+              
+              <div id="loading-animation-container">
+                <div class="loading-overlay"></div>
+                <div id="loading-animation" class="custom-loader">
+                  <div class="loader-circle"></div>
+                </div>
+              </div>
+              <button>Add to Cart</button>
+            </li>
+            <!-- Add more food items here -->
+          <!-- </ul>
+          <ul> -->
+            <li>
+              <img src="/images/vanillacream.jpeg" alt="Food 25">
+
+              <div class="order-item">
+                <div class="rating">
+                  <span class="star" data-value="1"><i class="fas fa-star"></i></span>
+                  <span class="star" data-value="2"><i class="fas fa-star"></i></span>
+                  <span class="star" data-value="3"><i class="fas fa-star"></i></span>
+                  <span class="star" data-value="4"><i class="fas fa-star"></i></span>
+                  <span class="star" data-value="5"><i class="fas fa-star"></i></span>
+                </div>
+              </div>
+
+
+              <h3>Vanilla Ice cream 14"</h3>
+              <p>Indulgent layers of creamy vanilla ice cream cake with a luscious finish.</p>
+              <button id="view-cart-btn25">View Cart</button>
+
+              <div id="cart-details25" data-item-id="" class="no-items-added">
+                <div class="cart-item">
+                  <button class="close-cart-btn">&times;</button>
+                  <img src="/images/vanillacream.jpeg">
+                  <div class="cart-item-details">
+                    <p class="cart-item-name">Vanilla Ice cream 14"</p>
+                    <p class="cart-item-price" data-price="10.00">$0.00</p>
+                    <div class="cart-item-quantity">
+                      <button class="cart-item-quantity-btn">-</button>
+                      <span class="cart-item-quantity-value">0</span>
+                      <button class="cart-item-quantity-btn">+</button>
+                    </div>
+                    <button onclick="addToCart('cart-details25')" class="cart-item-add-btn" id="cart-button25">Add to Cart</button>
+                  </div>
+                </div>
+                <p id="no-items-added-message" class="no-items-added-message">No items added!</p>
+              </div>
+              
+              <div id="loading-animation-container">
+                <div class="loading-overlay"></div>
+                <div id="loading-animation" class="custom-loader">
+                  <div class="loader-circle"></div>
+                </div>
+              </div>
+              <button>Add to Cart</button>
+            </li>
+
+            <li>
+              <img src="/images/desert.jpeg" alt="Food 26">
+
+              <div class="order-item">
+                <div class="rating">
+                  <span class="star" data-value="1"><i class="fas fa-star"></i></span>
+                  <span class="star" data-value="2"><i class="fas fa-star"></i></span>
+                  <span class="star" data-value="3"><i class="fas fa-star"></i></span>
+                  <span class="star" data-value="4"><i class="fas fa-star"></i></span>
+                  <span class="star" data-value="5"><i class="fas fa-star"></i></span>
+                </div>
+              </div>
+
+
+              <h3>Desert 14"</h3>
+              <p>Delightfully decadent desert cake, perfect for sweet indulgence.</p>
+              <button id="view-cart-btn26">View Cart</button>
+
+              <div id="cart-details26" data-item-id="" class="no-items-added">
+                <div class="cart-item">
+                  <button class="close-cart-btn">&times;</button>
+                  <img src="/images/desert.jpeg">
+                  <div class="cart-item-details">
+                    <p class="cart-item-name">Desert 14"</p>
+                    <p class="cart-item-price" data-price="30.00">$0.00</p>
+                    <div class="cart-item-quantity">
+                      <button class="cart-item-quantity-btn">-</button>
+                      <span class="cart-item-quantity-value">0</span>
+                      <button class="cart-item-quantity-btn">+</button>
+                    </div>
+                    <button onclick="addToCart('cart-details26')" class="cart-item-add-btn" id="cart-button26">Add to Cart</button>
+                  </div>
+                </div>
+                <p id="no-items-added-message" class="no-items-added-message">No items added!</p>
+              </div>
+              
+              <div id="loading-animation-container">
+                <div class="loading-overlay"></div>
+                <div id="loading-animation" class="custom-loader">
+                  <div class="loader-circle"></div>
+                </div>
+              </div>
               <button>Add to Cart</button>
             </li>
             <!-- Add more food items here -->
@@ -1320,142 +2543,40 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
       <div class="cart">
-        <h2>Cart</h2>
+        <h2>Cart - Cuisines</h2>
         <div class="cart-items">
           <ul>
             <li>
-              <img src="/images/friedrice.jpg" alt="Food 1">
-              <h3>Food 1</h3>
-              <p>Description of Food 1</p>
-              <button id="view-cart-btn1">View Cart</button>
+              <img src="/images/friedrice.jpg" alt="Food 27">
 
-              <div id="cart-details1">
+              <div class="order-item">
+                <div class="rating">
+                  <span class="star" data-value="1"><i class="fas fa-star"></i></span>
+                  <span class="star" data-value="2"><i class="fas fa-star"></i></span>
+                  <span class="star" data-value="3"><i class="fas fa-star"></i></span>
+                  <span class="star" data-value="4"><i class="fas fa-star"></i></span>
+                  <span class="star" data-value="5"><i class="fas fa-star"></i></span>
+                </div>
+              </div>
+
+
+              <h3>Jollof Rice</h3>
+              <p>Vibrant and flavorful traditional rice dish with aromatic spices.</p>
+              <button id="view-cart-btn27">View Cart</button>
+
+              <div id="cart-details27" data-item-id="" class="no-items-added">
                 <div class="cart-item">
                   <button class="close-cart-btn">&times;</button>
                   <img src="/images/friedrice.jpg">
                   <div class="cart-item-details">
-                    <p class="cart-item-name">Item 1</p>
+                    <p class="cart-item-name">Jollof Rice</p>
                     <p class="cart-item-price" data-price="10.00">$0.00</p>
                     <div class="cart-item-quantity">
                       <button class="cart-item-quantity-btn">-</button>
                       <span class="cart-item-quantity-value">0</span>
                       <button class="cart-item-quantity-btn">+</button>
                     </div>
-                    <button class="cart-item-add-btn">Add to Cart</button>
-                  </div>
-                </div>
-              </div>
-
-
-              <button>Add to Cart</button>
-            </li>
-            <li>
-              <img src="/images/friedrice.jpg" alt="Food 2">
-              <h3>Food 2</h3>
-              <p>Description of Food 2</p>
-              <button id="view-cart-btn2">View Cart</button>
-
-              <div id="cart-details2">
-                <div class="cart-item">
-                  <button class="close-cart-btn">&times;</button>
-                  <img src="/images/friedrice.jpg">
-                  <div class="cart-item-details">
-                    <p class="cart-item-name">Item 2</p>
-                    <p class="cart-item-price" data-price="20.00">$0.00</p>
-                    <div class="cart-item-quantity">
-                      <button class="cart-item-quantity-btn">-</button>
-                      <span class="cart-item-quantity-value">0</span>
-                      <button class="cart-item-quantity-btn">+</button>
-                    </div>
-                    <button class="cart-item-add-btn">Add to Cart</button>
-                  </div>
-                </div>
-              </div>
-
-              <button>Add to Cart</button>
-            </li>
-            <!-- Add more food items here -->
-          <!-- </ul>
-          <ul> -->
-            <li>
-              <img src="/images/friedrice.jpg" alt="Food 8">
-              <h3>Food 8</h3>
-              <p>Description of Food 8</p>
-              <button id="view-cart-btn8">View Cart</button>
-
-              <div id="cart-details8">
-                <div class="cart-item">
-                  <button class="close-cart-btn">&times;</button>
-                  <img src="/images/friedrice.jpg">
-                  <div class="cart-item-details">
-                    <p class="cart-item-name">Item 8</p>
-                    <p class="cart-item-price" data-price="10.00">$0.00</p>
-                    <div class="cart-item-quantity">
-                      <button class="cart-item-quantity-btn">-</button>
-                      <span class="cart-item-quantity-value">0</span>
-                      <button class="cart-item-quantity-btn">+</button>
-                    </div>
-                    <button class="cart-item-add-btn">Add to Cart</button>
-                  </div>
-                </div>
-              </div>
-
-              <button>Add to Cart</button>
-            </li>
-            <li>
-              <img src="/images/friedrice.jpg" alt="Food 9">
-              <h3>Food 9</h3>
-              <p>Description of Food 9</p>
-              <button id="view-cart-btn9">View Cart</button>
-
-              <div id="cart-details9">
-                <div class="cart-item">
-                  <button class="close-cart-btn">&times;</button>
-                  <img src="/images/friedrice.jpg">
-                  <div class="cart-item-details">
-                    <p class="cart-item-name">Item 9</p>
-                    <p class="cart-item-price" data-price="30.00">$0.00</p>
-                    <div class="cart-item-quantity">
-                      <button class="cart-item-quantity-btn">-</button>
-                      <span class="cart-item-quantity-value">0</span>
-                      <button class="cart-item-quantity-btn">+</button>
-                    </div>
-                    <button class="cart-item-add-btn">Add to Cart</button>
-                  </div>
-                </div>
-              </div>
-
-              <button>Add to Cart</button>
-            </li>
-            <!-- Add more food items here -->
-          </ul>
-        </div>
-      </div>
-
-
-      <div class="cart">
-        <h2>Cart</h2>
-        <div class="cart-items">
-          <ul>
-            <li>
-              <img src="/images/friedrice.jpg" alt="Food 1">
-              <h3>Food 1</h3>
-              <p>Description of Food 1</p>
-              <button id="view-cart-btn1">View Cart</button>
-
-              <div id="cart-details1" data-item-id="cart-details1">
-                <div class="cart-item">
-                  <button class="close-cart-btn">&times;</button>
-                  <img src="/images/friedrice.jpg">
-                  <div class="cart-item-details">
-                    <p class="cart-item-name">Item 1</p>
-                    <p class="cart-item-price" data-price="10.00">$0.00</p>
-                    <div class="cart-item-quantity">
-                      <button class="cart-item-quantity-btn">-</button>
-                      <span class="cart-item-quantity-value">0</span>
-                      <button class="cart-item-quantity-btn">+</button>
-                    </div>
-                    <button onclick="addToCart('cart-details1')" class="cart-item-add-btn" id="cart-button">Add to Cart</button>
+                    <button onclick="addToCart('cart-details27')" class="cart-item-add-btn" id="cart-button27">Add to Cart</button>
 
                   </div>
                 </div>
@@ -1468,258 +2589,232 @@ document.addEventListener('DOMContentLoaded', () => {
               </div>
               <button>Add to Cart</button>
             </li>
-            <li>
-              <img src="/images/friedrice.jpg" alt="Food 2">
-              <h3>Food 2</h3>
-              <p>Description of Food 2</p>
-              <button id="view-cart-btn2">View Cart</button>
 
-              <div id="cart-details2">
+            <li>
+              <img src="/images/ricefried.jpeg" alt="Food 28">
+
+              <div class="order-item">
+                <div class="rating">
+                  <span class="star" data-value="1"><i class="fas fa-star"></i></span>
+                  <span class="star" data-value="2"><i class="fas fa-star"></i></span>
+                  <span class="star" data-value="3"><i class="fas fa-star"></i></span>
+                  <span class="star" data-value="4"><i class="fas fa-star"></i></span>
+                  <span class="star" data-value="5"><i class="fas fa-star"></i></span>
+                </div>
+              </div>
+
+              <h3>Fried Rice</h3>
+              <p>Deliciously seasoned and stir-fried rice medley bursting with flavor.</p>
+              <button id="view-cart-btn28">View Cart</button>
+
+              <div id="cart-details28" data-item-id="" class="no-items-added">
                 <div class="cart-item">
                   <button class="close-cart-btn">&times;</button>
-                  <img src="/images/friedrice.jpg">
+                  <img src="/images/ricefried.jpeg">
                   <div class="cart-item-details">
-                    <p class="cart-item-name">Item 2</p>
+                    <p class="cart-item-name">Fried Rice</p>
                     <p class="cart-item-price" data-price="20.00">$0.00</p>
                     <div class="cart-item-quantity">
                       <button class="cart-item-quantity-btn">-</button>
                       <span class="cart-item-quantity-value">0</span>
                       <button class="cart-item-quantity-btn">+</button>
                     </div>
-                    <button class="cart-item-add-btn">Add to Cart</button>
+                    <button onclick="addToCart('cart-details28')" class="cart-item-add-btn" id="cart-button28">Add to Cart</button>
                   </div>
                 </div>
+                <p id="no-items-added-message" class="no-items-added-message">No items added!</p>
               </div>
-
+              
+              <div id="loading-animation-container">
+                <div class="loading-overlay"></div>
+                <div id="loading-animation" class="custom-loader">
+                  <div class="loader-circle"></div>
+                </div>
+              </div>
               <button>Add to Cart</button>
             </li>
             <!-- Add more food items here -->
           <!-- </ul>
           <ul> -->
             <li>
-              <img src="/images/friedrice.jpg" alt="Food 8">
-              <h3>Food 8</h3>
-              <p>Description of Food 8</p>
-              <button id="view-cart-btn8">View Cart</button>
+              <img src="/images/amala.jpeg" alt="Food 29">
 
-              <div id="cart-details8">
+              <div class="order-item">
+                <div class="rating">
+                  <span class="star" data-value="1"><i class="fas fa-star"></i></span>
+                  <span class="star" data-value="2"><i class="fas fa-star"></i></span>
+                  <span class="star" data-value="3"><i class="fas fa-star"></i></span>
+                  <span class="star" data-value="4"><i class="fas fa-star"></i></span>
+                  <span class="star" data-value="5"><i class="fas fa-star"></i></span>
+                </div>
+              </div>
+
+
+              <h3>Amala & Ewedu</h3>
+              <p>Nourishing Nigerian dish made from yam flour, enjoyed with savory soups.</p>
+              <button id="view-cart-btn29">View Cart</button>
+
+              <div id="cart-details29" data-item-id="" class="no-items-added">
                 <div class="cart-item">
                   <button class="close-cart-btn">&times;</button>
-                  <img src="/images/friedrice.jpg">
+                  <img src="/images/amala.jpeg">
                   <div class="cart-item-details">
-                    <p class="cart-item-name">Item 8</p>
+                    <p class="cart-item-name">Amala & Ewedu</p>
                     <p class="cart-item-price" data-price="10.00">$0.00</p>
                     <div class="cart-item-quantity">
                       <button class="cart-item-quantity-btn">-</button>
                       <span class="cart-item-quantity-value">0</span>
                       <button class="cart-item-quantity-btn">+</button>
                     </div>
-                    <button class="cart-item-add-btn">Add to Cart</button>
+                    <button onclick="addToCart('cart-details29')" class="cart-item-add-btn" id="cart-button29">Add to Cart</button>
                   </div>
+                </div>
+                <p id="no-items-added-message" class="no-items-added-message">No items added!</p>
+              </div>
+              
+              <div id="loading-animation-container">
+                <div class="loading-overlay"></div>
+                <div id="loading-animation" class="custom-loader">
+                  <div class="loader-circle"></div>
+                </div>
+              </div>
+              <button>Add to Cart</button>
+            </li>
+
+            <li>
+              <img src="/images/edikaikong.jpeg" alt="Food 30">
+
+              <div class="order-item">
+                <div class="rating">
+                  <span class="star" data-value="1"><i class="fas fa-star"></i></span>
+                  <span class="star" data-value="2"><i class="fas fa-star"></i></span>
+                  <span class="star" data-value="3"><i class="fas fa-star"></i></span>
+                  <span class="star" data-value="4"><i class="fas fa-star"></i></span>
+                  <span class="star" data-value="5"><i class="fas fa-star"></i></span>
                 </div>
               </div>
 
-              <button>Add to Cart</button>
-            </li>
-            <li>
-              <img src="/images/friedrice.jpg" alt="Food 9">
-              <h3>Food 9</h3>
-              <p>Description of Food 9</p>
-              <button id="view-cart-btn9">View Cart</button>
 
-              <div id="cart-details9">
+              <h3>Edikaikong</h3>
+              <p>Hearty Nigerian soup with a delightful blend of vegetables and protein.</p>
+              <button id="view-cart-btn30">View Cart</button>
+
+              <div id="cart-details30" data-item-id="" class="no-items-added">
                 <div class="cart-item">
                   <button class="close-cart-btn">&times;</button>
-                  <img src="/images/friedrice.jpg">
+                  <img src="/images/edikaikong.jpeg">
                   <div class="cart-item-details">
-                    <p class="cart-item-name">Item 9</p>
+                    <p class="cart-item-name">Edikaikong</p>
                     <p class="cart-item-price" data-price="30.00">$0.00</p>
                     <div class="cart-item-quantity">
                       <button class="cart-item-quantity-btn">-</button>
                       <span class="cart-item-quantity-value">0</span>
                       <button class="cart-item-quantity-btn">+</button>
                     </div>
-                    <button class="cart-item-add-btn">Add to Cart</button>
+                    <button onclick="addToCart('cart-details30')" class="cart-item-add-btn" id="cart-button30">Add to Cart</button>
                   </div>
                 </div>
+                <p id="no-items-added-message" class="no-items-added-message">No items added!</p>
               </div>
-
+              
+              <div id="loading-animation-container">
+                <div class="loading-overlay"></div>
+                <div id="loading-animation" class="custom-loader">
+                  <div class="loader-circle"></div>
+                </div>
+              </div>
               <button>Add to Cart</button>
             </li>
             <!-- Add more food items here -->
+
+            <li>
+              <img src="/images/afang.jpeg" alt="Food 31">
+
+              <div class="order-item">
+                <div class="rating">
+                  <span class="star" data-value="1"><i class="fas fa-star"></i></span>
+                  <span class="star" data-value="2"><i class="fas fa-star"></i></span>
+                  <span class="star" data-value="3"><i class="fas fa-star"></i></span>
+                  <span class="star" data-value="4"><i class="fas fa-star"></i></span>
+                  <span class="star" data-value="5"><i class="fas fa-star"></i></span>
+                </div>
+              </div>
+
+
+              <h3>Afang</h3>
+              <p>Flavorful Nigerian soup with a rich combination of vegetables and meat.</p>
+              <button id="view-cart-btn31">View Cart</button>
+
+              <div id="cart-details31" data-item-id="" class="no-items-added">
+                <div class="cart-item">
+                  <button class="close-cart-btn">&times;</button>
+                  <img src="/images/afang.jpeg">
+                  <div class="cart-item-details">
+                    <p class="cart-item-name">Afang</p>
+                    <p class="cart-item-price" data-price="30.00">$0.00</p>
+                    <div class="cart-item-quantity">
+                      <button class="cart-item-quantity-btn">-</button>
+                      <span class="cart-item-quantity-value">0</span>
+                      <button class="cart-item-quantity-btn">+</button>
+                    </div>
+                    <button onclick="addToCart('cart-details31')" class="cart-item-add-btn" id="cart-button31">Add to Cart</button>
+                  </div>
+                </div>
+                <p id="no-items-added-message" class="no-items-added-message">No items added!</p>
+              </div>
+              
+              <div id="loading-animation-container">
+                <div class="loading-overlay"></div>
+                <div id="loading-animation" class="custom-loader">
+                  <div class="loader-circle"></div>
+                </div>
+              </div>
+              <button>Add to Cart</button>
+            </li>
           </ul>
         </div>
       </div>
       <br>
 
 
-      <!-- <div class="fixed-cart">
-        <ul>
-          <li>
-            <img src="/images/friedrice.jpg" alt="Food 10">
-            <h3>Food 10</h3>
-            <p>Description of Food 10</p>
-            <button id="view-cart-btn10">View Cart</button>
 
-            <div id="cart-details10">
-              <div class="cart-item">
-                <button class="close-cart-btn">&times;</button>
-                <img src="/images/friedrice.jpg">
-                <div class="cart-item-details">
-                  <p class="cart-item-name">Item 10</p>
-                  <p class="cart-item-price" data-price="30.00">$0.00</p>
-                  <div class="cart-item-quantity">
-                    <button class="cart-item-quantity-btn">-</button>
-                    <span class="cart-item-quantity-value">0</span>
-                    <button class="cart-item-quantity-btn">+</button>
-                  </div>
-                  <button class="cart-item-add-btn">Add to Cart</button>
-                </div>
-              </div>
-            </div>
-            <button>Add to Cart</button>
-          </li>
-
-          <li>
-            <img src="/images/friedrice.jpg" alt="Food 11">
-            <h3>Food 11</h3>
-            <p>Description of Food 11</p>
-              <button id="view-cart-btn11">View Cart</button>
-
-              <div id="cart-details11">
-                <div class="cart-item">
-                  <button class="close-cart-btn">&times;</button>
-                  <img src="/images/friedrice.jpg">
-                  <div class="cart-item-details">
-                    <p class="cart-item-name">Item 11</p>
-                    <p class="cart-item-price" data-price="30.00">$0.00</p>
-                    <div class="cart-item-quantity">
-                      <button class="cart-item-quantity-btn">-</button>
-                      <span class="cart-item-quantity-value">0</span>
-                      <button class="cart-item-quantity-btn">+</button>
-                    </div>
-                    <button class="cart-item-add-btn">Add to Cart</button>
-                  </div>
-                </div>
-              </div>
-            <button>Add to Cart</button>
-          </li>
-          <li>
-            <img src="/images/friedrice.jpg" alt="Food 11">
-            <h3>Food 12</h3>
-            <p>Description of Food 12</p>
-            <button id="view-cart-btn12">View Cart</button>
-
-            <div id="cart-details12">
-              <div class="cart-item">
-                <button class="close-cart-btn">&times;</button>
-                <img src="/images/friedrice.jpg">
-                <div class="cart-item-details">
-                  <p class="cart-item-name">Item 12</p>
-                  <p class="cart-item-price" data-price="30.00">$0.00</p>
-                  <div class="cart-item-quantity">
-                    <button class="cart-item-quantity-btn">-</button>
-                    <span class="cart-item-quantity-value">0</span>
-                    <button class="cart-item-quantity-btn">+</button>
-                  </div>
-                  <button class="cart-item-add-btn">Add to Cart</button>
-                </div>
-              </div>
-            </div>
-            <button>Add to Cart</button>
-          </li>
-          <li>
-            <img src="/images/friedrice.jpg" alt="Food 11">
-            <h3>Food 13</h3>
-            <p>Description of Food 13</p>
-            <button id="view-cart-btn13">View Cart</button>
-
-            <div id="cart-details13">
-              <div class="cart-item">
-                <button class="close-cart-btn">&times;</button>
-                <img src="/images/friedrice.jpg">
-                <div class="cart-item-details">
-                  <p class="cart-item-name">Item 13</p>
-                  <p class="cart-item-price" data-price="30.00">$0.00</p>
-                  <div class="cart-item-quantity">
-                    <button class="cart-item-quantity-btn">-</button>
-                    <span class="cart-item-quantity-value">0</span>
-                    <button class="cart-item-quantity-btn">+</button>
-                  </div>
-                  <button class="cart-item-add-btn">Add to Cart</button>
-                </div>
-              </div>
-            </div>
-            <button>Add to Cart</button>
-          </li>
-          <li>
-            <img src="/images/friedrice.jpg" alt="Food 11">
-            <h3>Food 14</h3>
-            <p>Description of Food 14</p>
-            <button id="view-cart-btn14">View Cart</button>
-
-            <div id="cart-details14" data-item-id="cart-details14">
-              <div class="cart-item">
-                <button class="close-cart-btn">&times;</button>
-                <img src="/images/friedrice.jpg">
-                <div class="cart-item-details">
-                  <p class="cart-item-name">Item 14</p>
-                  <p class="cart-item-price" data-price="30.00">$0.00</p>
-                  <div class="cart-item-quantity">
-                    <button class="cart-item-quantity-btn">-</button>
-                    <span class="cart-item-quantity-value">0</span>
-                    <button class="cart-item-quantity-btn">+</button>
-                  </div>
-                  <button onclick="addToCart('cart-details14')" class="cart-item-add-btn" id="cart-button">Add to Cart</button>
-
-                </div>
-              </div>
-            </div>
-            <div id="loading-animation-container">
-              <div class="loading-overlay"></div>
-              <div id="loading-animation" class="custom-loader">
-                <div class="loader-circle"></div>
-              </div>
-            </div>
-
-            <button>Add to Cart</button>
-          </li>
-          <li>
-            <img src="/images/friedrice.jpg" alt="Food 11">
-            <h3>Food 15</h3>
-            <p>Description of Food 15</p>
-            <button id="view-cart-btn15">View Cart</button>
-
-            <div id="cart-details15" data-item-id="cart-details15">
-              <div class="cart-item">
-                <button class="close-cart-btn">&times;</button>
-                <img src="/images/friedrice.jpg">
-                <div class="cart-item-details">
-                  <p class="cart-item-name">Item 15</p>
-                  <p class="cart-item-price" data-price="30.00">$0.00</p>
-                  <div class="cart-item-quantity">
-                    <button class="cart-item-quantity-btn">-</button>
-                    <span class="cart-item-quantity-value">0</span>
-                    <button class="cart-item-quantity-btn">+</button>
-                  </div>
-                  <button onclick="addToCart('cart-details15')" class="cart-item-add-btn">Add to Cart</button>
-                </div>
-              </div>
-            </div>
-            <button>Add to Cart</button>
-          </li>
-        </ul>
-      </div> -->
+      <div class="blog-section">
+        <h2>Latest Blog Posts</h2>
+        <div class="blog-posts">
+          <div class="blog-post">
+            <img src="/images/friedrice.jpg" alt="Blog Post Image">
+            <h3>Delicious Pastry Recipes</h3>
+            <p class="blog-author">By Funmilola Kolawole</p>
+            <p class="blog-date">Posted on June 15, 2023</p>
+            <p class="blog-excerpt">Discover some amazing pastry recipes that you can try at home. From flaky croissants to mouthwatering tarts, our recipes will satisfy your sweet cravings.</p>
+            <a href="#blog-post" class="read-more">Read More</a>
+            <div class="response-message">Will be available soon...</div>
+          </div>
+          <div class="blog-post">
+            <img src="/images/doughnut.jpeg" alt="Blog Post Image">
+            <h3>Tips for Perfect Pastry Dough</h3>
+            <p class="blog-author">By Funmilola Kolawole</p>
+            <p class="blog-date">Posted on June 10, 2023</p>
+            <p class="blog-excerpt">Learn the secrets to making the perfect pastry dough. From the right ingredients to the proper techniques, our tips will help you create bakery-quality pastries.</p>
+            <a href="#blog-post" class="read-more">Read More</a>
+            <div class="response-message">Will be available soon...</div>
+          </div>
+          <div class="blog-post">
+            <img src="/images/eggroll.jpeg" alt="Blog Post Image">
+            <h3>Tips for Perfect Pastry Dough</h3>
+            <p class="blog-author">By Funmilola Kolawole</p>
+            <p class="blog-date">Posted on June 10, 2023</p>
+            <p class="blog-excerpt">Learn the secrets to making the perfect pastry dough. From the right ingredients to the proper techniques, our tips will help you create bakery-quality pastries.</p>
+            <a href="#blog-post" class="read-more">Read More</a>
+            <div class="response-message">Will be available soon...</div>
+          </div>
+        </div>
+      </div>
       
-     <!-- <div class="cart">
-        <h2>Cart</h2>
-        <ul>
-          <li>Pastry 1 <span class="quantity">1</span> <button class="add">+</button> <button class="remove">-</button></li>
-          <li>Pastry 2 <span class="quantity">3</span> <button class="add">+</button> <button class="remove">-</button></li>
-          <li>Pastry 3 <span class="quantity">2</span> <button class="add">+</button> <button class="remove">-</button></li>
-        </ul>
-        <button class="checkout">Checkout</button>
-      </div>-->
+
+
+
+
       <div class="reviews">
         <h2>Reviews</h2>
         <div class="review-container">
@@ -1741,7 +2836,7 @@ document.addEventListener('DOMContentLoaded', () => {
     <br>
 
     <div class="bottom-bar">
-      <a href="/dashboard.html" class="bottom-icon" id="home-icon">
+      <a href="/dashboard" class="bottom-icon" id="home-icon">
         <i class="fa fa-home"></i>
         Home
       </a>
@@ -1760,7 +2855,6 @@ document.addEventListener('DOMContentLoaded', () => {
       </a>
     </div>
     
-
 
     <script>
       // Function to fetch the cart count from the server and update the notification count
@@ -1788,51 +2882,69 @@ document.addEventListener('DOMContentLoaded', () => {
         updateCartCount();
       });
     
-      // Add the code snippet here
-    
-      const addToCartButton = document.getElementById('cart-button');
-      const loadingAnimationContainer = document.getElementById('loading-animation-container');
-      const cartDetails = document.getElementById('cart-details1');
-    
-      addToCartButton.addEventListener('click', () => {
-        // Show the loading animation
-        loadingAnimationContainer.classList.add('show-loading');
-    
-        // Simulate a delay for demonstration purposes
+      const addToCartButtons = document.querySelectorAll('#cart-button, #cart-button2, #cart-button3, #cart-button4, #cart-button5, #cart-button6, #cart-button7, #cart-button8, #cart-button9, #cart-button10, #cart-button11, #cart-button12, #cart-button13, #cart-button14, #cart-button15, #cart-button16, #cart-button17, #cart-button18, #cart-button19, #cart-button20, #cart-button21, #cart-button22, #cart-button23, #cart-button24, #cart-button25, #cart-button26, #cart-button27, #cart-button28, #cart-button29, #cart-button30, #cart-button31');
+const loadingAnimationContainer = document.getElementById('loading-animation-container');
+const cartDetails = document.querySelectorAll('#cart-details1, #cart-details2, #cart-details3, #cart-details4, #cart-details5, #cart-details6, #cart-details7, #cart-details8, #cart-details9, #cart-details10, #cart-details11, #cart-details12, #cart-details13, #cart-details14, #cart-details15, #cart-details16, #cart-details17, #cart-details18, #cart-details19, #cart-details20, #cart-details21, #cart-details22, #cart-details23, #cart-details24, #cart-details25, #cart-details26, #cart-details27, #cart-details28, #cart-details29, #cart-details30, #cart-details31');
+
+const addToCartHandler = () => {
+  // Show the loading animation
+  loadingAnimationContainer.classList.add('show-loading');
+
+  // Simulate a delay for demonstration purposes
+  setTimeout(() => {
+    // Perform the add to cart operation here
+    cartDetails.forEach((details) => {
+      const quantityValue = details.querySelector(".cart-item-quantity-value");
+      if (parseInt(quantityValue.textContent) === 0) {
+        // Show the "No item added" response
+        const responseMessage = document.createElement('p');
+        responseMessage.textContent = 'No item added';
+        responseMessage.classList.add('response-message');
+
+        // Append the response message to the cart details
+        details.appendChild(responseMessage);
+
+        // Remove the response message after a certain time (e.g., 3 seconds)
         setTimeout(() => {
-          // Perform the add to cart operation here
-          const quantityValue = cartDetails.querySelector(".cart-item-quantity-value");
-          if (parseInt(quantityValue.textContent) === 0) {
-            // Show the "No item added" response
-            const responseMessage = document.createElement('p');
-            responseMessage.textContent = 'No item added';
-            responseMessage.classList.add('response-message');
-    
-            // Append the response message to the cart details
-            cartDetails.appendChild(responseMessage);
-    
-            // Remove the response message after a certain time (e.g., 3 seconds)
-            setTimeout(() => {
-              responseMessage.remove();
-    
-              // Hide the loading animation after the task is completed
-              loadingAnimationContainer.classList.remove('show-loading');
-              // Close the cart pop-up
-              cartDetails.style.display = 'none';
-            }, 3000);
-          } else {
-            console.log('Item added to cart');
-    
-            // Hide the loading animation after the task is completed
-            loadingAnimationContainer.classList.remove('show-loading');
-            // Close the cart pop-up
-            cartDetails.style.display = 'none';
-          }
-        }, 4000); // Simulate a 4-second delay
-      });
+          responseMessage.remove();
+
+          // Hide the loading animation after the task is completed
+          loadingAnimationContainer.classList.remove('show-loading');
+          // Close the cart pop-up
+          details.style.display = 'none';
+        }, 3000);
+      } else {
+        console.log('Item added to cart');
+
+        // Hide the loading animation after the task is completed
+        loadingAnimationContainer.classList.remove('show-loading');
+        // Close the cart pop-up
+        details.style.display = 'none';
+      }
+    });
+  }, 4000); // Simulate a 4-second delay
+};
+
+addToCartButtons.forEach((button) => {
+  button.addEventListener('click', addToCartHandler);
+});
+
+
     </script>
     
-    
+    <script>
+
+      const readMoreButtons = document.querySelectorAll('.read-more');
+      const responseMessages = document.querySelectorAll('.response-message');
+      
+      readMoreButtons.forEach((button, index) => {
+        button.addEventListener('click', () => {
+          responseMessages[index].classList.add('show');
+        });
+      });
+      
+
+    </script>
     
 
     <script>
@@ -1890,7 +3002,7 @@ startSlideshow();
 
 <script>
   document.addEventListener("DOMContentLoaded", function() {
-    const viewCartBtns = document.querySelectorAll("#view-cart-btn1, #view-cart-btn2, #view-cart-btn8, #view-cart-btn9, #view-cart-btn10, #view-cart-btn11, #view-cart-btn12, #view-cart-btn13, #view-cart-btn14, #view-cart-btn15");
+    const viewCartBtns = document.querySelectorAll("#view-cart-btn1, #view-cart-btn2, #view-cart-btn3, #view-cart-btn4, #view-cart-btn5, #view-cart-btn6, #view-cart-btn7, #view-cart-btn8, #view-cart-btn9, #view-cart-btn10, #view-cart-btn11, #view-cart-btn12, #view-cart-btn13, #view-cart-btn14, #view-cart-btn15, #view-cart-btn16, #view-cart-btn17, #view-cart-btn18, #view-cart-btn19, #view-cart-btn20, #view-cart-btn21, #view-cart-btn22, #view-cart-btn23, #view-cart-btn24, #view-cart-btn25, #view-cart-btn26, #view-cart-btn27, #view-cart-btn28, #view-cart-btn29, #view-cart-btn30, #view-cart-btn31");
     const closeCartBtns = document.querySelectorAll(".close-cart-btn");
     const orderBtn = document.querySelector(".bottom-bar a:nth-of-type(3)");
     let totalItems = 0; // Initialize total items count to zero
@@ -2024,20 +3136,6 @@ function addToCart(cartId) {
   });
 </script>
 
- <!-- <script>
-    // Add JavaScript code to handle the notification behavior
-    const notificationBox = document.getElementById('notification');
-    const closeButton = document.getElementById('notification-close');
-
-    closeButton.addEventListener('click', () => {
-      notificationBox.style.display = 'none';
-    });
-
-    // Show the notification message
-    notificationBox.style.display = 'block';
-    
-  </script> -->
-
   <script>
     // Add JavaScript code to handle the notification behavior
     const notificationBox = document.getElementById('notification');
@@ -2096,6 +3194,78 @@ function addToCart(cartId) {
   function startAnimation() {
     // Code to start the animation here
   }
+</script>
+
+
+<script>
+  // Generate a UUID
+  const generatedUUID = uuidv4();
+
+  // Set the generated UUID as the data-item-id attribute value
+  const cartDetailsElements = document.querySelectorAll('#cart-details1, #cart-details2, #cart-details3, #cart-details4, #cart-details5, #cart-details6, #cart-details7, #cart-details8, #cart-details9, #cart-details10, #cart-details11, #cart-details12, #cart-details13, #cart-details14, #cart-details15, #cart-details16, #cart-details17, #cart-details18, #cart-details19, #cart-details20, #cart-details21, #cart-details22, #cart-details23, #cart-details24, #cart-details25, #cart-details26, #cart-details27, #cart-details28, #cart-details29, #cart-details30, #cart-details31');
+  cartDetailsElements.forEach((element) => {
+    element.setAttribute('data-item-id', generatedUUID);
+  });
+</script>
+
+<script>
+// Get all the order item elements
+const orderItems = document.querySelectorAll('.order-item');
+
+// Loop through each order item
+orderItems.forEach((orderItem) => {
+  // Get the stars within the current order item
+  const stars = orderItem.querySelectorAll('.star');
+
+  // Add click event listeners to the stars within the current order item
+  stars.forEach((star) => {
+    star.addEventListener('click', () => {
+      // Remove the active class from all stars within the current order item
+      stars.forEach((s) => {
+        s.classList.remove('active');
+      });
+
+      // Add the active class to the clicked star and all previous stars within the current order item
+      star.classList.add('active');
+      const value = parseInt(star.getAttribute('data-value'));
+      for (let i = 0; i < value; i++) {
+        stars[i].classList.add('active');
+      }
+    });
+  });
+});
+
+
+
+// // Loop through each order item
+// orderItems.forEach((orderItem) => {
+//   // Get the rating container for the current order item
+//   const ratingContainer = orderItem.querySelector('.rating');
+
+//   // Get all stars within the rating container
+//   const stars = ratingContainer.querySelectorAll('.star');
+
+//   // Add event listener to each star
+//   stars.forEach((star) => {
+//     star.addEventListener('click', () => {
+//       // Get the value of the clicked star
+//       const value = star.getAttribute('data-value');
+
+//       // Update the star colors based on the clicked star value
+//       stars.forEach((s) => {
+//         const starValue = s.getAttribute('data-value');
+//         if (starValue <= value) {
+//           s.classList.add('active');
+//         } else {
+//           s.classList.remove('active');
+//         }
+//       });
+//     });
+//   });
+// });
+
+
+
 </script>
 
   </body>
