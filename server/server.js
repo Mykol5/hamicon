@@ -656,6 +656,8 @@ app.get('/', (req, res) => {
     <title>Hami Confectionery</title>
     // <link href="https://fonts.googleapis.com/css?family=Roboto|Open+Sans:200,300,400,700,800,900&subset=latin" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9831366589426769"
+    crossorigin="anonymous"></script>
     <style>
       /* Global Styles */
       body {
