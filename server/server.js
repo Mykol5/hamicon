@@ -643,6 +643,15 @@ app.post('/logout', (req, res) => {
 
 
 
+app.get('/privacypolicy.html', (req, res) => {
+  res.setHeader('Content-Type', 'text/html');
+  res.sendFile(path.join(__dirname + '/../client/privacypolicy.html'));
+});
+
+app.get('/termsofservice.html', (req, res) => {
+  res.setHeader('Content-Type', 'text/html');
+  res.sendFile(path.join(__dirname + '/../client/termsofservice.html'));
+});
 
 
 app.get('/', (req, res) => {
@@ -654,10 +663,7 @@ app.get('/', (req, res) => {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hami Confectionery</title>
-    // <link href="https://fonts.googleapis.com/css?family=Roboto|Open+Sans:200,300,400,700,800,900&subset=latin" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9831366589426769"
-    crossorigin="anonymous"></script>
     <style>
       /* Global Styles */
       body {
@@ -1036,8 +1042,8 @@ app.get('/', (req, res) => {
           <a class="footer-icon" href="https://instagram.com" target="_blank"><i class="fab fa-instagram"></i></a>
       </div>
       <div class="footer-links">
-        <a class="footer-link" href="/privacy-policy">Privacy Policy</a>
-        <a class="footer-link" href="/terms-of-service">Terms of Service</a>
+        <a class="footer-link" href="/privacypolicy.html">Privacy Policy</a>
+        <a class="footer-link" href="/termsofservice.html">Terms of Service</a>
       </div>
       <p>&copy; 2023 Hami Confectionery. All rights reserved.</p>
       <p>Kemta Idi-aba, Abeokuta, Nigeria</p>
