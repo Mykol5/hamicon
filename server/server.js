@@ -662,8 +662,11 @@ app.get('/', (req, res) => {
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hami Confectionery</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9831366589426769"
+    crossorigin="anonymous"></script>
+    <title>Hami Confectionery</title>
+    
     <style>
       /* Global Styles */
       body {
@@ -1122,6 +1125,8 @@ app.get('/', (req, res) => {
     
     
     </script>
+
+    <script data-cfasync="false" type="text/javascript" data-adel="atag" src="//acacdn.com/script/atg.js" czid="ws7goz4ik"></script>
     
   </body>
   
