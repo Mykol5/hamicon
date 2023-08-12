@@ -1,13 +1,315 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="styles.css">
-    <title>Terms of Service</title>
-    <style>
 
-/* Reset default browser styles */
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Terms of Service - Hami Confectionery</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+  <style>
+    /* Global Styles */
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: system-ui, 'Open Sans';
+      overflow-x: hidden;
+    }
+
+  /* Navbar Styles */
+  .navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    background-color: #535252;
+    color: #333;
+    z-index: 101;
+    margin-left: -30px;
+  }
+
+  .navbar-logo {
+    width: 150px;
+    margin-left: 25px;
+    margin-top: 5px;
+  }
+
+  .navbar-links {
+    display: flex;
+  }
+
+  .navbar-link {
+    text-decoration: none;
+    color: #fff;
+    margin-right: 10px;
+  }
+
+  .hamburger {
+    display: none;
+    flex-direction: column;
+    cursor: pointer;
+  }
+
+  /* .hamburger span {
+    display: block;
+    width: 25px;
+    height: 3px;
+    background-color: #fff;
+    margin-bottom: 5px;
+  } */
+
+  /* Welcome Section Styles */
+  .welcome-section {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+  }
+  
+  .welcome-video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  .welcome-heading {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 2.5em;
+    text-align: center;
+    color: #fff;
+  }
+  
+  .carousel-arrows {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    z-index: 1;
+  }
+  
+  .carousel-arrow {
+    font-size: 2em;
+    color: #fff;
+    cursor: pointer;
+    opacity: 0.8;
+    transition: opacity 0.3s ease-in-out;
+  }
+  
+  .carousel-arrow:hover {
+    opacity: 1;
+  }
+  
+  .carousel-prev {
+    margin-left: 20px;
+  }
+  
+  .carousel-next {
+    margin-right: 20px;
+  }
+  
+  
+  /* Services Section Styles */
+  .services-section {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    padding: 50px 20px;
+    background-color: #f5f5f5;
+  }
+
+  .service-card {
+    flex-basis: 30%;
+    margin: 20px;
+    padding: 20px;
+    border-radius: 5px;
+    text-align: center;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  }
+
+  .service-card-icon {
+    width: 100px;
+    height: 100px;
+    margin-bottom: 0px;
+    font-size: 40px;
+  }
+
+  .service-card-title {
+    font-size: 1.5em;
+    margin-bottom: 10px;
+    margin-top: 0px;
+  }
+
+  .service-card-description {
+    font-size: 1em;
+    color: #666;
+  }
+
+  i .fas fa-birthday-cake service-card-icon {
+    margin-bottom: 2px;
+  }
+
+  /* Testimonials Section Styles */
+  .testimonials-section {
+    text-align: center;
+    padding: 50px 20px;
+    background-color: #333;
+    color: #fff;
+  }
+
+  .testimonial-slide {
+    display: none;
+  }
+
+  .testimonial-slide.active {
+    display: block;
+  }
+
+  .testimonial-slide p {
+    font-size: 1.2em;
+    margin-bottom: 10px;
+  }
+
+  .testimonial-slide span {
+    font-weight: bold;
+  }
+
+  /* Footer Styles */
+  .footer {
+    text-align: center;
+    padding: 20px;
+    background-color: #333;
+    color: #fff;
+  }
+
+  .footer-link {
+    text-decoration: none;
+    color: #fff;
+    margin-right: 10px;
+  }
+  .footer-icon {
+    color: #fff;
+  }
+
+  /* Navbar Styles */
+  .navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    background-color: #189259;
+    color: #333;
+    z-index: 100;
+  }
+
+  .navbar-logo {
+    width: 150px;
+  }
+
+  .navbar-links {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+  }
+
+  .navbar-link {
+    text-decoration: none;
+    color: #fafafa;
+    margin-right: 30px;
+    transition: color 0.9s ease-in;
+  }
+
+  .navbar-link:hover {
+    color: #bceec7;
+  }
+
+  .hamburger {
+    display: none;
+    position: relative;
+    cursor: pointer;
+    z-index: 101;
+  }
+
+  .hamburger span {
+    display: block;
+    width: 25px;
+    height: 3px;
+    background-color: #ffffff;
+    margin-bottom: 5px;
+    transition: background-color 0.7s ease-in;
+  }
+
+  .hamburger.active span:nth-child(1) {
+    transform: translateY(8px) rotate(45deg);
+    background-color: #bceec7;
+  }
+
+  .hamburger.active span:nth-child(2) {
+    opacity: 0;
+  }
+
+  .hamburger.active span:nth-child(3) {
+    transform: translateY(-8px) rotate(-45deg);
+    background-color: #bceec7;
+  }
+
+  /* Media Queries */
+  @media screen and (max-width: 768px) {
+    .navbar-links {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      background-color: #189259;
+      transform: translateX(100%);
+      transition: transform 0.3s ease-in;
+      z-index: 100;
+    }
+
+    .navbar-links.active {
+      transform: translateX(0%);
+    }
+
+    .navbar-link {
+      margin-bottom: 10px;
+    }
+
+    .navbar-link:hover {
+      color: #bceec7;
+    }
+
+    .hamburger {
+      display: flex;
+      margin-left: 10px;
+    }
+  }
+
+
+
+/* Reset default browser styles
 * {
     margin: 0;
     padding: 0;
@@ -19,7 +321,7 @@ body {
     line-height: 1.6;
     background-color: #f7f7f7;
     color: #333;
-}
+} */
 
 .container {
     max-width: 800px;
@@ -53,6 +355,12 @@ p {
     color: #555;
 }
 
+footer p {
+    margin-bottom: 20px;
+    font-size: 1rem;
+    color: #ffffff;
+}
+
 a {
     color: #007BFF;
     text-decoration: none;
@@ -63,7 +371,7 @@ a:hover {
     color: #0056b3;
 }
 
-/* Footer styles */
+/* Footer styles
 footer {
     margin-top: 40px;
     text-align: center;
@@ -86,7 +394,7 @@ footer {
 
 .footer-links a:hover {
     color: #555;
-}
+} */
 
         /* Media Queries for Responsive Design */
         @media only screen and (max-width: 600px) {
@@ -108,55 +416,105 @@ footer {
             }
 
             /* Adjust footer styles for smaller screens */
-            footer {
+            /* footer {
                 margin-top: 20px;
-            }
+            } */
         }
 
 
     </style>
 </head>
 <body>
+    <nav class="navbar">
+      <img class="navbar-logo" src="/images/WhatsApp_Image_2023-05-18_at_4.45.03_PM-removebg-preview.png" alt="Hami Confectionery Logo">
+      <div class="navbar-links">
+        <a class="navbar-link" href="/">Home</a>
+        <a class="navbar-link" href="/about">About</a>
+        <a class="navbar-link" href="/contactus.html">Contact</a>
+        <a class="navbar-link" href="/index.html">Login</a>
+        <a class="navbar-link" href="/signup.html">Sign Up</a>
+      </div>
+      <div class="hamburger">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+    </nav>
+
+    <br><br><br>
+
+
     <div class="container">
         <header>
-            <h1>Terms of Service for Hami Confectionery</h1>
+            <h3>Terms of Service for Hami Confectionery</h3>
             <p>Effective Date: July 2023</p>
         </header>
         <section>
-            <h2>1. Acceptance of Terms</h2>
+            <h3>1. Acceptance of Terms</h3>
             <p>Welcome to Hami Confectionery! By accessing or using our webapp, you agree to comply with and be bound by these Terms of Service.</p>
         </section>
         <section>
-            <h2>2. Use of Services</h2>
+            <h3>2. Use of Services</h3>
             <p>You agree to use our services for lawful purposes and in a manner consistent with these Terms of Service.</p>
         </section>
         <section>
-            <h2>3. Intellectual Property</h2>
+            <h3>3. Intellectual Property</h3>
             <p>Our webapp and its content are protected by copyright, trademarks, and other intellectual property rights owned by us.</p>
         </section>
         <section>
-            <h2>4. User Content</h2>
+            <h3>4. User Content</h3>
             <p>You may submit content to our webapp, such as reviews or comments. By submitting content, you grant us a non-exclusive, royalty-free, worldwide, perpetual license to use, modify, adapt, and display the content.</p>
         </section>
         <section>
-            <h2>5. Limitation of Liability</h2>
+            <h3>5. Limitation of Liability</h3>
             <p>We are not responsible for any damages or losses resulting from your use of our webapp or its content.</p>
         </section>
         <section>
-            <h2>6. Termination</h2>
+            <h3>6. Termination</h3>
             <p>We reserve the right to terminate or suspend your access to our services at any time without notice.</p>
         </section>
         <section>
-            <h2>7. Governing Law</h2>
+            <h3>7. Governing Law</h3>
             <p>These Terms of Service are governed by and construed in accordance with the laws of Federal Republic of Nigeria.</p>
         </section>
         <section>
-            <h2>8. Contact Us</h2>
+            <h3>8. Contact Us</h3>
             <p>If you have any questions or concerns about these Terms of Service, please contact us at <a href="mailto:hamiconfectionery@gmail.com">hamiconfectionery@gmail.com</a></p>
         </section>
-        <footer>
-            &copy; 2023 Hami Confectionery. All rights reserved.
-        </footer>
     </div>
-</body>
+
+
+    <footer class="footer">
+      <div class="footer-icons">
+          <a class="footer-icon" href="https://wa.me/+2348145336427" target="_blank"><i class="fab fa-whatsapp"></i></a>
+          <a class="footer-icon" href="mailto:hamiconfectionery@gmail.com"><i class="fas fa-envelope"></i></a>
+          <a class="footer-icon" href="https://facebook.com" target="_blank"><i class="fab fa-facebook"></i></a>
+          <a class="footer-icon" href="https://instagram.com" target="_blank"><i class="fab fa-instagram"></i></a>
+      </div>
+      <div class="footer-links">
+        <a class="footer-link" href="/privacypolicy.html">Privacy Policy</a>
+        <a class="footer-link" href="/termsofservice.html">Terms of Service</a>
+      </div>
+      <p>&copy; 2023 Hami Confectionery. All rights reserved.</p>
+      <p>Kemta Idi-aba, Abeokuta, Nigeria</p>
+    </footer>
+  
+    <script>
+      const hamburger = document.querySelector('.hamburger');
+      const navbarLinks = document.querySelector('.navbar-links');
+    
+      hamburger.addEventListener('click', () => {
+        hamburger.classList.toggle('active');
+        navbarLinks.classList.toggle('active');
+      });
+    
+      window.addEventListener('resize', () => {
+        if (window.innerWidth > 768) {
+          navbarLinks.classList.remove('active');
+          hamburger.classList.remove('active');
+        }
+      });
+    </script>
+    
+  </body>
 </html>

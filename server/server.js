@@ -642,6 +642,10 @@ app.post('/logout', (req, res) => {
 });
 
 
+app.get('/contactus.html', (req, res) => {
+  res.setHeader('Content-Type', 'text/html');
+  res.sendFile(path.join(__dirname + '/../client/contactus.html'));
+});
 
 app.get('/privacypolicy.html', (req, res) => {
   res.setHeader('Content-Type', 'text/html');
@@ -978,7 +982,7 @@ app.get('/', (req, res) => {
       <div class="navbar-links">
         <a class="navbar-link" href="/">Home</a>
         <a class="navbar-link" href="/about">About</a>
-        <a class="navbar-link" href="/contact">Contact</a>
+        <a class="navbar-link" href="/contactus.html">Contact</a>
         <a class="navbar-link" href="/index.html">Login</a>
         <a class="navbar-link" href="/signup.html">Sign Up</a>
       </div>

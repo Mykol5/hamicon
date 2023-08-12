@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hami Confectionery</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+  <style>
+    /* Global Styles */
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: system-ui, 'Open Sans';
+      overflow-x: hidden;
+    }
+
+  /* Navbar Styles */
+  /* Navbar Styles */
+  .navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    background-color: #535252;
+    color: #333;
+    z-index: 101;
+    margin-left: -30px;
+  }
+
+  .navbar-logo {
+    width: 150px;
+    margin-left: 25px;
+    margin-top: 5px;
+  }
+
+  .navbar-links {
+    display: flex;
+  }
+
+  .navbar-link {
+    text-decoration: none;
+    color: #fff;
+    margin-right: 10px;
+  }
+
+  .hamburger {
+    display: none;
+    flex-direction: column;
+    cursor: pointer;
+  }
+
+  /* .hamburger span {
+    display: block;
+    width: 25px;
+    height: 3px;
+    background-color: #fff;
+    margin-bottom: 5px;
+  } */
+
+  /* Welcome Section Styles */
+  .welcome-section {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+  }
+  
+  .welcome-video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  .welcome-heading {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 2.5em;
+    text-align: center;
+    color: #fff;
+  }
+  
+  .carousel-arrows {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    z-index: 1;
+  }
+  
+  .carousel-arrow {
+    font-size: 2em;
+    color: #fff;
+    cursor: pointer;
+    opacity: 0.8;
+    transition: opacity 0.3s ease-in-out;
+  }
+  
+  .carousel-arrow:hover {
+    opacity: 1;
+  }
+  
+  .carousel-prev {
+    margin-left: 20px;
+  }
+  
+  .carousel-next {
+    margin-right: 20px;
+  }
+  
+  
+  /* Services Section Styles */
+  .services-section {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    padding: 50px 20px;
+    background-color: #f5f5f5;
+  }
+
+  .service-card {
+    flex-basis: 30%;
+    margin: 20px;
+    padding: 20px;
+    border-radius: 5px;
+    text-align: center;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  }
+
+  .service-card-icon {
+    width: 100px;
+    height: 100px;
+    margin-bottom: 0px;
+    font-size: 40px;
+  }
+
+  .service-card-title {
+    font-size: 1.5em;
+    margin-bottom: 10px;
+    margin-top: 0px;
+  }
+
+  .service-card-description {
+    font-size: 1em;
+    color: #666;
+  }
+
+  i .fas fa-birthday-cake service-card-icon {
+    margin-bottom: 2px;
+  }
+
+  /* Testimonials Section Styles */
+  .testimonials-section {
+    text-align: center;
+    padding: 50px 20px;
+    background-color: #333;
+    color: #fff;
+  }
+
+  .testimonial-slide {
+    display: none;
+  }
+
+  .testimonial-slide.active {
+    display: block;
+  }
+
+  .testimonial-slide p {
+    font-size: 1.2em;
+    margin-bottom: 10px;
+  }
+
+  .testimonial-slide span {
+    font-weight: bold;
+  }
+
+  /* Footer Styles */
+  .footer {
+    text-align: center;
+    padding: 20px;
+    background-color: #333;
+    color: #fff;
+  }
+
+  .footer-link {
+    text-decoration: none;
+    color: #fff;
+    margin-right: 10px;
+  }
+  .footer-icon {
+    color: #fff;
+  }
+
+  /* Navbar Styles */
+  .navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    background-color: #189259;
+    color: #333;
+    z-index: 100;
+  }
+
+  .navbar-logo {
+    width: 150px;
+  }
+
+  .navbar-links {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+  }
+
+  .navbar-link {
+    text-decoration: none;
+    color: #fafafa;
+    margin-right: 30px;
+    transition: color 0.9s ease-in;
+  }
+
+  .navbar-link:hover {
+    color: #bceec7;
+  }
+
+  .hamburger {
+    display: none;
+    position: relative;
+    cursor: pointer;
+    z-index: 101;
+  }
+
+  .hamburger span {
+    display: block;
+    width: 25px;
+    height: 3px;
+    background-color: #ffffff;
+    margin-bottom: 5px;
+    transition: background-color 0.7s ease-in;
+  }
+
+  .hamburger.active span:nth-child(1) {
+    transform: translateY(8px) rotate(45deg);
+    background-color: #bceec7;
+  }
+
+  .hamburger.active span:nth-child(2) {
+    opacity: 0;
+  }
+
+  .hamburger.active span:nth-child(3) {
+    transform: translateY(-8px) rotate(-45deg);
+    background-color: #bceec7;
+  }
+
+  /* Media Queries */
+  @media screen and (max-width: 768px) {
+    .navbar-links {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      background-color: #189259;
+      transform: translateX(100%);
+      transition: transform 0.3s ease-in;
+      z-index: 100;
+    }
+
+    .navbar-links.active {
+      transform: translateX(0%);
+    }
+
+    .navbar-link {
+      margin-bottom: 10px;
+    }
+
+    .navbar-link:hover {
+      color: #bceec7;
+    }
+
+    .hamburger {
+      display: flex;
+      margin-left: 10px;
+    }
+  }
+
+
+
+
+
+
+/* Reset some default styles */
+body, h1, h2, h3, p, ul, li {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: system-ui, 'Open Sans';
+}
+
+/* Header styles */
+header {
+  background-color: #f8f8f8;
+  padding: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+nav ul {
+  list-style: none;
+}
+
+nav ul li {
+  display: inline;
+  margin-right: 20px;
+}
+
+/* Hero section styles */
+.hero {
+  text-align: center;
+  padding: 50px 0;
+}
+
+.hero img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Contact form styles */
+.contact-form {
+  padding: 20px;
+  background-color: #f8f8f8;
+  border: 1px solid #ddd;
+  margin-bottom: 20px;
+}
+
+form label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+form input[type="text"],
+form input[type="email"],
+form input[type="tel"],
+form textarea {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+form button {
+  padding: 10px 20px;
+  background-color: #189259;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+}
+
+/* Contact info styles */
+.contact-info {
+  background-color: #f8f8f8;
+  padding: 20px;
+  border: 1px solid #ddd;
+  margin-bottom: 20px;
+}
+
+/* Map styles */
+.map {
+  padding: 20px;
+  border: 1px solid #ddd;
+  margin-bottom: 20px;
+}
+
+/* Opening hours styles */
+.opening-hours {
+  padding: 20px;
+  background-color: #f8f8f8;
+  border: 1px solid #ddd;
+  margin-bottom: 20px;
+}
+
+/* Footer styles
+footer {
+  background-color: #333;
+  color: #fff;
+  text-align: center;
+  padding: 10px 0;
+} */
+
+
+
+</style>
+
+</head>
+
+<body>
+  <nav class="navbar">
+    <img class="navbar-logo" src="/images/WhatsApp_Image_2023-05-18_at_4.45.03_PM-removebg-preview.png" alt="Hami Confectionery Logo">
+    <div class="navbar-links">
+      <a class="navbar-link" href="/">Home</a>
+      <a class="navbar-link" href="/about">About</a>
+      <a class="navbar-link" href="/contactus.html">Contact</a>
+      <a class="navbar-link" href="/index.html">Login</a>
+      <a class="navbar-link" href="/signup.html">Sign Up</a>
+    </div>
+    <div class="hamburger">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+  </nav>
+
+<br><br><br><br>
+  <main>
+    <section class="contact-form">
+      <h3>Contact Us</h3>
+      <form id="contactForm">
+        <label for="name">Name</label>
+        <input type="text" id="name" name="name" required>
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" required>
+        <label for="phone">Phone Number</label>
+        <input type="tel" id="phone" name="phone">
+        <label for="message">Message</label>
+        <textarea id="message" name="message" required></textarea>
+        <button type="submit">Submit</button>
+      </form>
+    </section>
+    <section class="contact-info">
+      <h3>Contact Information</h3>
+      <p>123 Pastry Street</p>
+      <p>City, Country</p>
+      <p>Email: info@pastryapp.com</p>
+      <p>Phone: +123 456 7890</p>
+    </section>
+    <section class="map">
+      <h3>Our Location</h3>
+      <!-- Add an embedded map here (e.g., Google Maps) -->
+    </section>
+    <section class="opening-hours">
+      <h3>Opening Hours</h3>
+      <ul>
+        <p>Monday - Friday: 8:00 AM - 6:00 PM</li>
+        <p>Saturday: 9:00 AM - 4:00 PM</li>
+        <p>Sunday: Closed</li>
+      </ul>
+    </section>
+  </main>
+
+
+
+
+
+  <!-- <section class="welcome-section">
+  <video class="welcome-video" src="/images/chopping.mp4" autoplay muted loop></video>
+  <h2 class="welcome-heading">
+    <span id="word-carousel"></span>
+  </h2>
+  <div class="carousel-arrows">
+    <div class="carousel-arrow carousel-prev">&#8249;</div>
+    <div class="carousel-arrow carousel-next">&#8250;</div>
+  </div>
+</section>
+
+
+
+<section class="services-section">
+<div class="service-card">
+  <i class="fas fa-birthday-cake service-card-icon"></i>
+  <h3 class="service-card-title">Cakes</h3>
+  <p class="service-card-description">Indulgent and beautifully crafted cakes for every occasion.</p>
+</div>
+<div class="service-card">
+  <i class="fas fa-utensils service-card-icon"></i>
+  <h3 class="service-card-title">Pastry</h3>
+  <p class="service-card-description">Artisanal pastries that delight the senses with their delicate flavors and textures.</p>
+</div>
+<div class="service-card">
+  <i class="fas fa-utensil-spoon service-card-icon"></i>
+  <h3 class="service-card-title">Cuisines</h3>
+  <p class="service-card-description">Explore a diverse range of culinary delights from around the world.</p>
+</div>
+</section>
+
+  <section class="testimonials-section">
+    <div class="testimonial-slide active">
+      <p>"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis semper sapien a nisi laoreet congue. Nam non
+        hendrerit tellus."</p>
+      <span>- Charissa Isaiah</span>
+    </div>
+    <div class="testimonial-slide">
+      <p>"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis semper sapien a nisi laoreet congue. Nam non
+        hendrerit tellus."</p>
+      <span>- Bankebi Akinsola</span>
+    </div>
+    <div class="testimonial-slide">
+      <p>"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis semper sapien a nisi laoreet congue. Nam non
+        hendrerit tellus."</p>
+      <span>- Peter Adegoke</span>
+  </section> -->
+
+
+  <br><br><br>
+
+  <footer class="footer">
+    <div class="footer-icons">
+        <a class="footer-icon" href="https://wa.me/+2348145336427" target="_blank"><i class="fab fa-whatsapp"></i></a>
+        <a class="footer-icon" href="mailto:hamiconfectionery@gmail.com"><i class="fas fa-envelope"></i></a>
+        <a class="footer-icon" href="https://facebook.com" target="_blank"><i class="fab fa-facebook"></i></a>
+        <a class="footer-icon" href="https://instagram.com" target="_blank"><i class="fab fa-instagram"></i></a>
+    </div>
+    <div class="footer-links">
+      <a class="footer-link" href="/privacypolicy.html">Privacy Policy</a>
+      <a class="footer-link" href="/termsofservice.html">Terms of Service</a>
+    </div>
+    <p>&copy; 2023 Hami Confectionery. All rights reserved.</p>
+    <p>Kemta Idi-aba, Abeokuta, Nigeria</p>
+  </footer>
+
+  <script>
+    const hamburger = document.querySelector('.hamburger');
+    const navbarLinks = document.querySelector('.navbar-links');
+  
+    hamburger.addEventListener('click', () => {
+      hamburger.classList.toggle('active');
+      navbarLinks.classList.toggle('active');
+    });
+  
+    window.addEventListener('resize', () => {
+      if (window.innerWidth > 768) {
+        navbarLinks.classList.remove('active');
+        hamburger.classList.remove('active');
+      }
+    });
+  
+    // const testimonialSlides = document.querySelectorAll('.testimonial-slide');
+    // let currentSlide = 0;
+  
+    // function showSlide() {
+    //   testimonialSlides.forEach((slide) => slide.classList.remove('active'));
+    //   testimonialSlides[currentSlide].classList.add('active');
+    //   currentSlide = (currentSlide + 1) % testimonialSlides.length;
+    // }
+  
+    // setInterval(showSlide, 3000);
+  
+    // window.addEventListener('scroll', () => {
+    //   const navbar = document.querySelector('.navbar');
+    //   navbar.classList.toggle('sticky', window.scrollY > 0);
+    // });
+  </script>
+
+  <script>
+
+    // Handle form submission
+    document.getElementById('contactForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+    // Your form submission logic here (e.g., send data to a server)
+    alert('Form submitted successfully!');
+    });
+
+
+  </script>
+  
+
+  <!-- <script>
+    
+  const words = [
+    "Welcome to Hami Confectionery! Your best cuisines and pastries plug",
+    "Our services are top-notch! We provide your taste",
+    "Hami Confectionery! We make your taste"
+  ];
+  
+  let currentIndex = 0;
+  const wordCarousel = document.getElementById("word-carousel");
+  
+  function rotateWords() {
+    wordCarousel.innerHTML = words[currentIndex];
+    currentIndex = (currentIndex + 1) % words.length;
+  }
+  
+  function showNextWord() {
+    currentIndex = (currentIndex + 1) % words.length;
+    rotateWords();
+  }
+  
+  function showPreviousWord() {
+    currentIndex = (currentIndex - 1 + words.length) % words.length;
+    rotateWords();
+  }
+  
+  // Initial word rotation
+  rotateWords();
+  
+  // Automatic word rotation every 4 seconds
+  setInterval(showNextWord, 4000);
+  
+  // Arrow button event listeners
+  document.querySelector(".carousel-prev").addEventListener("click", showPreviousWord);
+  document.querySelector(".carousel-next").addEventListener("click", showNextWord);
+  
+  
+  
+  </script> -->
+  
+</body>
+
+</html>
