@@ -6,469 +6,340 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Hami Confectionery</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-  <style>
-    /* Global Styles */
-    body {
-      margin: 0;
-      padding: 0;
-      font-family: system-ui, 'Open Sans';
-      overflow-x: hidden;
-    }
-
-  /* Navbar Styles */
-  /* Navbar Styles */
-  .navbar {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 30px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 20px;
-    background-color: #535252;
-    color: #333;
-    z-index: 101;
-    margin-left: -30px;
-  }
-
-  .navbar-logo {
-    width: 150px;
-    margin-left: 25px;
-    margin-top: 5px;
-  }
-
-  .navbar-links {
-    display: flex;
-  }
-
-  .navbar-link {
-    text-decoration: none;
-    color: #fff;
-    margin-right: 10px;
-  }
-
-  .hamburger {
-    display: none;
-    flex-direction: column;
-    cursor: pointer;
-  }
-
-  /* .hamburger span {
-    display: block;
-    width: 25px;
-    height: 3px;
-    background-color: #fff;
-    margin-bottom: 5px;
-  } */
-
-  /* Welcome Section Styles */
-  .welcome-section {
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    position: relative;
-  }
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9831366589426769"
+    crossorigin="anonymous"></script>
+    <style>
+      /* Global Styles */
+      body {
+        margin: 0;
+        padding: 0;
+        font-family: system-ui, 'Open Sans';
+        overflow-x: hidden;
+      }
   
-  .welcome-video {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-  
-  .welcome-heading {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-size: 2.5em;
-    text-align: center;
-    color: #fff;
-  }
-  
-  .carousel-arrows {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
-    z-index: 1;
-  }
-  
-  .carousel-arrow {
-    font-size: 2em;
-    color: #fff;
-    cursor: pointer;
-    opacity: 0.8;
-    transition: opacity 0.3s ease-in-out;
-  }
-  
-  .carousel-arrow:hover {
-    opacity: 1;
-  }
-  
-  .carousel-prev {
-    margin-left: 20px;
-  }
-  
-  .carousel-next {
-    margin-right: 20px;
-  }
-  
-  
-  /* Services Section Styles */
-  .services-section {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    padding: 50px 20px;
-    background-color: #f5f5f5;
-  }
-
-  .service-card {
-    flex-basis: 30%;
-    margin: 20px;
-    padding: 20px;
-    border-radius: 5px;
-    text-align: center;
-    background-color: #fff;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-  }
-
-  .service-card-icon {
-    width: 100px;
-    height: 100px;
-    margin-bottom: 0px;
-    font-size: 40px;
-  }
-
-  .service-card-title {
-    font-size: 1.5em;
-    margin-bottom: 10px;
-    margin-top: 0px;
-  }
-
-  .service-card-description {
-    font-size: 1em;
-    color: #666;
-  }
-
-  i .fas fa-birthday-cake service-card-icon {
-    margin-bottom: 2px;
-  }
-
-  /* Testimonials Section Styles */
-  .testimonials-section {
-    text-align: center;
-    padding: 50px 20px;
-    background-color: #333;
-    color: #fff;
-  }
-
-  .testimonial-slide {
-    display: none;
-  }
-
-  .testimonial-slide.active {
-    display: block;
-  }
-
-  .testimonial-slide p {
-    font-size: 1.2em;
-    margin-bottom: 10px;
-  }
-
-  .testimonial-slide span {
-    font-weight: bold;
-  }
-
-  /* Footer Styles */
-  .footer {
-    text-align: center;
-    padding: 20px;
-    background-color: #333;
-    color: #fff;
-  }
-
-  .footer-link {
-    text-decoration: none;
-    color: #fff;
-    margin-right: 10px;
-  }
-  .footer-icon {
-    color: #fff;
-  }
-
-  /* Navbar Styles */
-  .navbar {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 20px;
-    background-color: #189259;
-    color: #333;
-    z-index: 100;
-  }
-
-  .navbar-logo {
-    width: 150px;
-  }
-
-  .navbar-links {
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-  }
-
-  .navbar-link {
-    text-decoration: none;
-    color: #fafafa;
-    margin-right: 30px;
-    transition: color 0.9s ease-in;
-  }
-
-  .navbar-link:hover {
-    color: #bceec7;
-  }
-
-  .hamburger {
-    display: none;
-    position: relative;
-    cursor: pointer;
-    z-index: 101;
-  }
-
-  .hamburger span {
-    display: block;
-    width: 25px;
-    height: 3px;
-    background-color: #ffffff;
-    margin-bottom: 5px;
-    transition: background-color 0.7s ease-in;
-  }
-
-  .hamburger.active span:nth-child(1) {
-    transform: translateY(8px) rotate(45deg);
-    background-color: #bceec7;
-  }
-
-  .hamburger.active span:nth-child(2) {
-    opacity: 0;
-  }
-
-  .hamburger.active span:nth-child(3) {
-    transform: translateY(-8px) rotate(-45deg);
-    background-color: #bceec7;
-  }
-
-  /* Media Queries */
-  @media screen and (max-width: 768px) {
-    .navbar-links {
+    /* Navbar Styles */
+    /* Navbar Styles */
+    .navbar {
       position: fixed;
       top: 0;
       left: 0;
       width: 100%;
-      height: 100vh;
+      height: 30px;
       display: flex;
-      flex-direction: column;
-      justify-content: center;
+      justify-content: space-between;
       align-items: center;
+      padding: 20px;
+      background-color: #535252;
+      color: #333;
+      z-index: 101;
+      margin-left: -30px;
+    }
+  
+    .navbar-logo {
+      width: 150px;
+      margin-left: 25px;
+      margin-top: 5px;
+    }
+  
+    .navbar-links {
+      display: flex;
+    }
+  
+    .navbar-link {
+      text-decoration: none;
+      color: #fff;
+      margin-right: 10px;
+    }
+  
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      cursor: pointer;
+    }
+  
+  
+  
+    /* Footer Styles */
+    .footer {
+      text-align: center;
+      padding: 20px;
+      background-color: #333;
+      color: #fff;
+    }
+  
+    .footer-link {
+      text-decoration: none;
+      color: #fff;
+      margin-right: 10px;
+    }
+    .footer-icon {
+      color: #fff;
+    }
+  
+    /* Navbar Styles */
+    .navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px;
       background-color: #189259;
-      transform: translateX(100%);
-      transition: transform 0.3s ease-in;
+      color: #333;
       z-index: 100;
     }
-
-    .navbar-links.active {
-      transform: translateX(0%);
+  
+    .navbar-logo {
+      width: 150px;
     }
-
+  
+    .navbar-links {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+    }
+  
     .navbar-link {
-      margin-bottom: 10px;
+      text-decoration: none;
+      color: #fafafa;
+      margin-right: 30px;
+      transition: color 0.9s ease-in;
     }
-
+  
     .navbar-link:hover {
       color: #bceec7;
     }
-
+  
     .hamburger {
-      display: flex;
-      margin-left: 10px;
+      display: none;
+      position: relative;
+      cursor: pointer;
+      z-index: 101;
     }
+  
+    .hamburger span {
+      display: block;
+      width: 25px;
+      height: 3px;
+      background-color: #ffffff;
+      margin-bottom: 5px;
+      transition: background-color 0.7s ease-in;
+    }
+  
+    .hamburger.active span:nth-child(1) {
+      transform: translateY(8px) rotate(45deg);
+      background-color: #bceec7;
+    }
+  
+    .hamburger.active span:nth-child(2) {
+      opacity: 0;
+    }
+  
+    .hamburger.active span:nth-child(3) {
+      transform: translateY(-8px) rotate(-45deg);
+      background-color: #bceec7;
+    }
+  
+    /* Media Queries */
+    @media screen and (max-width: 768px) {
+      .navbar-links {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        background-color: #189259;
+        transform: translateX(100%);
+        transition: transform 0.3s ease-in;
+        z-index: 100;
+      }
+  
+      .navbar-links.active {
+        transform: translateX(0%);
+      }
+  
+      .navbar-link {
+        margin-bottom: 10px;
+      }
+  
+      .navbar-link:hover {
+        color: #bceec7;
+      }
+  
+      .hamburger {
+        display: flex;
+        margin-left: 10px;
+      }
+    }
+  
+  
+  
+  
+  
+  
+  /* Reset some default styles */
+  body, h1, h2, h3, p, ul, li {
+    margin: 0;
+    padding: 0;
   }
-
-
-
-
-
-
-/* Reset some default styles */
-body, h1, h2, h3, p, ul, li {
-  margin: 0;
-  padding: 0;
-}
-
-body {
-  font-family: system-ui, 'Open Sans';
-}
-
-/* Header styles */
-header {
-  background-color: #f8f8f8;
-  padding: 20px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-nav ul {
-  list-style: none;
-}
-
-nav ul li {
-  display: inline;
-  margin-right: 20px;
-}
-
-/* Hero section styles */
-.hero {
-  text-align: center;
-  padding: 50px 0;
-}
-
-.hero img {
-  max-width: 100%;
-  height: auto;
-}
-
-/* Contact form styles */
-.contact-form {
-  padding: 20px;
-  background-color: #f8f8f8;
-  border: 1px solid #ddd;
-  margin-bottom: 20px;
-}
-
-form label {
-  display: block;
-  margin-bottom: 5px;
-}
-
-form input[type="text"],
-form input[type="email"],
-form input[type="tel"],
-form textarea {
-  width: 100%;
-  padding: 10px;
-  margin-bottom: 10px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-}
-
-form button {
-  padding: 10px 20px;
-  background-color: #189259;
-  border: none;
-  color: #fff;
-  cursor: pointer;
-}
-
-/* Contact info styles */
-.contact-info {
-  background-color: #f8f8f8;
-  padding: 20px;
-  border: 1px solid #ddd;
-  margin-bottom: 20px;
-}
-
-/* Map styles */
-.map {
-  padding: 20px;
-  border: 1px solid #ddd;
-  margin-bottom: 20px;
-}
-
-/* Opening hours styles */
-.opening-hours {
-  padding: 20px;
-  background-color: #f8f8f8;
-  border: 1px solid #ddd;
-  margin-bottom: 20px;
-}
-
-/* Footer styles
-footer {
-  background-color: #333;
-  color: #fff;
-  text-align: center;
-  padding: 10px 0;
-} */
-
-
-
-/* Add or update in styles.css */
-.map-container {
-  position: relative;
-  overflow: hidden;
-  padding-bottom: 56.25%; /* Maintain 16:9 aspect ratio for responsive scaling */
-}
-
-.map-container iframe {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-}
-
-</style>
-
-</head>
-
-<body>
-  <nav class="navbar">
-    <img class="navbar-logo" src="/images/WhatsApp_Image_2023-05-18_at_4.45.03_PM-removebg-preview.png" alt="Hami Confectionery Logo">
-    <div class="navbar-links">
-      <a class="navbar-link" href="/">Home</a>
-      <a class="navbar-link" href="/about">About</a>
-      <a class="navbar-link" href="/contactus.html">Contact</a>
-      <a class="navbar-link" href="/index.html">Login</a>
-      <a class="navbar-link" href="/signup.html">Sign Up</a>
-    </div>
-    <div class="hamburger">
-      <span></span>
-      <span></span>
-      <span></span>
-    </div>
-  </nav>
-
-<br><br><br><br>
-  <main>
-    <section class="contact-form">
-      <h3>Contact Us</h3>
-      <form id="contactForm">
-        <label for="name">Name</label>
-        <input type="text" id="name" name="name" required>
-        <label for="email">Email</label>
-        <input type="email" id="email" name="email" required>
-        <label for="phone">Phone Number</label>
-        <input type="tel" id="phone" name="phone">
-        <label for="message">Message</label>
-        <textarea id="message" name="message" required></textarea>
-        <button type="submit">Submit</button>
-      </form>
-    </section>
+  
+  body {
+    font-family: system-ui, 'Open Sans';
+  }
+  
+  /* Header styles */
+  header {
+    background-color: #f8f8f8;
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  nav ul {
+    list-style: none;
+  }
+  
+  nav ul li {
+    display: inline;
+    margin-right: 20px;
+  }
+  
+  /* Hero section styles */
+  .hero {
+    text-align: center;
+    padding: 50px 0;
+  }
+  
+  .hero img {
+    max-width: 100%;
+    height: auto;
+  }
+  
+  /* Contact form styles */
+  .contact-form {
+    padding: 20px;
+    background-color: #f8f8f8;
+    border: 1px solid #ddd;
+    margin-bottom: 20px;
+  }
+  
+  form label {
+    display: block;
+    margin-bottom: 5px;
+  }
+  
+  form input[type="text"],
+  form input[type="email"],
+  form input[type="tel"],
+  form textarea {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  
+  form button {
+    padding: 10px 20px;
+    background-color: #189259;
+    border: none;
+    color: #fff;
+    cursor: pointer;
+  }
+  
+  /* Contact info styles */
+  .contact-info {
+    background-color: #f8f8f8;
+    padding: 20px;
+    border: 1px solid #ddd;
+    margin-bottom: 20px;
+  }
+  
+  /* Map styles */
+  .map {
+    padding: 20px;
+    border: 1px solid #ddd;
+    margin-bottom: 20px;
+  }
+  
+  /* Opening hours styles */
+  .opening-hours {
+    padding: 20px;
+    background-color: #f8f8f8;
+    border: 1px solid #ddd;
+    margin-bottom: 20px;
+  }
+  
+  /* Footer styles
+  footer {
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+    padding: 10px 0;
+  } */
+  
+  
+  
+  
+  /* Add or update in styles.css */
+  .map {
+    position: relative;
+    overflow: hidden;
+    padding-bottom: 56.25%; /* Maintain 16:9 aspect ratio for responsive scaling */
+  }
+  
+  .map iframe {
+    position: absolute;
+    top: 3;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+  
+  </style>
+  
+  </head>
+  
+  <body>
+    <nav class="navbar">
+      <img class="navbar-logo" src="/images/WhatsApp_Image_2023-05-18_at_4.45.03_PM-removebg-preview.png" alt="Hami Confectionery Logo">
+      <div class="navbar-links">
+        <a class="navbar-link" href="/">Home</a>
+        <a class="navbar-link" href="/about">About</a>
+        <a class="navbar-link" href="/contactus.html">Contact</a>
+        <a class="navbar-link" href="/index.html">Login</a>
+        <a class="navbar-link" href="/signup.html">Sign Up</a>
+      </div>
+      <div class="hamburger">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+    </nav>
+  
+  <br><br><br><br>
+    <main>
+      <section class="contact-form">
+        <h3>Contact Us</h3>
+        <form id="contactForm">
+          <label for="name">Name</label>
+          <input type="text" id="name" name="name" required>
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email" required>
+          <label for="phone">Phone Number</label>
+          <input type="tel" id="phone" name="phone">
+          <label for="message">Message</label>
+          <textarea id="message" name="message" required></textarea>
+          <button type="submit">Submit</button>
+        </form>
+      </section>
     <section class="contact-info">
       <h3>Contact Information</h3>
       <p>Kemta Idi-aba, Abeokuta</p>
@@ -478,8 +349,9 @@ footer {
     </section>
     <section class="map">
       <h3>Our Location</h3>
+      <br>
       <!-- Add an embedded map here (e.g., Google Maps) -->
-      <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d12345.6789!2d12.3456789!3d12.3456789!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTPCsDAzJzA2LjEiTiAxMsKwMjInMzcuMCJF!5e0!3m2!1sen!2sus!4v1631871234567!5m2!1sen!2sus" width="425" height="350" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+      <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d7917.116417966173!2d3.3987885!3d7.1769562!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x103a492effa5b5b1%3A0xd350bb048145dfe6!2sSmart%20Tech%20Hub%20Inc!5e0!3m2!1sen!2sng!4v1692052012771!5m2!1sen!2sng" width="400" height="300" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
     </section>
     <section class="opening-hours">
       <h3>Opening Hours</h3>

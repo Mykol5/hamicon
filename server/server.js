@@ -1026,18 +1026,15 @@ app.get('/', (req, res) => {
   
     <section class="testimonials-section">
       <div class="testimonial-slide active">
-        <p>"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis semper sapien a nisi laoreet congue. Nam non
-          hendrerit tellus."</p>
+        <p>"Exquisite flavors, impeccable delivery. Satisfied my cravings!"</p>
         <span>- Charissa Isaiah</span>
       </div>
       <div class="testimonial-slide">
-        <p>"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis semper sapien a nisi laoreet congue. Nam non
-          hendrerit tellus."</p>
+        <p>"Mouthwatering pastries delivered fresh! A taste of heaven."</p>
         <span>- Bankebi Akinsola</span>
       </div>
       <div class="testimonial-slide">
-        <p>"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis semper sapien a nisi laoreet congue. Nam non
-          hendrerit tellus."</p>
+        <p>"Delicious pastries, quick service. Will order again!"</p>
         <span>- Peter Adegoke</span>
     </section>
   
@@ -1130,7 +1127,7 @@ app.get('/', (req, res) => {
     
     </script>
 
-    <script data-cfasync="false" type="text/javascript" data-adel="atag" src="//acscdn.com/script/atg.js" czid="x6kjlcju1d"></script>
+    
     
   </body>
   
