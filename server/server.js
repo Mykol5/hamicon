@@ -401,7 +401,7 @@ app.get('/dashboard', (req, res) => {
   const sessionId = req.cookies.sessionId;
   console.log('Session ID from cookie:', sessionId);
 
-  pool.query('SELECT * FROM sessions WHERE sessionid = $1', [sessionId], (err, sessionResult) => {
+  pool.query('SELECT * FROM sessions WHERE sessionId = $1::uuid', [sessionId], (err, sessionResult) => {
     if (err) {
       console.error('Error querying sessions table:', err.message);
       return res.status(500).send('Error querying database');
@@ -423,7 +423,7 @@ app.get('/dashboard', (req, res) => {
 
         if (user) {
           // Retrieve the profile image for the user
-          pool.query('SELECT image_data FROM profile_images WHERE user_id = $1', [userId], (err, imageResult) => {
+          pool.query('SELECT image_data FROM profile_images WHERE user_id = $1::uuid', [userId], (err, imageResult) => {
             if (err) {
               console.error('Error querying profile images:', err.message);
               return res.status(500).send('Error querying database');
@@ -481,7 +481,7 @@ app.get('/customerservice', (_req, res) => {
 app.get('/profile', (req, res) => {
   const sessionId = req.cookies.sessionId;
 
-  pool.query('SELECT * FROM sessions WHERE sessionid = $1', [sessionId], (err, sessionResult) => {
+  pool.query('SELECT * FROM sessions WHERE sessionId = $1::uuid', [sessionId], (err, sessionResult) => {
     if (err) {
       console.error('Error querying sessions:', err.message);
       return res.sendStatus(500);
@@ -507,7 +507,7 @@ app.get('/profile', (req, res) => {
 
         if (user) {
           // Fetch profile image from profile_images table
-          pool.query('SELECT image_data FROM profile_images WHERE user_id = $1', [userId], (err, imageResult) => {
+          pool.query('SELECT image_data FROM profile_images WHERE user_id = $1::uuid', [userId], (err, imageResult) => {
             if (err) {
               console.error('Error querying profile images:', err.message);
               return res.sendStatus(500);
@@ -543,7 +543,7 @@ app.post('/update-profile', upload.single('profileImage'), (req, res) => {
   console.log('Multer middleware executed');
   const sessionId = req.cookies.sessionId;
 
-  pool.query('SELECT * FROM sessions WHERE sessionid = $1', [sessionId], (err, sessionResult) => {
+  pool.query('SELECT * FROM sessions WHERE sessionId = $1::uuid', [sessionId], (err, sessionResult) => {
     if (err) {
       console.error('Error querying database:', err.message);
       return res.sendStatus(500);
@@ -558,7 +558,7 @@ app.post('/update-profile', upload.single('profileImage'), (req, res) => {
       const profileImage = req.file ? req.file.buffer : null;
 
       // Check if a profile image exists for the user
-      pool.query('SELECT * FROM profile_images WHERE user_id = $1', [userId], (err, imageResult) => {
+      pool.query('SELECT * FROM profile_images WHERE user_id = $1::uuid', [userId], (err, imageResult) => {
         if (err) {
           console.error('Error querying profile images:', err.message);
           return res.sendStatus(500);
@@ -614,7 +614,7 @@ app.post('/update-profile', upload.single('profileImage'), (req, res) => {
 app.post('/logout', (req, res) => {
   const sessionId = req.cookies.sessionId;
 
-  pool.query('SELECT * FROM sessions WHERE sessionId = $1', [sessionId], (err, sessionResult) => {
+  pool.query('SELECT * FROM sessions WHERE sessionId = $1::uuid', [sessionId], (err, sessionResult) => {
     if (err) {
       console.error('Error querying session:', err.message);
       return res.sendStatus(500);
@@ -1187,7 +1187,7 @@ app.post('/add-to-cart', (req, res) => {
 
   const sessionId = req.cookies.sessionId;
 
-  pool.query('SELECT * FROM sessions WHERE sessionId = $1', [sessionId], (err, sessionResult) => {
+  pool.query('SELECT * FROM sessions WHERE sessionId = $1::uuid', [sessionId], (err, sessionResult) => {
     if (err) {
       console.error('Error querying database:', err.message);
       return res.status(500).json({ status: 'error', message: 'Internal Server Error' });
@@ -1214,7 +1214,7 @@ app.post('/add-to-cart', (req, res) => {
         return res.status(404).json({ status: 'error', message: 'User not found' });
       }
 
-      if (!user.phone || !user.profileimage) {
+      if (!user.phone) {
         return res.status(403).json({ status: 'error', message: 'Please update your profile information before placing an order.' });
       }
 
@@ -1254,7 +1254,7 @@ app.post('/add-to-cart', (req, res) => {
 app.get('/cart-count', (req, res) => {
   const sessionId = req.cookies.sessionId;
 
-  pool.query('SELECT * FROM sessions WHERE sessionId = $1', [sessionId], (err, sessionResult) => {
+  pool.query('SELECT * FROM sessions WHERE sessionId = $1::uuid', [sessionId], (err, sessionResult) => {
     if (err) {
       console.error('Error querying database:', err.message);
       return res.sendStatus(500);
@@ -1283,7 +1283,7 @@ app.get('/cart-count', (req, res) => {
 app.get('/order', (req, res) => {
   const sessionId = req.cookies.sessionId;
 
-  pool.query('SELECT * FROM sessions WHERE sessionId = $1', [sessionId], (err, sessionResult) => {
+  pool.query('SELECT * FROM sessions WHERE sessionId = $1::uuid', [sessionId], (err, sessionResult) => {
     if (err) {
       console.error('Error querying database:', err.message);
       return res.sendStatus(500);
@@ -1322,7 +1322,7 @@ app.post('/delete-from-cart', (req, res) => {
     return res.json({ success: false, message: 'Invalid session ID' });
   }
   
-  pool.query('SELECT * FROM sessions WHERE sessionId = $1', [sessionId], (err, sessionResult) => {
+  pool.query('SELECT * FROM sessions WHERE sessionId = $1::uuid', [sessionId], (err, sessionResult) => {
     if (err) {
       console.error('Error querying database:', err.message);
       return res.sendStatus(500);
@@ -1363,7 +1363,7 @@ app.get('/payment', (req, res) => {
 
   console.log('Session ID:', sessionId);
 
-  pool.query('SELECT * FROM sessions WHERE sessionId = $1', [sessionId], (err, sessionResult) => {
+  pool.query('SELECT * FROM sessions WHERE sessionId = $1::uuid', [sessionId], (err, sessionResult) => {
     if (err) {
       console.error('Error retrieving session from the database:', err);
       res.redirect('/index.html');
@@ -1456,7 +1456,7 @@ app.post('/submit-payment-proof', upload.single('paymentProof'), (req, res) => {
 
 
 
-  pool.query('SELECT * FROM sessions WHERE sessionId = $1', [sessionId], (err, sessionResult) => {
+  pool.query('SELECT * FROM sessions WHERE sessionId = $1::uuid', [sessionId], (err, sessionResult) => {
     if (err) {
       console.error('Error retrieving session from the database:', err);
       res.redirect('/index.html');

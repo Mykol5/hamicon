@@ -1,24 +1,10 @@
 const { Pool } = require('pg');
 
-// Create a new PostgreSQL pool
 const pool = new Pool({
-  user: 'postgres',
-  password: 'Mykol~5555',
-  host: '197.211.58.47',
-  port: 5433, // default PostgreSQL port is 5432
-  database: 'postgres',
+   connectionString: 'postgres://xyplnpvs:xOJSBmp2PauWW0JbfkacjzMmbro_xzzl@stampy.db.elephantsql.com/xyplnpvs',
 });
 
-// const pool = new Pool({
-//   user: 'hamcon',
-//   password: 'D0qqM68OAZETPfkdPPrKEtcdlBfdKrbZ',
-//   host: 'dpg-cinlh4d9aq06u3i61gng-a',
-//   port: 5432, // default PostgreSQL port is 5432
-//   database: 'dbhamcon',
-// });
-
-// Create the users table if it doesn't exist
-pool.query(`
+const createTablesQuery = `
   CREATE TABLE IF NOT EXISTS users (
     userId UUID PRIMARY KEY,
     name TEXT,
@@ -27,34 +13,16 @@ pool.query(`
     lastLoginTime BIGINT,
     phone TEXT,
     profileImage TEXT
-  )
-`, (err) => {
-  if (err) {
-    console.error('Error creating users table:', err);
-  } else {
-    console.log('Users table created successfully');
-  }
-});
+  );
 
-// Create the items table if it doesn't exist
-pool.query(`
   CREATE TABLE IF NOT EXISTS items (
     itemId UUID PRIMARY KEY,
     name TEXT,
     price REAL,
     quantity INTEGER,
     imageUrl TEXT
-  )
-`, (err) => {
-  if (err) {
-    console.error('Error creating items table:', err);
-  } else {
-    console.log('Items table created successfully');
-  }
-});
+  );
 
-// Create the orders table if it doesn't exist
-pool.query(`
   CREATE TABLE IF NOT EXISTS orders (
     orderId UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
     userId UUID,
@@ -64,20 +32,11 @@ pool.query(`
     price REAL,
     imageUrl TEXT,
     addedTime BIGINT,
-    paymentProof BYTEA, -- New column for storing payment proof file data
+    paymentProof BYTEA,
     FOREIGN KEY (userId) REFERENCES users(userId),
     FOREIGN KEY (itemId) REFERENCES items(itemId)
-  )
-`, (err) => {
-  if (err) {
-    console.error('Error creating orders table:', err);
-  } else {
-    console.log('Orders table created successfully');
-  }
-});
+  );
 
-// Create the sessions table if it doesn't exist
-pool.query(`
   CREATE TABLE IF NOT EXISTS sessions (
     sessionId UUID PRIMARY KEY,
     userId UUID,
@@ -85,63 +44,24 @@ pool.query(`
     data TEXT NULL,
     isNewUser INTEGER DEFAULT 0,
     FOREIGN KEY (userId) REFERENCES users(userId)
-  )
-`, (err) => {
-  if (err) {
-    console.error('Error creating sessions table:', err);
-  } else {
-    console.log('Sessions table created successfully');
-  }
-});
+  );
 
-// Create the profile_images table if it doesn't exist
-pool.query(`
   CREATE TABLE IF NOT EXISTS profile_images (
     id SERIAL PRIMARY KEY,
-    user_id INT UNIQUE REFERENCES users(id),
+    user_id UUID UNIQUE REFERENCES users(userId),
     image_data BYTEA
-  )
-`, (err) => {
+  );
+
+  -- Add more table creation statements here
+`;
+
+pool.query(createTablesQuery, (err) => {
   if (err) {
-    console.error('Error creating profile_images table:', err);
+    console.error('Error creating tables:', err);
   } else {
-    console.log('Profile Images table created successfully');
+    console.log('Tables created successfully');
   }
 });
-
-// Create the chat_history table if it doesn't exist
-pool.query(`
-  DROP TABLE chat_history;
-  CREATE TABLE IF NOT EXISTS chat_history (
-    id SERIAL PRIMARY KEY,
-    user_id UUID NOT NULL,
-    content TEXT NOT NULL,
-    sent_at TIMESTAMP NOT NULL
-  )
-`, (err) => {
-  if (err) {
-    console.error('Error creating chat_history table:', err);
-  } else {
-    console.log('Chat History table created successfully');
-  }
-});
-
-// Create the messages table if it doesn't exist
-pool.query(`
-  CREATE TABLE IF NOT EXISTS messages (
-    id SERIAL PRIMARY KEY,
-    user_id UUID NOT NULL,
-    content TEXT NOT NULL,
-    sent_at TIMESTAMP NOT NULL
-  )
-`, (err) => {
-  if (err) {
-    console.error('Error creating messages table:', err);
-  } else {
-    console.log('Messages table created successfully');
-  }
-});
-
 
 module.exports = pool;
 
