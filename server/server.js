@@ -1479,11 +1479,11 @@ app.post('/submit-payment-proof', upload.single('paymentProof'), (req, res) => {
       // Calculate shipping fee based on the selected city
       let shippingFee = 0;
       if (city === 'Abeokuta') {
-        shippingFee = 10; // Set the appropriate shipping fee for Abeokuta
+        shippingFee = 0; // Set the appropriate shipping fee for Abeokuta
       } else if (city === 'Ibadan') {
-        shippingFee = 15; // Set the appropriate shipping fee for Ibadan
+        shippingFee = 1000; // Set the appropriate shipping fee for Ibadan
       } else if (city === 'Lagos') {
-        shippingFee = 20; // Set the appropriate shipping fee for Lagos
+        shippingFee = 1500; // Set the appropriate shipping fee for Lagos
       }
 
       // Retrieve other data from the request body
