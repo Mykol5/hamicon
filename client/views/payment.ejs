@@ -266,7 +266,7 @@
   <div class="payment-container">
     <h1>Payment</h1>
     <p>Please enter your payment details below:</p>
-    <p>Total Price: $<%= totalPrice %></p>
+    <p>Total Price: ₦<%= totalPrice %></p>
     <form class="payment-form" action="/process-payment" method="POST">
       <input type="text" name="cardNumber" class="payment-input" placeholder="Card Number" required>
       <input type="text" name="cardHolder" class="payment-input" placeholder="Card Holder" required>
@@ -293,8 +293,8 @@
       <div class="bank-account-section">
         <h1>Pay to Bank Account</h1>
         <p>Please make the payment to the following account:</p>
-        <p>Account Number: 1234567890</p>
-        <p id="totalPrice">Total Price: $<%= totalPrice %></p>
+        <p>Account Number: 8145336427 (OPAY)</p>
+        <p id="totalPrice">Total Price: ₦<%= totalPrice %></p>
     <br>
         <form action="/submit-payment-proof" method="post" enctype="multipart/form-data">
 
@@ -455,7 +455,7 @@
   // Get the necessary elements
   const citySelect = document.getElementById('city');
   const totalPriceElement = document.getElementById('totalPrice');
-  const originalTotalPrice = parseFloat(totalPriceElement.textContent.replace('Total Price: $', ''));
+  const originalTotalPrice = parseFloat(totalPriceElement.textContent.replace('Total Price: ₦', ''));
 
   // Calculate and update the total price based on the selected city
   if (totalPriceElement) {
@@ -474,7 +474,7 @@
 
       // Calculate the new total price by adding the shipping fee
       const newTotal = originalTotalPrice + shippingFee;
-      totalPriceElement.textContent = `Total Price: $${newTotal}`;
+      totalPriceElement.textContent = `Total Price: ₦${newTotal}`;
     });
   }
 </script>
