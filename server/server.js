@@ -1438,6 +1438,38 @@ app.post('/process-payment', (req, res) => {
 });
 
 
+const axios = require('axios');
+
+const username = 'eprofitcustomerservice@gmail.com';
+const apiKey = '4e898e42bbc9946377128b704b5fd783bf792a9a';
+
+// Function to send an SMS using the provided SMS service
+async function sendSms(smsData) {
+  try {
+    const response = await axios.post(
+      'https://api.ebulksms.com:4433/sendsms',
+      smsData, // Send the JSON data directly
+      {
+        headers: {
+          'Content-Type': 'application/json', // Set the JSON content type
+          auth: {
+            username: username,
+            password: apiKey,
+          },
+        },
+      }
+    );
+
+    if (response.data.response.status === 'SUCCESS') {
+      console.log('SMS sent successfully.');
+    } else {
+      console.error('SMS sending failed. Error:', response.data.response.status);
+    }
+  } catch (error) {
+    console.error('An error occurred:', error.message);
+  }
+}
+
 // Set up the Multer storage configuration for payment proof upload
 const paymentProofStorage = multer.diskStorage({
   destination: path.join(__dirname, 'paymentProof'),
@@ -1455,6 +1487,13 @@ app.post('/submit-payment-proof', upload.single('paymentProof'), (req, res) => {
   const sessionId = req.cookies.sessionId;
 
 
+  console.log('Session ID from cookie:', sessionId);
+
+  // Define userSmsData and adminSmsData here to make them accessible throughout the route
+  let userSmsData;
+  let adminSmsData;
+  let userId; // Declare userId here
+  let userEmail; // Declare userEmail here
 
   pool.query('SELECT * FROM sessions WHERE sessionId = $1::uuid', [sessionId], (err, sessionResult) => {
     if (err) {
@@ -1467,60 +1506,145 @@ app.post('/submit-payment-proof', upload.single('paymentProof'), (req, res) => {
 
     if (session && session.userid) {
       const userId = session.userid;
-      const userEmail = session.email;
+      userEmail = session.email;
 
-        // Retrieve the payment proof file path
-      const paymentProofPath = req.file.path;
-
-      // Retrieve the shipping address and other data from the request body
-      const city = req.body.city;
-      const shippingAddress = req.body.shippingAddress;
-      
-      // Calculate shipping fee based on the selected city
-      let shippingFee = 0;
-      if (city === 'Abeokuta') {
-        shippingFee = 0; // Set the appropriate shipping fee for Abeokuta
-      } else if (city === 'Ibadan') {
-        shippingFee = 1000; // Set the appropriate shipping fee for Ibadan
-      } else if (city === 'Lagos') {
-        shippingFee = 1500; // Set the appropriate shipping fee for Lagos
-      }
-
-      // Retrieve other data from the request body
-      const paymentProof = req.file;
-      const total = parseFloat(req.body.total);
-
-      // Calculate the new total price with the shipping fee added
-      const newTotal = total + shippingFee;
-
-      pool.query('SELECT * FROM orders WHERE userid = $1', [userId], (err, orderResult) => {
+      // Retrieve the user's phone number from the database
+      pool.query('SELECT phone FROM users WHERE userid = $1', [userId], (err, phoneResult) => {
         if (err) {
-          console.error('Error retrieving order data from the database:', err);
-          res.redirect('/index.html');
-          return;
+          console.error('Error querying user profile:', err.message);
+          return res.sendStatus(500);
         }
 
-        const orderData = orderResult.rows;
+        if (phoneResult.rows.length > 0) {
+          const userPhoneNumber = phoneResult.rows[0].phone;
+          console.log('User phone number retrieved:', userPhoneNumber); // Add this line
 
-        console.log('Order Data:', orderData);
+            // After sending the email to the user, send a text message to the user
+            sendSms({
+              SMS: {
+                auth: {
+                  username: username,
+                  apikey: apiKey,
+                },
+                message: {
+                  sender: 'HAMI CONF',
+                  messagetext: 'Your pastry order has been confirmed and is being processed. We will deliver your order as soon as possible.',
+                  flash: '0',
+                },
+                recipients: {
+                  gsm: [
+                    {
+                      msidn: userPhoneNumber, // Use the user's phone number retrieved from the database
+                      msgid: 'unique_message_id_for_user',
+                    },
+                  ],
+                },
+              },
+            })
+            .then(() => {
+              console.log('Order confirmation SMS sent to user');
+            })
+            .catch((smsError) => {
+              console.error('Error sending order confirmation SMS to user:', smsError);
+            });
 
-        // Extract item IDs and images from orderData
-        const items = orderData.map((item) => item.name);
-        const quantity = orderData.map((item) => item.quantity);
-        const itemId = orderData.map((item) => item.itemid);
-        const itemImages = orderData.map((item) => item.imageurl);
-        const total = orderData.reduce((sum, item) => sum + item.price * item.quantity, 0);
-        const deliverytime = 'In some minutes.'; // Replace with the actual delivery time
+            // Send an SMS to the admin
+            sendSms({
+              SMS: {
+                auth: {
+                  username: username,
+                  apikey: apiKey,
+                },
+                message: {
+                  sender: 'HAMI CONF',
+                  messagetext: 'A new pastry order has been received. Please process the order and contact the user for further details.',
+                  flash: '0',
+                },
+                recipients: {
+                  gsm: [
+                    {
+                      msidn: 2348145336427, // Use the admin's phone number here
+                      msgid: 'unique_message_id_for_admin',
+                    },
+                  ],
+                },
+              },
+            })
+            .then(() => {
+              console.log('Order notification SMS sent to admin');
+            })
+            .catch((smsError) => {
+              console.error('Error sending order notification SMS to admin:', smsError);
+            });
 
+        } else {
+          console.error('User phone number not found');
+        }
+      });
+    } else {
+      res.sendStatus(401);
+    }
+  });
 
-        console.log('Payment proof submitted:', req.file);
-        console.log('User Email:', userEmail);
-        console.log('Order Items:', items);
-        console.log('Quantity:', quantity);
-        console.log('Item IDs:', itemId);
-        console.log('Item Images:', itemImages);
-        console.log('Total Price:', total);
-        console.log('Delivery Time:', deliverytime);
+  // Retrieve the payment proof file path
+  const paymentProofPath = req.file.path;
+
+  // Retrieve the shipping address and other data from the request body
+  const city = req.body.city;
+  const shippingAddress = req.body.shippingAddress;
+
+  // Calculate shipping fee based on the selected city
+  let shippingFee = 0;
+  if (city === 'Abeokuta') {
+    shippingFee = 300; // Set the appropriate shipping fee for Abeokuta
+  } else if (city === 'Ibadan') {
+    shippingFee = 1000; // Set the appropriate shipping fee for Ibadan
+  } else if (city === 'Lagos') {
+    shippingFee = 1500; // Set the appropriate shipping fee for Lagos
+  }
+
+  // Retrieve other data from the request body
+  const paymentProof = req.file;
+  const total = parseFloat(req.body.total);
+
+  // Calculate the new total price with the shipping fee added
+  const newTotal = total + shippingFee;
+
+  pool.query('SELECT * FROM orders WHERE userid = $1', [userId], (err, orderResult) => {
+    if (err) {
+      console.error('Error retrieving order data from the database:', err);
+      res.redirect('/index.html');
+      return;
+    }
+
+    const orderData = orderResult.rows;
+
+    console.log('Order Data:', orderData);
+
+    // Extract item IDs and images from orderData
+    const items = orderData.map((item) => item.name);
+    const quantity = orderData.map((item) => item.quantity);
+    const itemId = orderData.map((item) => item.itemid);
+    const itemImages = orderData.map((item) => item.imageurl);
+    const total = orderData.reduce((sum, item) => sum + item.price * item.quantity, 0);
+    const deliverytime = 'In some minutes.'; // Replace with the actual delivery time
+
+    console.log('Payment proof submitted:', req.file);
+    console.log('User Email:', userEmail);
+    console.log('Order Items:', items);
+    console.log('Quantity:', quantity);
+    console.log('Item IDs:', itemId);
+    console.log('Item Images:', itemImages);
+    console.log('Total Price:', total);
+    console.log('Delivery Time:', deliverytime);
+
+        // Check if userEmail is defined before using it
+    if (userEmail) {
+      console.log('User Email:', userEmail);
+    } else {
+      console.log('User Email is undefined.');
+      return res.status(500).send('User Email is undefined.');
+    }
 
         const baseUrl = 'https://hamcon.onrender.com';
 
@@ -1539,7 +1663,7 @@ app.post('/submit-payment-proof', upload.single('paymentProof'), (req, res) => {
               <body>
                 <div class="container">
                   <h1>Order Confirmation</h1>
-                  <p>Thank you for your order!</p>
+                  <p>Thank you for your order!
                   <p>Your order has been confirmed and is being processed.</p>
                   <p>Items:</p>
                   <ul>
@@ -1568,19 +1692,28 @@ app.post('/submit-payment-proof', upload.single('paymentProof'), (req, res) => {
             </html>
           `,
         };
-
+    
+        const transporter = nodemailer.createTransport({
+          service: 'Gmail',
+          auth: {
+            user: 'hamiconfectionery@gmail.com',
+            pass: 'avlcrmsamttomubt', // Replace with your actual password
+          },
+        });
+    
         transporter.sendMail(userConfirmationMailOptions, (error, info) => {
           if (error) {
             console.error('Error sending order confirmation email to user:', error);
           } else {
             console.log('Order confirmation email sent to user:', info.response);
+    
+            // ... (rest of your code)
           }
         });
-
-
+    
         const paymentProofData = req.file.buffer;
         const paymentProofDataUrl = `data:image/png;base64,${paymentProofData.toString('base64')}`;
-
+    
         const adminNotificationMailOptions = {
           from: 'hamiconfectionery@gmail.com',
           to: 'michaelkolawole25@gmail.com',
@@ -1632,88 +1765,374 @@ app.post('/submit-payment-proof', upload.single('paymentProof'), (req, res) => {
               content: paymentProofData,
               cid: 'paymentProof',
             },
-          ],          
+          ],
         };
-
+    
         transporter.sendMail(adminNotificationMailOptions, (error, info) => {
           if (error) {
             console.error('Error sending order notification email to admin:', error);
           } else {
             console.log('Order notification email sent to admin:', info.response);
+    
+            // Send an SMS to the admin
+            sendSms(adminSmsData)
+              .then(() => {
+                console.log('Order notification SMS sent to admin');
+              })
+              .catch((smsError) => {
+                console.error('Error sending order notification SMS to admin:', smsError);
+              });
+    
+            res.send(`
+              <html>
+                <head>
+                  <style>
+                    /* CSS styles for the success message */
+                    html, body {
+                      height: 100%;
+                      display: flex;
+                      align-items: center;
+                      justify-content: center;
+                      font-family: system-ui, 'Open Sans';
+                    }
+    
+                    .success-message {
+                      text-align: center;
+                      padding: 20px;
+                      background-color: #f0f8f3;
+                    }
+    
+                    .success-message .icon {
+                      font-size: 48px;
+                      color: green;
+                    }
+    
+                    .success-message .message {
+                      margin-top: 10px;
+                      font-size: 24px;
+                      color: #333;
+                    }
+    
+                    .success-message .button {
+                      margin-top: 30px;
+                      padding: 10px 20px;
+                      background-color: green;
+                      color: white;
+                      font-size: 16px;
+                      text-decoration: none;
+                      border-radius: 4px;
+                      display: block;
+                      width: 100px;
+                      margin: 0 auto;
+                    }
+                  </style>
+                </head>
+                <body>
+                  <div class="success-message">
+                    <div class="icon">&#10004;</div>
+                    <div class="message">Payment proof submitted successfully</div>
+                    <br>
+                    <a class="button" href="/dashboard">Continue</a>
+                  </div>
+                </body>
+              </html>
+            `);
           }
         });
-
-        res.send(`
-          <html>
-            <head>
-              <style>
-                /* CSS styles for the success message */
-                html, body {
-                  height: 100%;
-                  display: flex;
-                  align-items: center;
-                  justify-content: center;
-                  font-family: system-ui, 'Open Sans';
-                }
-                
-                .success-message {
-                  text-align: center;
-                  padding: 20px;
-                  background-color: #f0f8f3;
-                }
-                
-                .success-message .icon {
-                  font-size: 48px;
-                  color: green;
-                }
-                
-                .success-message .message {
-                  margin-top: 10px;
-                  font-size: 24px;
-                  color: #333;
-                }
-                
-                .success-message .button {
-                  margin-top: 30px;
-                  padding: 10px 20px;
-                  background-color: green;
-                  color: white;
-                  font-size: 16px;
-                  text-decoration: none;
-                  border-radius: 4px;
-                  display: block;
-                  width: 100px;
-                  margin: 0 auto;
-                }      
-              </style>
-            </head>
-            <body>
-              <div class="success-message">
-                <div class="icon">&#10004;</div>
-                <div class="message">Payment proof submitted successfully</div>
-                <br>
-                <a class="button" href="/dashboard">Continue</a>
-              </div>
-            </body>
-          </html>
-        `);
       });
-    } else {
-      res.redirect('/index.html');
-    }
-  });
-});
+    });
+    
+    // Use the environment variable assigned by render.com for the port
+    const port = process.env.PORT || 3000;
+    
+    app.listen(port, () => {
+      console.log(`Server running on port ${port}`);
+    });
 
 
 
 
-// Use the environment variable assigned by render.com for the port
-const port = process.env.PORT || 3000;
 
-app.listen(port, () => {
-  console.log(`Server running on port ${port}`);
-});
 
+
+
+
+
+// // Set up the Multer storage configuration for payment proof upload
+// const paymentProofStorage = multer.diskStorage({
+//   destination: path.join(__dirname, 'paymentProof'),
+//   filename: (req, file, cb) => {
+//     const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1e9)}`;
+//     const extension = path.extname(file.originalname);
+//     const filename = `payment-proof-${uniqueSuffix}${extension}`;
+//     cb(null, filename);
+//   },
+// });
+// const paymentProofUpload = multer({ storage: paymentProofStorage });
+
+
+// app.post('/submit-payment-proof', upload.single('paymentProof'), (req, res) => {
+//   const sessionId = req.cookies.sessionId;
+
+
+
+//   pool.query('SELECT * FROM sessions WHERE sessionId = $1::uuid', [sessionId], (err, sessionResult) => {
+//     if (err) {
+//       console.error('Error retrieving session from the database:', err);
+//       res.redirect('/index.html');
+//       return;
+//     }
+
+//     const session = sessionResult.rows[0];
+
+//     if (session && session.userid) {
+//       const userId = session.userid;
+//       const userEmail = session.email;
+
+//         // Retrieve the payment proof file path
+//       const paymentProofPath = req.file.path;
+
+//       // Retrieve the shipping address and other data from the request body
+//       const city = req.body.city;
+//       const shippingAddress = req.body.shippingAddress;
+      
+//       // Calculate shipping fee based on the selected city
+//       let shippingFee = 0;
+//       if (city === 'Abeokuta') {
+//         shippingFee = 0; // Set the appropriate shipping fee for Abeokuta
+//       } else if (city === 'Ibadan') {
+//         shippingFee = 1000; // Set the appropriate shipping fee for Ibadan
+//       } else if (city === 'Lagos') {
+//         shippingFee = 1500; // Set the appropriate shipping fee for Lagos
+//       }
+
+//       // Retrieve other data from the request body
+//       const paymentProof = req.file;
+//       const total = parseFloat(req.body.total);
+
+//       // Calculate the new total price with the shipping fee added
+//       const newTotal = total + shippingFee;
+
+//       pool.query('SELECT * FROM orders WHERE userid = $1', [userId], (err, orderResult) => {
+//         if (err) {
+//           console.error('Error retrieving order data from the database:', err);
+//           res.redirect('/index.html');
+//           return;
+//         }
+
+//         const orderData = orderResult.rows;
+
+//         console.log('Order Data:', orderData);
+
+//         // Extract item IDs and images from orderData
+//         const items = orderData.map((item) => item.name);
+//         const quantity = orderData.map((item) => item.quantity);
+//         const itemId = orderData.map((item) => item.itemid);
+//         const itemImages = orderData.map((item) => item.imageurl);
+//         const total = orderData.reduce((sum, item) => sum + item.price * item.quantity, 0);
+//         const deliverytime = 'In some minutes.'; // Replace with the actual delivery time
+
+
+//         console.log('Payment proof submitted:', req.file);
+//         console.log('User Email:', userEmail);
+//         console.log('Order Items:', items);
+//         console.log('Quantity:', quantity);
+//         console.log('Item IDs:', itemId);
+//         console.log('Item Images:', itemImages);
+//         console.log('Total Price:', total);
+//         console.log('Delivery Time:', deliverytime);
+
+//         const baseUrl = 'https://hamcon.onrender.com';
+
+//         const userConfirmationMailOptions = {
+//           from: 'hamiconfectionery@gmail.com',
+//           to: userEmail,
+//           subject: 'Order Confirmation',
+//           html: `
+//             <html>
+//               <head>
+//                 <style>
+//                   /* CSS styles for the email */
+//                   /* Add your custom CSS styles here */
+//                 </style>
+//               </head>
+//               <body>
+//                 <div class="container">
+//                   <h1>Order Confirmation</h1>
+//                   <p>Thank you for your order!</p>
+//                   <p>Your order has been confirmed and is being processed.</p>
+//                   <p>Items:</p>
+//                   <ul>
+//                     ${items
+//                       .map(
+//                         (items, index) => `
+//                           <li>
+//                             <h3>${items}</h3>
+//                             <p>Quantity: ${quantity[index]}</p>
+//                             <p>ItemId: ${itemId[index]}</p>
+//                             <img src="${baseUrl}${itemImages[index]}" alt="Item Image" />
+//                           </li>
+//                         `
+//                       )
+//                       .join('')}
+//                   </ul>
+//                   <p>Shipping Address: ${shippingAddress}</p>
+//                   <p>City: ${city}</p>
+//                   <p>Shipping Fee: $${shippingFee}</p>
+//                   <p>Item Total: $${total}</p>
+//                   <p>Total: $${newTotal}</p> <!-- Update the total price display with the new total -->
+//                   <p>Delivery Time: ${deliverytime}</p>
+//                   <p>We will deliver your order as soon as possible. If you have any questions, please contact us on 08145336427.</p>
+//                 </div>
+//               </body>
+//             </html>
+//           `,
+//         };
+
+//         transporter.sendMail(userConfirmationMailOptions, (error, info) => {
+//           if (error) {
+//             console.error('Error sending order confirmation email to user:', error);
+//           } else {
+//             console.log('Order confirmation email sent to user:', info.response);
+//           }
+//         });
+
+
+//         const paymentProofData = req.file.buffer;
+//         const paymentProofDataUrl = `data:image/png;base64,${paymentProofData.toString('base64')}`;
+
+//         const adminNotificationMailOptions = {
+//           from: 'hamiconfectionery@gmail.com',
+//           to: 'michaelkolawole25@gmail.com',
+//           subject: 'New Order Received',
+//           html: `
+//             <html>
+//               <head>
+//                 <style>
+//                   /* CSS styles for the email */
+//                   /* Add your custom CSS styles here */
+//                 </style>
+//               </head>
+//               <body>
+//                 <div class="container">
+//                   <h1>New Order Received</h1>
+//                   <p>A new order has been received.</p>
+//                   <p>User Email: ${userEmail}</p>
+//                   <p>Items:</p>
+//                   <ul>
+//                     ${items
+//                       .map(
+//                         (items, index) => `
+//                           <li>
+//                             <h3>${items}</h3>
+//                             <p>Quantity: ${quantity[index]}</p>
+//                             <p>ItemId: ${itemId[index]}</p>
+//                             <img src="${baseUrl}${itemImages[index]}" alt="Item Image" />
+//                           </li>
+//                         `
+//                       )
+//                       .join('')}
+//                   </ul>
+//                   <p>Shipping Address: ${shippingAddress}</p>
+//                   <p>City: ${city}</p>
+//                   <p>Shipping Fee: $${shippingFee}</p>
+//                   <p>Item Total: $${total}</p>
+//                   <p>Total: $${newTotal}</p> <!-- Update the total price display with the new total -->
+//                   <p>Delivery Time: ${deliverytime}</p>
+//                   <p>Please process the order and contact the user for further details.</p>
+//                   <p>Payment Proof:</p>
+//                   <img src="cid:paymentProof" alt="Payment Proof Image" />
+//                 </div>
+//               </body>
+//             </html>
+//           `,
+//           attachments: [
+//             {
+//               filename: req.file.originalname,
+//               content: paymentProofData,
+//               cid: 'paymentProof',
+//             },
+//           ],          
+//         };
+
+//         transporter.sendMail(adminNotificationMailOptions, (error, info) => {
+//           if (error) {
+//             console.error('Error sending order notification email to admin:', error);
+//           } else {
+//             console.log('Order notification email sent to admin:', info.response);
+//           }
+//         });
+
+//         res.send(`
+//           <html>
+//             <head>
+//               <style>
+//                 /* CSS styles for the success message */
+//                 html, body {
+//                   height: 100%;
+//                   display: flex;
+//                   align-items: center;
+//                   justify-content: center;
+//                   font-family: system-ui, 'Open Sans';
+//                 }
+                
+//                 .success-message {
+//                   text-align: center;
+//                   padding: 20px;
+//                   background-color: #f0f8f3;
+//                 }
+                
+//                 .success-message .icon {
+//                   font-size: 48px;
+//                   color: green;
+//                 }
+                
+//                 .success-message .message {
+//                   margin-top: 10px;
+//                   font-size: 24px;
+//                   color: #333;
+//                 }
+                
+//                 .success-message .button {
+//                   margin-top: 30px;
+//                   padding: 10px 20px;
+//                   background-color: green;
+//                   color: white;
+//                   font-size: 16px;
+//                   text-decoration: none;
+//                   border-radius: 4px;
+//                   display: block;
+//                   width: 100px;
+//                   margin: 0 auto;
+//                 }      
+//               </style>
+//             </head>
+//             <body>
+//               <div class="success-message">
+//                 <div class="icon">&#10004;</div>
+//                 <div class="message">Payment proof submitted successfully</div>
+//                 <br>
+//                 <a class="button" href="/dashboard">Continue</a>
+//               </div>
+//             </body>
+//           </html>
+//         `);
+//       });
+//     } else {
+//       res.redirect('/index.html');
+//     }
+//   });
+// });
+
+
+
+
+// // Use the environment variable assigned by render.com for the port
+// const port = process.env.PORT || 3000;
+
+// app.listen(port, () => {
+//   console.log(`Server running on port ${port}`);
+// });
 
 
 
